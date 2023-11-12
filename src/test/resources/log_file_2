@@ -1,10 +1,10 @@
-2023-11-12 08:00:00, System_Initialization, 12345, [1000, 25, 40], true, 42, "success"
+2023-11-12 08:00:00, System_Initialization, 12345, true, 42, "success"
 2023-11-12 08:15:00, Thruster_Calibration, [98, 30], false
-2023-11-12 08:30:00, Communication_Check, [2.4, 10, 92], true, "signal_ok", 123, false
-2023-11-12 09:00:00, Navigation_Test, [1, 12, 1], false, true, "good_signal"
+2023-11-12 08:30:00, Communication_Check, [2.4, 10.1, 92.7], true, "signal_ok", 123, false
+2023-11-12 09:00:00, Navigation_Test, [1, 12, 1, 14, 1], false, true, "good_signal"
 2023-11-12 09:30:00, Solar_Panel_Deployment, true, [98, 5, 24], 123, "panel_1_ok", "panel_2_ok"
 2023-11-12 10:00:00, Orbital_Maneuver, 12350, [99, 97, 32], false, 54.5`
-2023-11-12 10:30:00, Telemetry_Check, 12351, [0.5, 30, 1], true, "telemetry_ok", 75, false
+2023-11-12 10:30:00, Telemetry_Check, 12351, [0.5, 3.0, 1.6], true, "telemetry_ok", 75, false
 2023-11-12 11:00:00, Battery_Test, 12352, [10, 25, 48], false, 12, "battery_discharging", true, 35
 2023-11-12 11:30:00, Redundancy_Check, 12353, [1, 2, 1], true, "high_redundancy", 99.9
 2023-11-12 12:00:00, Pre-Launch_Check, 12354, [1, 1, 1], false, "system_ready", true, "launch_approved", 0.001
