@@ -4,5 +4,5 @@ import com.input.LogObject;
 
 public interface AnalysisManager
 {
-    public LogObject execute(LogObject logObject);
+     LogObject executeAnalyzer(LogObject logObject);
 }

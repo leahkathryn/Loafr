@@ -1,4 +1,10 @@
 package com.control;
 
-public interface Controller {
+import com.input.Configuration;
+
+public interface Controller
+{
+    void execute();
+    void setConfiguration(Configuration configuration);
+    void alertOutput(String message);
 }
