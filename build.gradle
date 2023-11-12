@@ -1,0 +1,39 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group 'group7'
+version 'Loafr-0.1'
+
+repositories {
+    mavenCentral()
+}
+
+application {
+    mainClass = 'com.Loafr'
+}
+
+sourceSets {
+    main {
+        com {
+            srcDir 'src/main/com'
+        }
+    }
+    test {
+        com {
+            srcDir 'src/test/com'
+        }
+        resources {
+            srcDir 'src/test/resources'
+        }
+    }
+}
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+test {
+    useJUnitPlatform()
+}
