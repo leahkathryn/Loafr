@@ -1,0 +1,33 @@
+2023-11-12 08:00:00, System_Initialization, 98765, [950, 20, 35], true, 87, "failure"
+2023-11-12 08:05:00, Thruster_Calibration, [88, 25], true
+2023-11-12 08:10:00, Communication_Check, [3, 7, 5], false, "weak_signal", 110, true
+2023-11-12 08:15:00, Communication_Check, [100, 100, 88], true, "strong_signal", 110, true
+2023-11-12 08:20:00, Navigation_Test, [1.5, 10.7, 5.5], true, false, "weak_signal"
+2023-11-12 08:25:00, Battery_Test, 24680, [12, 28, 52], true, 18, "battery_charging", false, 20
+2023-11-12 08:30:00, Telemetry_Check, 13579, [0.3, 25.4, 2.0], false, "telemetry_weak", 50, true
+2023-11-12 08:35:00, Redundancy_Check, 98765, [2, 3, 2], false, "low_redundancy", 95.5
+2023-11-12 08:40:00, Engine_Ignition, 7000, "Solid", true
+2023-11-12 08:45:00, Engine_Ignition, 8500, "Liquid", true
+2023-11-12 08:50:00, Telemetry_Check, 13579, [0.3, 25.4, 2.0], false, "telemetry_weak", 50, true
+2023-11-12 08:55:00, Redundancy_Check, 98765, [2, 3, 2], false, "low_redundancy", 95.5
+2023-11-12 09:00:00, Pre-Launch_Check, 56789, [0, 0, 0], true, "not_ready", false, 0.999
+2023-11-12 09:05:00, Engine_Ignition, 8800, "Solid", true
+2023-11-12 09:10:00, Engine_Ignition, 9000, "Liquid", true
+2023-11-12 09:15:00, Engine_Ignition, 8700, "Solid", true
+2023-11-12 09:20:00, Engine_Ignition, 9500, "Liquid", true
+2023-11-12 09:25:00, Telemetry_Check, 13579, [0.3, 25.4, 2.0], false, "telemetry_weak", 50, true
+2023-11-12 09:30:00, Redundancy_Check, 98765, [2, 3, 2], false, "low_redundancy", 95.5
+2023-11-12 09:35:00, Communication_Check, [100, 100, 88], true, "strong_signal", 110, true
+2023-11-12 09:40:00, Pre-Launch_Check, 56789, [0, 0, 0], true, "ready", false, 0.999
+2023-11-12 09:45:00, Engine_Ignition, 8600, "Liquid", true
+2023-11-12 09:50:00, Engine_Ignition, 9400, "Solid", true
+2023-11-12 09:55:00, Telemetry_Check, 13579, [0.3, 25.4, 2.0], false, "telemetry_weak", 50, true
+2023-11-12 10:00:00, Solar_Panel_Deployment, false, [90, 6, 22], 150, ["panel_1_faulty", "panel_2_ok"]
+2023-11-12 10:05:00, Orbital_Maneuver, 12000, [105, 90, 45], true, 30.2
+2023-11-12 10:10:00, Engine_Ignition, 8600, "Liquid", true
+2023-11-12 10:15:00, Engine_Ignition, 9400, "Solid", true
+2023-11-12 10:20:00, Engine_Ignition, 8100, "Liquid", true
+2023-11-12 10:25:00, Engine_Ignition, 8300, "Solid", true
+2023-11-12 10:30:00, Engine_Ignition, 9200, "Liquid", true
+2023-11-12 10:35:00, Telemetry_Check, 13579, [0.3, 25.4, 2.0], false, "telemetry_weak", 50, true
+2023-11-12 10:40:00, Solar_Panel_Deployment, true, [90, 6, 22], 150, ["panel_1_ok", "panel_2_ok"]
