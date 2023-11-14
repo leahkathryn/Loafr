@@ -1,14 +1,14 @@
 package com.interpret;
 
 import com.analyze.Analyzer;
-import com.input.LogObject;
+import com.input.LogData;
 
 public class Script implements AnalysisManager
 {
     private Analyzer analyzer;
 
     @Override
-    public LogObject executeAnalyzer(LogObject logObject){ return null;}
+    public LogData executeAnalyzer(LogData logObject){ return null;}
 
     public boolean interpretScript(String fileLoc, Interpreter interpreter){ return true;}
 }

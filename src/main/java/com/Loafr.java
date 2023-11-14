@@ -8,7 +8,7 @@ import java.nio.file.Path;
 
 public class Loafr
 {
-    private String configurationFileLoc;
+    private static String configurationFileLoc = "";
 
     public static void main(String[] args)
     {

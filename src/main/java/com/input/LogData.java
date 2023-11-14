@@ -1,4 +1,6 @@
 package com.input;
+
+import java.util.List;
 import java.util.ArrayList;
 
 // This class is simple rename the log data. Data1, Data2, Data3...
@@ -11,7 +13,7 @@ public class LogData {
     {
         List<Event> events = configuration.getEventList();
 
-        foreach(Event event : events)
+        for(Event event : events)
         {
 
 

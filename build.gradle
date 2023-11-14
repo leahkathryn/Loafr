@@ -17,12 +17,12 @@ application {
 sourceSets {
     main {
         java {
-            srcDir 'src/main/com'
+            srcDir 'src/main/java'
         }
     }
     test {
         java {
-            srcDir 'src/test/com'
+            srcDir 'src/test/java'
         }
         resources {
             srcDir 'src/test/resources'

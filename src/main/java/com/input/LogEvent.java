@@ -1,7 +1,4 @@
-package input;
-
-import com.input.DataID;
-import com.input.LogData;
+package com.input;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -13,7 +10,7 @@ public class LogEvent<T>
     private String eventType;
     private HashMap<DataID,List<T>>  dataIDMap;
 
-    public LogEvent(String eventType, Timestamp timeStamp, HashMap<> dataIDMap)
+    public LogEvent(String eventType, Timestamp timeStamp, HashMap<DataID,List<T>> dataIDMap)
     {
         this.eventType = eventType;
         this.timeStamp = timeStamp;

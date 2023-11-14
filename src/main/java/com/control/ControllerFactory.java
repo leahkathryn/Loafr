@@ -41,7 +41,7 @@ public class ControllerFactory
 
     private void parseOutputLoc(Configuration configuration)
     {
-        // check the input for an output file location
+        // check the com.input for an output file location
         if (arguments.contains(Flag.OUTPUTLOC.toString()))
         {
             outputLoc = arguments.remove(arguments.indexOf(Flag.OUTPUTLOC.toString())+1);
@@ -108,7 +108,7 @@ public class ControllerFactory
     // because there are three potential inputs to the program, and one is optional, I think that flags should be required
     private Controller parseSimpleScriptArguments(Configuration configuration)
     {
-        // check that the input is the correct size to contain required arguments
+        // check that the com.input is the correct size to contain required arguments
         if (arguments.size() < 4)
         {
             ErrorHandler.logError("The argument list is too short.\n" +

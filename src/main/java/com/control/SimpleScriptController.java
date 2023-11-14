@@ -5,7 +5,6 @@ import com.input.LogObject;
 import com.interpret.Interpreter;
 import com.interpret.Script;
 
-import java.util.List;
 public class SimpleScriptController implements Controller
 {
     private Configuration configuration;

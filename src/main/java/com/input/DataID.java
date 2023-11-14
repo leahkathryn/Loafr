@@ -1,6 +1,5 @@
 package com.input;
 
-import com.input.DataType;
 public class DataID {
     String name;
     DataType type;
