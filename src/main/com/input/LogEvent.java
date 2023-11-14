@@ -5,35 +5,28 @@ import com.input.LogData;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
-public class LogEvent {
-    Timestamp timeStamp;
-    HashMap<DataID, LogData>  hashmap;
+import java.util.List;
 
+public class LogEvent<T>
+{
+    private Timestamp timeStamp;
+    private String eventType;
+    private HashMap<DataID,List<T>>  dataIDMap;
 
-    //setter for Hashmap
-    public static HashMap<DataID, LogData> setHashmap(DataID dataID, LogData logData){
-        HashMap<DataID,LogData > hashMap;
-        hashMap = new HashMap<>();
-        hashMap.put(dataID,logData);
-        return hashMap;
-    }
-
-    public static LogEvent createEvent(Timestamp timeStamp, HashMap hashmap){
-        LogEvent logEvent = new LogEvent();
-        logEvent.hashmap = hashmap;
-        logEvent.timeStamp = timeStamp;
-        return logEvent;
+    public LogEvent(String eventType, Timestamp timeStamp, HashMap<> dataIDMap)
+    {
+        this.eventType = eventType;
+        this.timeStamp = timeStamp;
+        this.dataIDMap = dataIDMap;
     }
 
     //getters
-    public HashMap<DataID, LogData> getHashmap() {
-        return hashmap;
+    public HashMap<DataID,List<T>> getDataIDMap() {
+        return dataIDMap;
     }
 
     public Timestamp getTimeStamp() {
         return timeStamp;
     }
-
-
 }
 

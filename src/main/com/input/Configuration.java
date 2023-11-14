@@ -1,4 +1,12 @@
 package com.input;
 
-public class Configuration {
+public class Configuration
+{
+    private List<Event> eventList;
+    private List<DataID> dataIDList;
+
+    public List<Event> getEventList()
+    {
+        return eventList;
+    }
 }
