@@ -35,7 +35,13 @@ public class Configuration
     {
         return eventList;
     }
-    public String getDefaultOutputLocation() { return defaultOutputLoc; }
+    public String getDefaultOutputLocation() {
+        return defaultOutputLoc;
+    }
+
+    public List<DataID> getDataIDList(){
+        return dataIDList;
+    }
 
 
     /**
