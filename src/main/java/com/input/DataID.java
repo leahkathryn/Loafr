@@ -1,22 +1,8 @@
 package com.input;
-import com.input.DataType;
 
 public class DataID {
     String name;
     DataType type;
-
-    public DataID(String s, DataType dataType) {
-        this.name = s;
-        this.type = dataType;
-    }
-
-    public DataID(){
-
-    }
-    public static DataID constructDataID(){
-        DataID newDataID = new DataID();
-        return newDataID;
-    }
 
     public void setName(String name) {
         this.name = name;
