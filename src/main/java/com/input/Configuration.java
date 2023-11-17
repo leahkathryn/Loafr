@@ -49,9 +49,15 @@ public class Configuration
         boolean isEventsParsed;
         HashMap<String, DataID> dataIDMap;
 
+        if (fileLoc == null){
+            ErrorHandler.logError("Location of file is null.");
+            return false;
+        }
+
         DocumentBuilderFactory configBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder configBuilder = configBuilderFactory.newDocumentBuilder();
         Document configDoc;                     // Convert config file to parsable document
+
 
         try {
             configDoc = configBuilder.parse(configFile);
@@ -63,7 +69,7 @@ public class Configuration
         NodeList eventNameNodeList = configDoc.getElementsByTagName("events");      // Get events and dataID as nodes
         NodeList dataIDNodeList = configDoc.getElementsByTagName("data_elements");
 
-        if (eventNameNodeList.getLength() == 0 | dataIDNodeList.getLength() == 0){
+        if (eventNameNodeList.getLength() == 0 || dataIDNodeList.getLength() == 0){
             ErrorHandler.logError("No events or data elements in configuration file.");
             return false;
         }
@@ -194,22 +200,24 @@ public class Configuration
                     if (dataNode.getNodeType() == curNode.ELEMENT_NODE){
                         Element elemData = (Element) dataNode;
 
+                        if (!elemData.hasAttribute("name")){                                   // Check if data element has no name
+                            ErrorHandler.logError("Name of data element is missing");
+                            return false;
+                        }
                         String dataName = elemData.getAttribute("name");    // Get Event object attributes out of node and temp hashmap
-                        DataType dataType = dataIDMap.get(dataName).getType();
 
-                        if (!dataIDList.contains(new DataID(dataName, dataType))){
+                        if (!dataIDMap.containsKey(dataName)) {
                             ErrorHandler.logError("Data element is missing or incomplete");
                             return false;
                         }
-
-                        curDataIDs.add(new DataID(dataName, dataType));
+                        curDataIDs.add(dataIDMap.get(dataName));
                     } else {
                         ErrorHandler.logError("XML file is structured improperly");
                         return false;
                     }
-                }
 
-                this.eventList.add(new Event(eventName, curDataIDs));
+                    this.eventList.add(new Event(eventName, curDataIDs));
+                }
             } else {
                 ErrorHandler.logError("XML file is structured improperly");
                 return false;
