@@ -35,7 +35,9 @@ public class Configuration
     {
         return eventList;
     }
-    public String getDefaultOutputLocation() { return defaultOutputLoc; }
+    public String getDefaultOutputLocation() {
+        return defaultOutputLoc;
+    }
 
     public List<DataID> getDataIDList(){
         return dataIDList;
@@ -49,7 +51,7 @@ public class Configuration
      * @throws ParserConfigurationException - add desc here
      */
     public boolean parseConfigFile(String fileLoc) throws ParserConfigurationException{
-        File configFile = new File(fileLoc);
+        File configFile = new File(fileLoc.trim());
         boolean isEventsParsed;
         HashMap<String, DataID> dataIDMap;
 
@@ -153,9 +155,9 @@ public class Configuration
                     return null;
                 }
 
-                dataName = elemDataID.getAttribute("name");         // Get dataID object attribute out of node
+                dataName = elemDataID.getAttribute("name").trim();         // Get dataID object attribute out of node
 
-                tempType = inferType(elemDataID.getAttribute("type"));              // Get dataID object attribute out of node
+                tempType = inferType(elemDataID.getAttribute("type").trim());              // Get dataID object attribute out of node
 
                 if (tempType == null){
                     ErrorHandler.logError("Data type is missing");
@@ -196,7 +198,7 @@ public class Configuration
                     ErrorHandler.logError("Event has no appropriate name.");
                     return false;
                 }
-                eventName = elemEvent.getAttribute("name");
+                eventName = elemEvent.getAttribute("name").trim();
 
                 for (int j = 0; j < dataIDNodes.getLength(); j++){
                     Node dataNode = dataIDNodes.item(j);
@@ -208,7 +210,7 @@ public class Configuration
                             ErrorHandler.logError("Name of data element is missing");
                             return false;
                         }
-                        String dataName = elemData.getAttribute("name");    // Get Event object attributes out of node and temp hashmap
+                        String dataName = elemData.getAttribute("name").trim();    // Get Event object attributes out of node and temp hashmap
 
                         if (!dataIDMap.containsKey(dataName)) {
                             ErrorHandler.logError("Data element is missing or incomplete");
