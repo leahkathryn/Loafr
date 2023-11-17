@@ -37,6 +37,10 @@ public class Configuration
     }
     public String getDefaultOutputLocation() { return defaultOutputLoc; }
 
+    public List<DataID> getDataIDList(){
+        return dataIDList;
+    }
+
 
     /**
      * Parse the configuration file, extract the Event and DataID objects, and store then in a Configuration object
