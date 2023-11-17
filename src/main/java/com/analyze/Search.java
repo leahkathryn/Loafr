@@ -12,6 +12,7 @@ public class Search implements AnalysisTask {
     private LogEvents temp;
 
 
+
     public Search(AttributeType type, DataID data, String reg) {
         attributeType = type;
         dataID = data;
@@ -20,25 +21,35 @@ public class Search implements AnalysisTask {
 
     public Search(AttributeType type, String reg) {
         attributeType = type;
-        //dataID = ?;
+        dataID = "";
         regex = reg;
     }
 
     public Search(String reg) {
-        //attributeType = ?;
-        //dataID = ?;
+        attributeType = null;
+        dataID = "";
         regex = reg;
     }
 
-    //what functions can i use with logevents,
+
     @Override
-    public void execute(LogObject logObject) {
+    public LogData execute(LogData logObject) {
+        LogData output = new LogData();
         events = logObject.getLogEvents();
-        for (int i = 0; i < events.size(); i++) {
+        for (LogEvent event : events) {
             temp = events.get(i);
-            if (temp.get(dataID) == regex) {
-                outputEvents.add(temp);
+            if (null == attributeType) {
+                // any field looking for match, get attribute type -> make string then do search
             }
+            else if (LogEvent.AttributeType.DATAVALUE == attributeType) {
+                //use getdatavalue function in logevent class
+            }
+            else {
+                // use getattribute function to search
+            }
+
         }
+       return output;
     }
 }
+
