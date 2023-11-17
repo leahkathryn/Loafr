@@ -23,10 +23,10 @@ public class Configuration
     private List<Event> eventList;
     private List<DataID> dataIDList;
     private String defaultOutputLoc;
+    private String configFileLoc;
 
-    public Configuration(String defaultOutputLoc)
-    {
-        this.defaultOutputLoc = defaultOutputLoc;
+    public Configuration() {
+        this.defaultOutputLoc = null;
         this.dataIDList = new ArrayList<>();
         this.eventList = new ArrayList<>();
     }
