@@ -16,9 +16,9 @@ public class Search implements AnalysisTask {
     private AttributeType attributeType;
     private DataID dataID;
     private String regex;
-    private List<LogEvents> events;
-    private List<LogEvents> outputEvents;
-    private LogEvents temp;
+    private List<LogEvent> events;
+    private List<LogEvent> outputEvents;
+    private LogEvent temp;
 
 
 
@@ -30,22 +30,22 @@ public class Search implements AnalysisTask {
 
     public Search(AttributeType type, String reg) {
         attributeType = type;
-        dataID = "";
+        dataID = null;
         regex = reg;
     }
 
     public Search(String reg) {
         attributeType = null;
-        dataID = "";
+        dataID = null;
         regex = reg;
     }
 
 
     @Override
-    public LogData execute(LogData logObject) {
+    public <T> LogData execute(LogData logObject) {
         LogData output = new LogData();
         HashMap<DataID,List<T>> data;
-        events = logObject.getLogEvents();
+        events = logObject.getLogEvent();
 
         if (null == attributeType) {
             // any field looking for match, get attribute type -> make string then do search
