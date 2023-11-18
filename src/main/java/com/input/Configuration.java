@@ -23,7 +23,6 @@ public class Configuration
     private List<Event> eventList;
     private List<DataID> dataIDList;
     private String defaultOutputLoc;
-    private String configFileLoc;
 
     public Configuration() {
         this.defaultOutputLoc = null;
