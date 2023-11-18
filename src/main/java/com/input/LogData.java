@@ -27,7 +27,7 @@ public class LogData<T> {
      * @param configuration the configuration from the configuration class.
      * @return return the status of the parsing status.
      */
-    public boolean parseLogFile(String fileName, Configuration configuration) throws IOException{
+    public boolean parseLogFile(String fileName, Configuration configuration){
         List<Event> events = configuration.getEventList();
 
         File logFile = new File(fileName);
@@ -110,7 +110,7 @@ public class LogData<T> {
      * @param outputLoc The location to be written.
      * @return return the status of output.
      */
-    public boolean writeLogObject(String outputLoc){
+    public boolean writeLogData(String outputLoc){
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputLoc))) {
             for (LogEvent<T> logEvent : eventList) {
                 writer.write(logEvent.getTimeStamp() + "," + logEvent.getEventType() + ", ");

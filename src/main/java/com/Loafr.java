@@ -4,7 +4,8 @@ import com.input.Configuration;
 import com.control.ControllerFactory;
 import com.control.Controller;
 
-import java.nio.file.Path;
+import java.net.URL;
+import java.io.File;
 
 /**
  * Loafr execution begins in this class.
@@ -17,8 +18,7 @@ import java.nio.file.Path;
  */
 public class Loafr
 {
-    // update this String before testing
-    private static String configurationFileLoc = "";
+    private static String configurationFileLoc = "C:\\Users\\leahk\\OneDrive\\Documents\\GitHub\\Loafr\\src\\test\\resources\\sample_config_file.xml";
 
     public static void main(String[] args)
     {

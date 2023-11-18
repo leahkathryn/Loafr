@@ -17,7 +17,7 @@ public class LogEvent<T> {
 
     // This is a constructor for the LogEvent class.
     // Constructor that infers data types for the values starting from the third parameter
-    public LogEvent(String eventType, Timestamp timeStamp, T... values) {
+   /* public LogEvent(String eventType, Timestamp timeStamp, T... values) {
         this.eventType = eventType;
         this.timeStamp = timeStamp;
         this.dataIDMap = new HashMap<>();
@@ -30,7 +30,7 @@ public class LogEvent<T> {
             dataIDMap.put(dataID, dataList);
             index++;
         }
-    }
+    }*/
 
     public LogEvent(){
     }
@@ -165,7 +165,7 @@ public class LogEvent<T> {
 
 
     // Method to identify data types and convert strings to a Map<String, Object>
-    private HashMap<String, Object> convertStringToDataMap(String str) {
+    public HashMap<String, Object> convertStringToDataMap(String str) {
         T dataType = convertStringToDataType(str);
         T convertedValue = convertStringToDataType(str);
         if (dataType != null && convertedValue != null) {

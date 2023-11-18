@@ -134,7 +134,7 @@ public class Search implements AnalysisTask {
                         break;
 
                     default:
-                        System.out.println("The requested attribute type has not been implemented or does not exist.")
+                        System.out.println("The requested attribute type has not been implemented or does not exist.");
 
                 }
 

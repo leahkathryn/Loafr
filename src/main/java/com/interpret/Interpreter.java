@@ -125,7 +125,7 @@ public class Interpreter
         // if the regex is empty, log an error and return null
         if (regex.isBlank())
         {
-            ErrorHandler.logError(ErrorHandler.logError("Failure interpreting script: " +
+            ErrorHandler.logError("Failure interpreting script: " +
                     "No arguments were provided for a Search command.\nLoafr exiting...");
             return null;
         }

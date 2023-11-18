@@ -96,5 +96,5 @@
     <data_element name="Connection_Status" type="boolean"/>
     <data_element name="Fuel_Type" type="string"/>
   </data_elements>
-  <default_output_location file = "C:\Users\leahk\OneDrive\Documents\GitHub\Loafr\src\test\resources\sample_config_file.xml"/>
+  <default_output_location file = ""/>
 </loafr>
