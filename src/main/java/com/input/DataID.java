@@ -4,11 +4,6 @@ public class DataID {
     String name;
     DataType type;
 
-    public static DataID constructDataID(){
-        DataID newDataID = new DataID();
-        return newDataID;
-    }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -25,4 +20,3 @@ public class DataID {
         return this.type;
     }
 }
-
