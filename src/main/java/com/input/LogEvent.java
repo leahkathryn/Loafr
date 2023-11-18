@@ -14,7 +14,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 
 
-public class LogData<T> {
+public class LogEvent<T> {
     private List<LogEvent> eventList = new ArrayList<>();
 
 
