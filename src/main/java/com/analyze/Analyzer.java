@@ -8,7 +8,7 @@ public class Analyzer {
 
     private ArrayList<AnalysisTask> queue = new ArrayList<AnalysisTask>();
 
-    public LogData analyze(LogObject analyzeLogObject) { //return output (new logData), analysistask already implemented check design dock for specifics
+    public LogData analyze(LogData analyzeLogObject) { //return output (new logData), analysistask already implemented check design dock for specifics
         for (AnalysisTask task : queue) {
             task.execute(analyzeLogObject);
         }
