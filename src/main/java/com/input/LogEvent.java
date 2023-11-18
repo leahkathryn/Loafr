@@ -1,150 +1,180 @@
 package com.input;
 
-import com.ErrorHandler;
-
 import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import com.input.DataID;
+import com.input.DataType;
+
+import javax.xml.crypto.Data;
+
+public class LogEvent<T> {
+    private Timestamp timeStamp;
+    private String eventType;
+    private HashMap<DataID, List<T>> dataIDMap;
 
 
-public class LogData<T> {
-    private List<LogEvent> eventList = new ArrayList<>();
+    // This is a constructor for the LogEvent class.
+    // Constructor that infers data types for the values starting from the third parameter
+    public LogEvent(String eventType, Timestamp timeStamp, T... values) {
+        this.eventType = eventType;
+        this.timeStamp = timeStamp;
+        this.dataIDMap = new HashMap<>();
 
-
-
-    /**
-     *
-     * @Pre-condition: The input must represent a valid file location.
-     * @Post-condition: This LogObject instance represents the information in the log file.
-     * @param fileName the logfile location.
-     * @param configuration the configuration from the configuration class.
-     * @return return the status of the parsing status.
-     */
-    public boolean parseLogFile(String fileName, Configuration configuration) throws IOException{
-        List<Event> events = configuration.getEventList();
-
-        File logFile = new File(fileName);
-        // Check if the log file exists and is readable
-        if (!logFile.exists() || !logFile.isFile() || !logFile.canRead()) {
-            ErrorHandler.logError("Invalid or unreadable log file.");
-            return false;
+        int index = 0;
+        for (int i = 2; i < values.length; i++) {
+            DataType dataType = inferDataType(values[i]);
+            DataID dataID = new DataID("DataID_" + index, dataType);
+            List<T> dataList = extractValuesIntoList(values[i]);
+            dataIDMap.put(dataID, dataList);
+            index++;
         }
-        ArrayList<String> lines = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(logFile))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                lines.add(line);
+    }
+
+    public LogEvent(){
+    }
+
+    //getters
+    public HashMap<DataID, List<T>> getDataIDMap() {
+        return dataIDMap;
+    }
+
+    public Timestamp getTimeStamp() {
+        return timeStamp;
+    }
+
+    public String getEventType() {
+        return eventType;
+    }
+
+    public void setEventType(String eventType) {
+        this.eventType = eventType;
+    }
+
+    public void setDataIDMap(HashMap<DataID, List<T>> dataIDMap) {
+        this.dataIDMap = dataIDMap;
+    }
+
+    public void setTimeStamp(Timestamp timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+
+
+    // Method to infer the data type
+    private DataType inferDataType(T value) {
+        if (value instanceof Integer) {
+            return DataType.INTEGER;
+        } else if (value instanceof Long) {
+            return DataType.LONG;
+        } else if (value instanceof Float) {
+            return DataType.FLOAT;
+        } else if (value instanceof Double) {
+            return DataType.DOUBLE;
+        } else if (value instanceof Boolean) {
+            return DataType.BOOLEAN;
+        } else if (value instanceof String) {
+            return DataType.STRING;
+        } else if (value instanceof Character) {
+            return DataType.CHAR;
+        }
+        // Add additional checks if needed for other types
+        return null; // or throw an exception for unsupported types
+    }
+
+
+    private List<T> extractValuesIntoList(T value) {
+        List<T> dataList = new ArrayList<>();
+
+        if (value instanceof List) {
+            dataList.addAll((List<T>) value);
+        } else if (value instanceof Object[]) {
+            for (Object obj : (Object[]) value) {
+                dataList.add((T) obj);
             }
+        } else {
+            dataList.add(value);
+        }
+        return dataList;
+    }
 
-            int linesSize = lines.size();
-            System.out.println(linesSize);
-
-            ArrayList<String> nameEventList = new ArrayList<>();
-            for (int j = 0; j < events.size(); j++){
-                nameEventList.add(events.get(j).name);
-            }
-
-            for (int i = 0; i < linesSize; i++) {
-                // change the line to a LogEvent here
-                // 1. separate them by comma
-                String toSplit = lines.get(i);
-                String[] values = toSplit.split(",");
-
-                // 2. create Timestamp
-                // Define the date format
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-                // Parse the timestamp string and create a Date object
-                Date parsedDate = dateFormat.parse(values[0]);
-
-                // Create a Timestamp object from the parsed Date
-                Timestamp timestamp = new Timestamp(parsedDate.getTime());
-//                System.out.println(timestamp);
-                // 3. create DataID
-                String originalDataID = values[1];
-                // if the original dataID's name is not in the event, skip it.
-                if (!nameEventList.contains(originalDataID)){
-                    continue;
+    // Method to identify data types and convert strings to appropriate data types
+    private T convertStringToDataType(String str) {
+        String regex = "^[-0-9.\\[\\]]+$";
+        //1. check if it contains a non-number char, if so, it is a char or string.
+        if (str.matches(regex))
+        {
+            if(!str.contains(".")){
+                if(str.length() > 32){
+                    return (T) DataType.LONG;
                 }
-                DataID dataID = new DataID();
-                dataID.setName(originalDataID);
-                dataID.setType(DataType.STRING);
-//                System.out.println(dataID.getName());
-                // 4. create data Hashmap
-                LogEvent<Object> logEvent = new LogEvent<>();
-                logEvent.setTimeStamp(timestamp);
-                logEvent.setEventType(dataID.getName());
-                // Convert the string array to a List<Map<String, Object>>
-                String[] dataValuesStringArr = new String[values.length - 2];
-                for (int j = 2; j < values.length; j++){
-                    dataValuesStringArr[j-2] = values[j];
+                else{
+                    return (T) DataType.INTEGER;
                 }
-                String dataValuesString = dataValuesStringArr.toString();
-                HashMap<String, Object> resultMapList = logEvent.convertStringToDataMap(dataValuesString);
-                //5. create LogEvent and store it in the list.
-                LogEvent newLogEvent = new LogEvent();
-                newLogEvent.setTimeStamp(timestamp);
-                newLogEvent.setEventType(dataID.getName());
-                newLogEvent.setDataIDMap(resultMapList);
-                this.eventList.add(newLogEvent);
+            }
+            else{
+                if(str.length() > 9){
+                    return (T)DataType.DOUBLE;
+                }
+                else{
+                    return (T)DataType.FLOAT;
+                }
+            }
+        } else{
+            if(str.length() == 1){
+                return  (T) DataType.CHAR;
+            }
+            else{
+                if(tryParseBoolean(str)){
+                    return (T) DataType.BOOLEAN;
+                }
+                else{
+                    return  (T) DataType.STRING;
+                }
             }
         }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-        return true;
     }
 
 
-    /** The method to output the data that is being analyzed.
-     * @param outputLoc The location to be written.
-     * @return return the status of output.
-     */
-    public boolean writeLogObject(String outputLoc){
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputLoc))) {
-            for (LogEvent<T> logEvent : eventList) {
-                writer.write(logEvent.getTimeStamp() + "," + logEvent.getEventType() + ", ");
-                HashMap<DataID, List<T>> dataIDMap = logEvent.getDataIDMap();
+    private boolean tryParseBoolean(String str) {
+        return str.equalsIgnoreCase("true") || str.equalsIgnoreCase("false");
+    }
 
-                for (List<T> dataList : dataIDMap.values()) {
-                    for (T data : dataList) {
-                        writer.write(data + ",");
-                    }
-                }
-                writer.newLine();
+    private boolean tryParseChar(String str) {
+        return str.length() == 1;
+    }
+
+
+
+    // Method to convert a String array to a List<Map<String, Object>> while identifying data types
+    public List<HashMap<String, Object>> stringArrayToHashMapList(String[] stringArray) {
+        List<HashMap<String, Object>> resultList = new ArrayList<>();
+        for (int i = 0; i < stringArray.length; i++) {
+            HashMap<String, Object> dataMap = convertStringToDataMap(stringArray[i]);
+            if (dataMap != null) {
+                dataMap.put("value", stringArray[i]);
+                T dataType = convertStringToDataType(stringArray[i]);
+                dataMap.put("dataType", dataType);
+                resultList.add(dataMap);
+            } else {
+                System.out.println("Null value emerged!");
             }
-            return true; // Successfully wrote the log data to the output file
-        } catch (IOException e) {
-            ErrorHandler.logError("Error while writing log data to file: " + e.getMessage());
-            return false; // Failed to write the log data to the output file
         }
+        return resultList;
     }
 
 
-    public List<LogEvent> getEventList() {
-        return this.eventList;
+    // Method to identify data types and convert strings to a Map<String, Object>
+    private HashMap<String, Object> convertStringToDataMap(String str) {
+        T dataType = convertStringToDataType(str);
+        T convertedValue = convertStringToDataType(str);
+        if (dataType != null && convertedValue != null) {
+            HashMap<String, Object> dataMap = new HashMap<>();
+            dataMap.put("value", str);
+            dataMap.put("dataType", convertedValue);
+            return dataMap;
+        }
+        return null;
     }
 
-    public void addLogEvent (LogEvent event, Integer index)
-    {
-        this.eventList.add(index, event);
-    }
-
-    public void addLogEvent (LogEvent event){
-        this.eventList.add(event);
-    }
-
-    public void removeLogEvent(LogEvent event){
-        this.eventList.remove(event);
-    }
 }
