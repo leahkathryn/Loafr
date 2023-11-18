@@ -60,7 +60,7 @@ public class Configuration
 
         DocumentBuilderFactory configBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder configBuilder;
-        Document configDoc;                     // Convert config file to parsable document
+        Document configDoc = null;                     // Convert config file to parsable document
 
         try {
             configBuilder = configBuilderFactory.newDocumentBuilder();
@@ -68,6 +68,7 @@ public class Configuration
         } catch (ParserConfigurationException | IOException | SAXException err){
             if (err instanceof ParserConfigurationException){
                 ErrorHandler.logError("Parser failed to instantiate of documentBuilder object");
+                return false;
             } else {
                 ErrorHandler.logError("Configuration file not found");
                 return false;
