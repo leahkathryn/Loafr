@@ -10,7 +10,7 @@ import java.util.Arrays;
 /**
  * Creates a new Controller based on the command line input to Loafr.
  *
- * @auhor Leah Lehmeier
+ * @author Leah Lehmeier
  */
 public class ControllerFactory
 {
