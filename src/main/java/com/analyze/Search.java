@@ -5,6 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import com.input.LogData;
+import com.input.LogEvent;
+import com.input.DataID;
+import com.input.DataType;
+import com.input.Event;
 
 public class Search implements AnalysisTask {
 
