@@ -1,7 +1,7 @@
 package com.control;
 
 import com.input.Configuration;
-import com.input.LogObject;
+import com.input.LogData;
 import com.interpret.Interpreter;
 import com.interpret.Script;
 
@@ -12,7 +12,7 @@ public class BatchScriptController implements Controller
     private Configuration configuration;
     private String flag;
     private List<String> logFileLoc;
-    private List<LogObject> logObjectList;
+    private List<LogData> logObjectList;
     private List<String> scriptFileLoc;
     private List<Script> scriptList;
     private Interpreter interpreter;
@@ -29,12 +29,6 @@ public class BatchScriptController implements Controller
 
     @Override
     public void execute(){}
-
-    @Override
-    public void setConfiguration(Configuration configuration)
-    {
-        this.configuration = configuration;
-    }
 
     @Override
     public void alertOutput(String message)

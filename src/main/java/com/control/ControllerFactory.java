@@ -7,11 +7,27 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * Creates a new Controller based on the command line input to Loafr.
+ *
+ * @auhor Leah Lehmeier
+ */
 public class ControllerFactory
 {
     private List<String> arguments;
     private String outputLoc;
 
+    /**
+     * This function parses Loafr's command line input and instatiates a new
+     *      Controller based on that input. If an error occurs,
+     *      the ErrorHandler will display the error message
+     *      to the user and immediately end Loafr execution.
+     *
+     * @param args           Loafr command line arguments
+     * @param configuration  the configuration file information stored in
+     *                       a Configuration class instance.
+     * @return               the new Controller
+     */
     public Controller getController(String[] args, Configuration configuration)
     {
         arguments = new ArrayList<>(Arrays.asList(args));
@@ -27,21 +43,30 @@ public class ControllerFactory
                     "Alt for batch processing: <-b> <-l> <log file list> <-s> <script file list> optional: <-o> <output file path> <-m> <event | log>\n");
         }
 
+        parseOutputLoc(configuration);
+
         switch(firstArg)
         {
             case BATCH:
-                arguments.remove(0);
-                parseOutputLoc(configuration);
                 return parseBatchArguments(configuration);
             default:
-                parseOutputLoc(configuration);
                 return parseSimpleScriptArguments(configuration);
         }
     }
 
+    /**
+     * This function checks the input for a user-specified output file
+     *      location. This will be the Controller's output location to
+     *      write analysis output. If there is no file location, the
+     *      default location defined in the configuration file will be
+     *      assigned to the Controller.
+     *
+     * @param configuration  the configuration file information stored in
+     *                       a Configuration class instance.
+     */
     private void parseOutputLoc(Configuration configuration)
     {
-        // check the com.input for an output file location
+        // check the input for an output file location
         if (arguments.contains(Flag.OUTPUTLOC.toString()))
         {
             outputLoc = arguments.remove(arguments.indexOf(Flag.OUTPUTLOC.toString())+1);
@@ -53,8 +78,18 @@ public class ControllerFactory
         }
     }
 
+    /**
+     * If the command line arguments have specified that Loafr should perform
+     *      batch processing, this function will parse the remaining command
+     *      line arguments and create a new BatchScriptController.
+     *
+     * @param configuration  the configuration file information stored in
+     *                       a Configuration class instance.
+     * @return               BatchScriptController
+     */
     private Controller parseBatchArguments(Configuration configuration)
     {
+        arguments.remove(0);
         String flag = "";
         List<String> logLocList = new ArrayList<>();
         List<String> scriptLocList = new ArrayList<>();
@@ -105,9 +140,18 @@ public class ControllerFactory
         return new BatchScriptController(configuration,flag,logLocList,scriptLocList,outputLoc);
     }
 
-    // because there are three potential inputs to the program, and one is optional, I think that flags should be required
+    /**
+     * If the command line arguments have not specified that Loafr should perform
+     *      a particular type of execution, this function will parse the command
+     *      line arguments and create a new SimpleScriptController.
+     *
+     * @param configuration  the configuration file information stored in
+     *                       a Configuration class instance.
+     * @return               SimpleScriptController
+     */
     private Controller parseSimpleScriptArguments(Configuration configuration)
     {
+        arguments.remove(0);
         // check that the com.input is the correct size to contain required arguments
         if (arguments.size() < 4)
         {
@@ -135,7 +179,7 @@ public class ControllerFactory
             arguments.remove(Flag.SCRIPTLOC.toString());
         }
 
-        if (logLoc.isBlank() || scriptLoc.isBlank())
+        if (logLoc.isBlank() || scriptLoc.isBlank() || !arguments.isEmpty())
         {
             ErrorHandler.logError("The argument list contains a syntax error.\n" +
                     "Usage: <-l> <log file path> <-s> <script file path> optional: <-o> <output file path>");
