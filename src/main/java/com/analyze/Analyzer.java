@@ -1,6 +1,7 @@
 package com.analyze;
 
 import java.util.ArrayList;
+import com.input.LogData;
 
 public class Analyzer {
 
