@@ -42,7 +42,7 @@ public class Search implements AnalysisTask {
     public <T> LogData execute(LogData logObject) {
         LogData output = new LogData();
         HashMap<DataID,List<T>> data;
-        events = logObject.getLogEvent();
+        events = logObject.getEventList();
 
         if (null == attributeType) {
             // any field looking for match, get attribute type -> make string then do search
@@ -72,7 +72,7 @@ public class Search implements AnalysisTask {
                 }
             }
         }
-        else if (events.AttributeType.DATAVALUE == attributeType) {
+        else if (LogEvent.AttributeType.DATAVALUE == attributeType) {
             //use getdatavalue function in logevent class
             for (LogEvent event : events) {
                 HashMap<DataID, List<T>> dataMap = event.getDataIDMap();
