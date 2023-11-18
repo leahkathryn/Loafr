@@ -177,4 +177,25 @@ public class LogEvent<T> {
         return null;
     }
 
+    /**
+     * The requested nested enum.
+     */
+    public enum AttributeType{
+        TIMESTAMP("timeStamp"),
+        EVENT("event"),
+        DATAID("dataID"),
+        DATATYPE("dataType"),
+        DATAVALUE("dataValue");
+
+        public String keyword;
+
+        AttributeType(String keyword) {
+            this.keyword = keyword;
+        }
+
+        @Override
+        public String toString() {
+            return this.keyword;
+        }
+
 }
