@@ -7,6 +7,8 @@ import java.util.regex.Pattern;
 import com.input.LogData;
 import com.input.LogEvent;
 import com.input.DataID;
+import com.input.LogEvent.AttributeType;
+
 
 public class Search implements AnalysisTask {
 
