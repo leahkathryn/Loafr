@@ -47,9 +47,8 @@ public class Configuration
      * Parse the configuration file, extract the Event and DataID objects, and store then in a Configuration object
      * @param fileLoc - the file location of the configuration file, which is a xml file.
      * @return - a boolean value that is true if parsing was successful or false if otherwise
-     * @throws ParserConfigurationException - add desc here
      */
-    public boolean parseConfigFile(String fileLoc) throws ParserConfigurationException{
+    public boolean parseConfigFile(String fileLoc) {
         File configFile = new File(fileLoc.trim());
         boolean isEventsParsed;
         HashMap<String, DataID> dataIDMap;
@@ -60,15 +59,19 @@ public class Configuration
         }
 
         DocumentBuilderFactory configBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder configBuilder = configBuilderFactory.newDocumentBuilder();
+        DocumentBuilder configBuilder;
         Document configDoc;                     // Convert config file to parsable document
 
-
         try {
+            configBuilder = configBuilderFactory.newDocumentBuilder();
             configDoc = configBuilder.parse(configFile);
-        } catch (IOException | SAXException err){
-            ErrorHandler.logError("Configuration file not found");
-            return false;
+        } catch (ParserConfigurationException | IOException | SAXException err){
+            if (err instanceof ParserConfigurationException){
+                ErrorHandler.logError("Parser failed to instantiate of documentBuilder object");
+            } else {
+                ErrorHandler.logError("Configuration file not found");
+                return false;
+            }
         }
 
         NodeList eventNameNodeList = configDoc.getElementsByTagName("events");      // Get events and dataID as nodes
