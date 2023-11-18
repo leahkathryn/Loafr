@@ -23,8 +23,8 @@ public class Loafr
     public static void main(String[] args)
     {
         ControllerFactory controllerFactory = new ControllerFactory();
-        Configuration configuration = new Configuration(configurationFileLoc);
-        configuration.parseConfigFile();
+        Configuration configuration = new Configuration();
+        configuration.parseConfigFile(configurationFileLoc);
         Controller controller = controllerFactory.getController(args,configuration);
         ErrorHandler.setController(controller);
         controller.execute();
