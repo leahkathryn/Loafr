@@ -24,46 +24,60 @@ public class Configuration
     private List<DataID> dataIDList;
     private String defaultOutputLoc;
 
-    public Configuration(String defaultOutputLoc)
-    {
-        this.defaultOutputLoc = defaultOutputLoc;
+    public Configuration() {
+        this.defaultOutputLoc = null;
         this.dataIDList = new ArrayList<>();
         this.eventList = new ArrayList<>();
     }
 
     public List<Event> getEventList()
     {
-        return this.eventList;
+        return eventList;
     }
-    public String getDefaultOutputLocation() { return defaultOutputLoc; }
+    public String getDefaultOutputLocation() {
+        return defaultOutputLoc;
+    }
+
+    public List<DataID> getDataIDList(){
+        return dataIDList;
+    }
 
 
     /**
      * Parse the configuration file, extract the Event and DataID objects, and store then in a Configuration object
      * @param fileLoc - the file location of the configuration file, which is a xml file.
      * @return - a boolean value that is true if parsing was successful or false if otherwise
-     * @throws ParserConfigurationException - add desc here
      */
-    public boolean parseConfigFile(String fileLoc) throws ParserConfigurationException{
-        File configFile = new File(fileLoc);
+    public boolean parseConfigFile(String fileLoc) {
+        File configFile = new File(fileLoc.trim());
         boolean isEventsParsed;
         HashMap<String, DataID> dataIDMap;
 
+        if (fileLoc == null){
+            ErrorHandler.logError("Location of file is null.");
+            return false;
+        }
+
         DocumentBuilderFactory configBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder configBuilder = configBuilderFactory.newDocumentBuilder();
+        DocumentBuilder configBuilder;
         Document configDoc;                     // Convert config file to parsable document
 
         try {
+            configBuilder = configBuilderFactory.newDocumentBuilder();
             configDoc = configBuilder.parse(configFile);
-        } catch (IOException | SAXException err){
-            ErrorHandler.logError("Configuration file not found");
-            return false;
+        } catch (ParserConfigurationException | IOException | SAXException err){
+            if (err instanceof ParserConfigurationException){
+                ErrorHandler.logError("Parser failed to instantiate of documentBuilder object");
+            } else {
+                ErrorHandler.logError("Configuration file not found");
+                return false;
+            }
         }
 
         NodeList eventNameNodeList = configDoc.getElementsByTagName("events");      // Get events and dataID as nodes
         NodeList dataIDNodeList = configDoc.getElementsByTagName("data_elements");
 
-        if (eventNameNodeList.getLength() == 0 | dataIDNodeList.getLength() == 0){
+        if (eventNameNodeList.getLength() == 0 || dataIDNodeList.getLength() == 0){
             ErrorHandler.logError("No events or data elements in configuration file.");
             return false;
         }
@@ -143,19 +157,17 @@ public class Configuration
                     return null;
                 }
 
-                dataName = elemDataID.getAttribute("name");         // Get dataID object attribute out of node
+                dataName = elemDataID.getAttribute("name").trim();         // Get dataID object attribute out of node
 
-                tempType = inferType(elemDataID.getAttribute("type"));              // Get dataID object attribute out of node
+                tempType = inferType(elemDataID.getAttribute("type").trim());              // Get dataID object attribute out of node
 
                 if (tempType == null){
                     ErrorHandler.logError("Data type is missing");
                     return null;
                 }
-                DataID newDataId = new DataID();
-                newDataId.setName(dataName);
-                newDataId.setType(tempType);
-                tempDataIDMap.put(dataName, newDataId);          // Place dataID object in dataIDList
-                this.dataIDList.add(newDataId);  // Should DataID objects have a attribute for whether it is a list or not
+
+                tempDataIDMap.put(dataName, new DataID(dataName, tempType));          // Place dataID object in dataIDList
+                this.dataIDList.add(new DataID(dataName, tempType));  // Should DataID objects have a attribute for whether it is a list or not
             } else {
                 ErrorHandler.logError("XML file is structured improperly");
                 return null;
@@ -188,7 +200,7 @@ public class Configuration
                     ErrorHandler.logError("Event has no appropriate name.");
                     return false;
                 }
-                eventName = elemEvent.getAttribute("name");
+                eventName = elemEvent.getAttribute("name").trim();
 
                 for (int j = 0; j < dataIDNodes.getLength(); j++){
                     Node dataNode = dataIDNodes.item(j);
@@ -196,24 +208,24 @@ public class Configuration
                     if (dataNode.getNodeType() == curNode.ELEMENT_NODE){
                         Element elemData = (Element) dataNode;
 
-                        String dataName = elemData.getAttribute("name");    // Get Event object attributes out of node and temp hashmap
-                        DataType dataType = dataIDMap.get(dataName).getType();
-                        DataID newDataID = new DataID();
-                        newDataID.setType(dataType);
-                        newDataID.setName(dataName);
-                        if (!dataIDList.contains(newDataID)){
+                        if (!elemData.hasAttribute("name")){                                   // Check if data element has no name
+                            ErrorHandler.logError("Name of data element is missing");
+                            return false;
+                        }
+                        String dataName = elemData.getAttribute("name").trim();    // Get Event object attributes out of node and temp hashmap
+
+                        if (!dataIDMap.containsKey(dataName)) {
                             ErrorHandler.logError("Data element is missing or incomplete");
                             return false;
                         }
-
-                        curDataIDs.add(newDataID);
+                        curDataIDs.add(dataIDMap.get(dataName));
                     } else {
                         ErrorHandler.logError("XML file is structured improperly");
                         return false;
                     }
-                }
 
-                this.eventList.add(new Event(eventName, curDataIDs));
+                    this.eventList.add(new Event(eventName, curDataIDs));
+                }
             } else {
                 ErrorHandler.logError("XML file is structured improperly");
                 return false;
@@ -222,5 +234,4 @@ public class Configuration
         return true;
     }
 }
-
 
