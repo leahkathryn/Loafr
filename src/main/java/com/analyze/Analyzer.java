@@ -9,11 +9,10 @@ public class Analyzer {
     private ArrayList<AnalysisTask> queue = new ArrayList<AnalysisTask>();
 
     public LogData analyze(LogObject analyzeLogObject) { //return output (new logData), analysistask already implemented check design dock for specifics
-        LogData temp = analyzeLogObject;
         for (AnalysisTask task : queue) {
-            temp = task.execute(temp);
+            task.execute(analyzeLogObject);
         }
-        return temp;
+        return analyzeLogObject;
     }
 
     public void addToQueue(AnalysisTask newTask) {

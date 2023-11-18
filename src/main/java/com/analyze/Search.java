@@ -2,14 +2,11 @@ package com.analyze;
 
 import java.util.List;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import com.input.LogData;
 import com.input.LogEvent;
 import com.input.DataID;
-import com.input.DataType;
-import com.input.Event;
 
 public class Search implements AnalysisTask {
 
@@ -52,22 +49,22 @@ public class Search implements AnalysisTask {
             // also read attribute of logevent
             for (LogEvent event : events) {
                 Pattern pattern = Pattern.compile(regex);
-                Matcher matcher = patern.matcher(event.getTimeStamp().tostring());
+                Matcher matcher = pattern.matcher(event.getTimeStamp().toString());
                 if (matcher.find()) { //Checks if timestamp matches regex
                     output.addLogEvent(event);
                     continue;
                 }
-                Matcher matcher = patern.matcher(event.getEventType().tostring());
-                if (matcher.find()) { //Checks if event type matches regex
+                Matcher matcher1 = pattern.matcher(event.getEventType().toString());
+                if (matcher1.find()) { //Checks if event type matches regex
                     output.addLogEvent(event);
                     continue;
                 }
                 data = event.getDataIDMap();
                 outerloop:
-                for (List<T> dataList : data.values) { //parses through all dataid keys
+                for (List<T> dataList : data.values()) { //parses through all dataid keys
                     for (T dataValue : dataList) { //parses list for each dataId
-                        Matcher matcher = patern.matcher(dataValue.tostring());
-                        if (matcher.find()) {
+                        Matcher matcher2 = pattern.matcher(dataValue.toString());
+                        if (matcher2.find()) {
                             output.addLogEvent(event);
                             break outerloop; //breaks loop since event has been added
                         }
@@ -75,14 +72,14 @@ public class Search implements AnalysisTask {
                 }
             }
         }
-        else if (event.AttributeType.DATAVALUE == attributeType) {
+        else if (events.AttributeType.DATAVALUE == attributeType) {
             //use getdatavalue function in logevent class
             for (LogEvent event : events) {
-                dataMap = event.getDataIDMap();
+                HashMap<DataID, List<T>> dataMap = event.getDataIDMap();
                 List<T> dataValues = dataMap.get(dataID);
                 for (T dataPoint : dataValues) { //parses list for each data value
                     Pattern pattern = Pattern.compile(regex);
-                    Matcher matcher = patern.matcher(dataPoint.tostring());
+                    Matcher matcher = pattern.matcher(dataPoint.toString());
                     if (matcher.find()) {
                         output.addLogEvent(event);
                         break;
@@ -96,41 +93,40 @@ public class Search implements AnalysisTask {
             // dataID look for dataID key name
             // dataID.getType for data type search
             for (LogEvent event : events) {
-                temp = events.get(i);
                 Pattern pattern = Pattern.compile(regex);
                 switch (attributeType) {
                     case TIMESTAMP: //Checks if timestamp matches regex
-                        Matcher matcher = patern.matcher(event.getTimeStamp().tostring());
+                        Matcher matcher = pattern.matcher(event.getTimeStamp().toString());
                         if (matcher.find()) {
                             output.addLogEvent(event);
                         }
                         break;
 
                     case EVENT: //Checks if event matches regex
-                        Matcher matcher = patern.matcher(event.getEventType().tostring());
-                        if (matcher.find()) {
+                        Matcher matcher1 = pattern.matcher(event.getEventType().toString());
+                        if (matcher1.find()) {
                             output.addLogEvent(event);
                         }
                         break;
 
                     case DATAID: //Checks if DataID keys match regex
                         data = event.getDataIDMap();
-                        for (DataID dataKey : data) {
-                            Matcher matcher = patern.matcher(dataKey.tostring());
-                            if (matcher.find()) {
+                        for (DataID dataKey : data.keySet()) {
+                            Matcher matcher2 = pattern.matcher(dataKey.toString());
+                            if (matcher2.find()) {
                                 output.addLogEvent(event);
-                                break
+                                break;
                             }
                         }
                         break;
 
                     case DATATYPE: //Checks if Data type matches regex
                         data = event.getDataIDMap();
-                        for (DataID dataKey : data) {
-                            Matcher matcher = patern.matcher(dataKey.getType().tostring());
-                            if (matcher.find()) {
+                        for (DataID dataKey : data.keySet()) {
+                            Matcher matcher3 = pattern.matcher(dataKey.getType().toString());
+                            if (matcher3.find()) {
                                 output.addLogEvent(event);
-                                break
+                                break;
                             }
                         }
                         break;
@@ -143,7 +139,7 @@ public class Search implements AnalysisTask {
             }
         }
 
-       return output;
+        return output;
     }
 }
 
