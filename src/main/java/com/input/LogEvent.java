@@ -100,59 +100,65 @@ public class LogEvent<T> {
 
     // Method to identify data types and convert strings to appropriate data types
     private T convertStringToDataType(String str) {
-        try {
-            // Attempt to parse the string into different data types
-            Integer intValue = Integer.parseInt(str);
-            return (T) DataType.INTEGER;
-        } catch (NumberFormatException e1) {
-            try {
-                Long longValue = Long.parseLong(str);
-                return (T) DataType.LONG;
-            } catch (NumberFormatException e2) {
-                try {
-                    Double doubleValue = Double.parseDouble(str);
-                    return (T) DataType.DOUBLE;
-                } catch (NumberFormatException e3) {
-                    try {
-                        Float floatValue = Float.parseFloat(str);
-                        return (T) DataType.FLOAT;
-                    } catch (NumberFormatException e4) {
-                        try {
-                            if (str.toLowerCase() == "true" || str.toLowerCase() == "false") {
-                                return (T) DataType.BOOLEAN;
-                            }
-                        } catch (NumberFormatException e5) {
-                            try {
-                                if (str.length() == 1) {
-                                    return (T) DataType.CHAR;
-                                }
-                            } catch (NumberFormatException e6) {
-                                return (T) DataType.STRING; // Assuming it's a string by default
-                            }
-
-                        }
-                    }
+        String regex = "^[-0-9.\\[\\]]+$";
+        //1. check if it contains a non-number char, if so, it is a char or string.
+        if (str.matches(regex))
+        {
+            if(!str.contains(".")){
+                if(str.length() > 32){
+                    return (T) DataType.LONG;
+                }
+                else{
+                    return (T) DataType.INTEGER;
+                }
+            }
+            else{
+                if(str.length() > 9){
+                    return (T)DataType.DOUBLE;
+                }
+                else{
+                    return (T)DataType.FLOAT;
+                }
+            }
+        } else{
+            if(str.length() == 1){
+                return  (T) DataType.CHAR;
+            }
+            else{
+                if(tryParseBoolean(str)){
+                    return (T) DataType.BOOLEAN;
+                }
+                else{
+                    return  (T) DataType.STRING;
                 }
             }
         }
-        return (T)null;
     }
+
+
+    private boolean tryParseBoolean(String str) {
+        return str.equalsIgnoreCase("true") || str.equalsIgnoreCase("false");
+    }
+
+    private boolean tryParseChar(String str) {
+        return str.length() == 1;
+    }
+
 
 
     // Method to convert a String array to a List<Map<String, Object>> while identifying data types
     public List<HashMap<String, Object>> stringArrayToHashMapList(String[] stringArray) {
-        for (String str: stringArray){
-            System.out.println(str);
-        }
         List<HashMap<String, Object>> resultList = new ArrayList<>();
         for (int i = 0; i < stringArray.length; i++) {
             HashMap<String, Object> dataMap = convertStringToDataMap(stringArray[i]);
-//            System.out.println("!" + stringArray[i] + "?" + stringArray[stringArray.length - 1]);
-//            System.out.println(stringArray.length);
-            dataMap.put("value", stringArray[i]);
-            DataType dataType = inferDataType((T) stringArray[i]);
-            dataMap.put("dataType", dataType);
-            resultList.add(dataMap);
+            if (dataMap != null) {
+                dataMap.put("value", stringArray[i]);
+                T dataType = convertStringToDataType(stringArray[i]);
+                dataMap.put("dataType", dataType);
+                resultList.add(dataMap);
+            } else {
+                System.out.println("Null value emerged!");
+            }
         }
         return resultList;
     }
@@ -160,7 +166,7 @@ public class LogEvent<T> {
 
     // Method to identify data types and convert strings to a Map<String, Object>
     private HashMap<String, Object> convertStringToDataMap(String str) {
-        DataType dataType = inferDataType((T)str);
+        T dataType = convertStringToDataType(str);
         T convertedValue = convertStringToDataType(str);
         if (dataType != null && convertedValue != null) {
             HashMap<String, Object> dataMap = new HashMap<>();
