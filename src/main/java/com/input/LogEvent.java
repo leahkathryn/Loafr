@@ -197,5 +197,5 @@ public class LogEvent<T> {
         public String toString() {
             return this.keyword;
         }
-
+    }
 }
