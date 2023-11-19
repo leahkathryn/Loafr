@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import com.input.LogData;
 import com.input.LogEvent;
 import com.input.DataID;
@@ -18,7 +19,6 @@ public class Search implements AnalysisTask {
     private List<LogEvent> events;
     private List<LogEvent> outputEvents;
     private LogEvent temp;
-
 
 
     public Search(AttributeType type, DataID data, String reg) {
@@ -39,31 +39,31 @@ public class Search implements AnalysisTask {
         regex = reg;
     }
 
-
+    //Executes a search function on the inputted LogData.
+    //Takes in a LogData object and returns a LogData object.
     @Override
     public <T> LogData execute(LogData logObject) {
         LogData output = new LogData();
-        HashMap<DataID,List<T>> data;
+        HashMap<DataID, List<T>> data;
         events = logObject.getEventList();
 
+        //Searches all fields in the LogEvent.
         if (null == attributeType) {
-            // any field looking for match, get attribute type -> make string then do search
-            // also read attribute of logevent
             for (LogEvent event : events) {
                 Pattern pattern = Pattern.compile(regex);
                 Matcher matcher = pattern.matcher(event.getTimeStamp().toString());
-                if (matcher.find()) { //Checks if timestamp matches regex
+                if (matcher.find()) {
                     output.addLogEvent(event);
                     continue;
                 }
                 Matcher matcher1 = pattern.matcher(event.getEventType().toString());
-                if (matcher1.find()) { //Checks if event type matches regex
+                if (matcher1.find()) {
                     output.addLogEvent(event);
                     continue;
                 }
                 data = event.getDataIDMap();
                 outerloop:
-                for (List<T> dataList : data.values()) { //parses through all dataid keys
+                for (List<T> dataList : data.values()) { //parses through all DataiID keys
                     for (T dataValue : dataList) { //parses list for each dataId
                         Matcher matcher2 = pattern.matcher(dataValue.toString());
                         if (matcher2.find()) {
@@ -73,9 +73,7 @@ public class Search implements AnalysisTask {
                     }
                 }
             }
-        }
-        else if (LogEvent.AttributeType.DATAVALUE == attributeType) {
-            //use getdatavalue function in logevent class
+        } else if (LogEvent.AttributeType.DATAVALUE == attributeType) { //Searches all DataID fields.
             for (LogEvent event : events) {
                 HashMap<DataID, List<T>> dataMap = event.getDataIDMap();
                 List<T> dataValues = dataMap.get(dataID);
@@ -88,12 +86,8 @@ public class Search implements AnalysisTask {
                     }
                 }
             }
-        }
-        else {
-            // timestamp, event, dataID, checks for any data type
-            // switch on the attribute type, for timestamp and event get info from logevent class
-            // dataID look for dataID key name
-            // dataID.getType for data type search
+        } else {
+            // Searches all the attributeType fields.
             for (LogEvent event : events) {
                 Pattern pattern = Pattern.compile(regex);
                 switch (attributeType) {

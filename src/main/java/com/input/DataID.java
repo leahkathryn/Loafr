@@ -4,10 +4,14 @@ public class DataID {
     String name;
     DataType type;
 
-    public DataID(String name, DataType type)
-    {
+    public DataID(String name, DataType type){
         this.name = name;
         this.type = type;
+    }
+
+    public DataID (){
+        name = "";
+        type = null;
     }
 
     public void setName(String name) {
