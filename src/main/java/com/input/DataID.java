@@ -4,6 +4,12 @@ public class DataID {
     String name;
     DataType type;
 
+    public DataID(String name, DataType type)
+    {
+        this.name = name;
+        this.type = type;
+    }
+
     public void setName(String name) {
         this.name = name;
     }

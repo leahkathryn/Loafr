@@ -83,6 +83,9 @@ public class Configuration
             return false;
         }
 
+        // debug
+        System.out.println("Data Node List length: " + dataIDNodeList.getLength());
+
         dataIDMap = parseDataIDNodes(dataIDNodeList);
         if (dataIDMap == null)
             return false;
@@ -91,18 +94,19 @@ public class Configuration
         if (!isEventsParsed)
             return false;
 
+        NodeList defaultLocNodeList = configDoc.getElementsByTagName("default_output_location");
+        if (defaultLocNodeList.getLength() != 1)
+        {
+            ErrorHandler.logError("Failure parsing configuration file: one default output file location " +
+                    "is required.\nLoafr exiting...");
+            return false;
+        }
 
-        Node defaultLocNode = configDoc.getElementsByTagName("default_output_location").item(0);
+        Node defaultLocNode = defaultLocNodeList.item(0);
         Element elemDefaultLoc;
-        if (defaultLocNode.getNodeType() == defaultLocNode.ELEMENT_NODE) {
+        if (defaultLocNode.getNodeType() == Node.ELEMENT_NODE) {
             elemDefaultLoc = (Element) defaultLocNode;
-
-            if (elemDefaultLoc.isEqualNode(null)){
-                ErrorHandler.logError("Default output log file location is null.");
-                return false;
-            }
-
-            defaultOutputLoc = elemDefaultLoc.getAttribute("file");     // Get outputLoc out of node set defaultOutputLoc
+            defaultOutputLoc = elemDefaultLoc.getAttribute("file").trim();     // Get outputLoc out of node set defaultOutputLoc
         } else {
             ErrorHandler.logError("XML file is structured improperly");
         }
@@ -148,9 +152,12 @@ public class Configuration
         HashMap<String, DataID> tempDataIDMap = new HashMap<>();
         Element elemDataID;
 
-        for (int i = 0; i < dataIDNodeList.getLength(); i++){
-            curNode = dataIDNodeList.item(i);
-            if (curNode.getNodeType() == curNode.ELEMENT_NODE) {
+        // list of the child nodes of the <data_elements> node
+        NodeList dataIDList = dataIDNodeList.item(0).getChildNodes();
+
+        for (int i = 0; i < dataIDList.getLength(); i++){
+            curNode = dataIDList.item(i);
+            if (curNode.getNodeType() == Node.ELEMENT_NODE) {
                 elemDataID = (Element) curNode;
 
                 if (!elemDataID.hasAttribute("name")){                                   // Check if data element has no name
@@ -167,11 +174,10 @@ public class Configuration
                     return null;
                 }
 
-                tempDataIDMap.put(dataName, new DataID(dataName, tempType));          // Place dataID object in dataIDList
-                this.dataIDList.add(new DataID(dataName, tempType));  // Should DataID objects have a attribute for whether it is a list or not
-            } else {
-                ErrorHandler.logError("XML file is structured improperly");
-                return null;
+                DataID newDataID = new DataID(dataName, tempType);
+
+                tempDataIDMap.put(dataName,newDataID);          // Place dataID object in dataIDList
+                this.dataIDList.add(newDataID);  // Should DataID objects have a attribute for whether it is a list or not
             }
         }
         return tempDataIDMap;
@@ -188,12 +194,15 @@ public class Configuration
      */
     private boolean parseEventNodes(NodeList eventNodeList, HashMap<String, DataID> dataIDMap){
         ArrayList<DataID> curDataIDs = new ArrayList<>();
-        for (int i = 0; i < eventNodeList.getLength(); i++){
-            Node curNode = eventNodeList.item(i);
+
+        NodeList eventList = eventNodeList.item(0).getChildNodes();
+
+        for (int i = 0; i < eventList.getLength(); i++){
+            Node curNode = eventList.item(i);
             NodeList dataIDNodes = curNode.getChildNodes();
             curDataIDs.clear();
 
-            if (curNode.getNodeType() == curNode.ELEMENT_NODE) {
+            if (curNode.getNodeType() == Node.ELEMENT_NODE) {
                 Element elemEvent = (Element) curNode;
                 String eventName;
 
@@ -220,16 +229,10 @@ public class Configuration
                             return false;
                         }
                         curDataIDs.add(dataIDMap.get(dataName));
-                    } else {
-                        ErrorHandler.logError("XML file is structured improperly");
-                        return false;
                     }
 
                     this.eventList.add(new Event(eventName, curDataIDs));
                 }
-            } else {
-                ErrorHandler.logError("XML file is structured improperly");
-                return false;
             }
         }
         return true;

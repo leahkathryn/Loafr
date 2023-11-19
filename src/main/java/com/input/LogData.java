@@ -27,84 +27,97 @@ public class LogData<T> {
      * @param configuration the configuration from the configuration class.
      * @return return the status of the parsing status.
      */
-    public boolean parseLogFile(String fileName, Configuration configuration){
-        List<Event> events = configuration.getEventList();
-
+    public boolean parseLogFile(String fileName, Configuration configuration)
+    {
         File logFile = new File(fileName);
         // Check if the log file exists and is readable
         if (!logFile.exists() || !logFile.isFile() || !logFile.canRead()) {
-            ErrorHandler.logError("Invalid or unreadable log file.");
+            ErrorHandler.logError("Failure opening log file: File not found.\nLoafr exiting...");
             return false;
         }
+
+        // Read each line of log file into a list
         ArrayList<String> lines = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(logFile))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 lines.add(line);
             }
-
-            int linesSize = lines.size();
-            System.out.println(linesSize);
-
-            ArrayList<String> nameEventList = new ArrayList<>();
-            for (int j = 0; j < events.size(); j++){
-                nameEventList.add(events.get(j).name);
-            }
-
-            for (int i = 0; i < linesSize; i++) {
-                // change the line to a LogEvent here
-                // 1. separate them by comma
-                String toSplit = lines.get(i);
-                String[] values = toSplit.split(",");
-
-                // 2. create Timestamp
-                // Define the date format
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-                // Parse the timestamp string and create a Date object
-                Date parsedDate = dateFormat.parse(values[0]);
-
-                // Create a Timestamp object from the parsed Date
-                Timestamp timestamp = new Timestamp(parsedDate.getTime());
-//                System.out.println(timestamp);
-                // 3. create DataID
-                String originalDataID = values[1];
-                // if the original dataID's name is not in the event, skip it.
-                if (!nameEventList.contains(originalDataID)){
-                    continue;
-                }
-                DataID dataID = new DataID();
-                dataID.setName(originalDataID);
-                dataID.setType(DataType.STRING);
-//                System.out.println(dataID.getName());
-                // 4. create data Hashmap
-                LogEvent<Object> logEvent = new LogEvent<>();
-                logEvent.setTimeStamp(timestamp);
-                logEvent.setEventType(dataID.getName());
-                // Convert the string array to a List<Map<String, Object>>
-                String[] dataValuesStringArr = new String[values.length - 2];
-                for (int j = 2; j < values.length; j++){
-                    dataValuesStringArr[j-2] = values[j];
-                }
-                String dataValuesString = dataValuesStringArr.toString();
-                HashMap<String, Object> resultMapList = logEvent.convertStringToDataMap(dataValuesString);
-                //5. create LogEvent and store it in the list.
-                LogEvent newLogEvent = new LogEvent();
-                newLogEvent.setTimeStamp(timestamp);
-                newLogEvent.setEventType(dataID.getName());
-                newLogEvent.setDataIDMap(resultMapList);
-                this.eventList.add(newLogEvent);
-            }
         }
         catch (IOException e) {
-            e.printStackTrace();
+            ErrorHandler.logError("Failure opening log file: IOException.\nLoafr exiting...");
+            return false;
         }
-        catch (ParseException e) {
-            throw new RuntimeException(e);
+
+        // for easy access, make a map of event names to event instances
+        List<Event> events = configuration.getEventList();
+        HashMap<String,Event> nameEventMap = new HashMap<>();
+        for (Event event : events)
+        {
+            nameEventMap.put(event.name,event);
         }
+
+        // Parse each line of the log file into a LogEvent
+        for (String line : lines)
+        {
+            // Separate each value in the line by comma and store them in a list.
+            String[] values = line.split(",");
+            List<String> dataValuesInput = new ArrayList<>();
+            // Remove leading/trailing whitespace and add to ArrayList
+            for (String str : values)
+            {
+                dataValuesInput.add(str.strip());
+            }
+
+            // Create Timestamp
+            Timestamp timestamp = parseTimeStamp(dataValuesInput.get(0));
+
+            // Create LogEvent
+            String originalEvent = dataValuesInput.get(1);
+            // If the input event name is not defined by the config file, Loafr fails.
+            if (!nameEventMap.containsKey(originalEvent)){
+                ErrorHandler.logError("Failure parsing log file: there is an unrecognized event listed in this " +
+                        "log file: " + originalEvent + ".\nLoafr exiting...");
+                return false;
+            }
+            Event eventMatch = nameEventMap.get(originalEvent);
+
+            // Remove timestamp and event name from input list: now it only contains data values
+            dataValuesInput.remove(0);
+            dataValuesInput.remove(1);
+
+            // Create LogEvent
+            LogEvent logEvent = new LogEvent();
+            logEvent.setTimeStamp(timestamp);
+            logEvent.setEventType(originalEvent);
+
+            // Convert String data values to a DataIDMap and set it.
+            logEvent.setDataIDMap(logEvent.convertInputToDataMap(dataValuesInput,eventMatch));
+
+            this.eventList.add(logEvent);
+        }
+
         return true;
     }
 
+    private Timestamp parseTimeStamp(String timeStampString)
+    {
+        // Define the date format
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        // Parse the timestamp string and create a Date object
+        Date parsedDate;
+        try {
+            parsedDate = dateFormat.parse(timeStampString);
+        }
+        catch (ParseException ex)
+        {
+            ErrorHandler.logError("Failure parsing time stamp.\nLoafr exiting...");
+            return null;
+        }
+
+        // Create a Timestamp object from the parsed Date
+        return new Timestamp(parsedDate.getTime());
+    }
 
     /** The method to output the data that is being analyzed.
      * @param outputLoc The location to be written.
