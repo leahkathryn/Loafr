@@ -54,7 +54,7 @@
       <data_element name="Fuel_Remaining"/>
       <data_element name="Thrust_Power"/>
     </event>
-    <event name="Orbital_Manuever">
+    <event name="Orbital_Maneuver">
       <data_element name="Status"/>
       <data_element name="Thrust_Power"/>
       <data_element name="Angles"/>

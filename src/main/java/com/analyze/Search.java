@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.ErrorHandler;
 import com.input.LogData;
 import com.input.LogEvent;
 import com.input.DataID;
@@ -44,7 +45,7 @@ public class Search implements AnalysisTask {
     @Override
     public <T> LogData execute(LogData logObject) {
         LogData output = new LogData();
-        HashMap<DataID, List<T>> data;
+        HashMap<DataID, List<?>> data;
         events = logObject.getEventList();
 
         //Searches all fields in the LogEvent.
@@ -63,8 +64,8 @@ public class Search implements AnalysisTask {
                 }
                 data = event.getDataIDMap();
                 outerloop:
-                for (List<T> dataList : data.values()) { //parses through all DataiID keys
-                    for (T dataValue : dataList) { //parses list for each dataId
+                for (List<?> dataList : data.values()) { //parses through all DataiID keys
+                    for (Object dataValue : dataList) { //parses list for each dataId
                         Matcher matcher2 = pattern.matcher(dataValue.toString());
                         if (matcher2.find()) {
                             output.addLogEvent(event);
@@ -75,9 +76,9 @@ public class Search implements AnalysisTask {
             }
         } else if (LogEvent.AttributeType.DATAVALUE == attributeType) { //Searches all DataID fields.
             for (LogEvent event : events) {
-                HashMap<DataID, List<T>> dataMap = event.getDataIDMap();
-                List<T> dataValues = dataMap.get(dataID);
-                for (T dataPoint : dataValues) { //parses list for each data value
+                HashMap<DataID, List<?>> dataMap = event.getDataIDMap();
+                List<?> dataValues = dataMap.get(dataID);
+                for (Object dataPoint : dataValues) { //parses list for each data value
                     Pattern pattern = Pattern.compile(regex);
                     Matcher matcher = pattern.matcher(dataPoint.toString());
                     if (matcher.find()) {
@@ -87,7 +88,7 @@ public class Search implements AnalysisTask {
                 }
             }
         } else {
-            // Searches all the attributeType fields.
+            // Searches the attributeType field specified in the script
             for (LogEvent event : events) {
                 Pattern pattern = Pattern.compile(regex);
                 switch (attributeType) {
@@ -99,7 +100,7 @@ public class Search implements AnalysisTask {
                         break;
 
                     case EVENT: //Checks if event matches regex
-                        Matcher matcher1 = pattern.matcher(event.getEventType().toString());
+                        Matcher matcher1 = pattern.matcher(event.getEventType());
                         if (matcher1.find()) {
                             output.addLogEvent(event);
                         }
@@ -128,13 +129,10 @@ public class Search implements AnalysisTask {
                         break;
 
                     default:
-                        System.out.println("The requested attribute type has not been implemented or does not exist.");
-
+                        ErrorHandler.logError("The requested attribute type is not implemented by Loafr.");
                 }
-
             }
         }
-
         return output;
     }
 }

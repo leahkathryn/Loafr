@@ -14,6 +14,12 @@ application {
     mainClass = 'com.Loafr'
 }
 
+jar {
+    manifest {
+        attributes 'Main-Class': application.mainClass
+    }
+}
+
 sourceSets {
     main {
         java {

@@ -6,18 +6,20 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.ErrorHandler;
+import com.control.ControllerFactory;
 import com.input.DataID;
 import com.input.DataType;
 
 import javax.xml.crypto.Data;
 
-public class LogEvent<T> {
+public class LogEvent
+{
     private Timestamp timeStamp;
     private String eventType;
-    private HashMap<DataID, List<T>> dataIDMap;
+    private HashMap<DataID, List<?>> dataIDMap;
 
     //getters
-    public HashMap<DataID, List<T>> getDataIDMap() {
+    public HashMap<DataID, List<?>> getDataIDMap() {
         return dataIDMap;
     }
 
@@ -34,27 +36,12 @@ public class LogEvent<T> {
         this.eventType = eventType;
     }
 
-    public void setDataIDMap(HashMap<DataID, List<T>> dataIDMap) {
+    public void setDataIDMap(HashMap<DataID, List<?>> dataIDMap) {
         this.dataIDMap = dataIDMap;
     }
 
     public void setTimeStamp(Timestamp timeStamp) {
         this.timeStamp = timeStamp;
-    }
-
-    private List<T> extractValuesIntoList(T value) {
-        List<T> dataList = new ArrayList<>();
-
-        if (value instanceof List) {
-            dataList.addAll((List<T>) value);
-        } else if (value instanceof Object[]) {
-            for (Object obj : (Object[]) value) {
-                dataList.add((T) obj);
-            }
-        } else {
-            dataList.add(value);
-        }
-        return dataList;
     }
 
     private Boolean tryParseBoolean(String str)
@@ -70,14 +57,9 @@ public class LogEvent<T> {
         return null;
     }
 
-    private boolean tryParseChar(String str) {
-        return str.length() == 1;
-    }
-
-    // Method to identify data types and convert strings to a Map<String, Object>
-    public HashMap<DataID, List<T>> convertInputToDataMap(List<String> inputData, Event event)
+    public <T> HashMap<DataID, List<?>> convertInputToDataMap(List<String> inputData, Event event)
     {
-        HashMap<DataID,List<T>> dataIDToValues = new HashMap<>();
+        HashMap<DataID,List<?>> dataIDToValues = new HashMap<>();
         // Get the list of DataIDs defined for this event by the configuration file
         List<DataID> validDataIDList = event.getDataIDList();
 
@@ -86,7 +68,7 @@ public class LogEvent<T> {
         {
             ErrorHandler.logError("Failure parsing event from log file: incorrect number of data values" +
                     " for event "+ event.name +".\nLoafr exiting...");
-            return dataIDToValues;
+            return dataIDToValues; // empty
         }
 
         for (int i = 0; i < inputData.size(); i++)
@@ -95,7 +77,10 @@ public class LogEvent<T> {
             List<T> values = new ArrayList<>();
 
             // Parse the data from the string and store it in list 'values'
-            createDataValueList(dataID.type,inputData.get(i),values);
+            if (!createDataValueList(dataID.type,inputData.get(i),values))
+            {
+                return new HashMap<>(); // empty
+            }
 
             dataIDToValues.put(dataID,values);
         }
@@ -115,9 +100,10 @@ public class LogEvent<T> {
      *                     data type of this value.
      * @param stringValue  the String that will be parsed into a value of the defined data type
      * @param output       the list that will store the values
+     * @return             Boolean value to indicate success or failure
      * @author             Leah Lehmeier
      */
-    private void createDataValueList(DataType type, String stringValue, List<T> output)
+    private <T> boolean createDataValueList(DataType type, String stringValue, List<T> output)
     {
         // parse each value
         if (stringValue.startsWith("["))
@@ -126,12 +112,14 @@ public class LogEvent<T> {
             if (!stringValue.endsWith("]"))
             {
                 ErrorHandler.logError("Failure parsing event from log file: syntax error, missing ']'.\nLoafr exiting...");
+                return false;
             }
             // if the list is blank, this is a syntax error
             stringValue = stringValue.substring(1,stringValue.length()-1);
             if (stringValue.isBlank())
             {
                 ErrorHandler.logError("Failure parsing event from log file: syntax error, blank data list within brackets [].\nLoafr exiting...");
+                return false;
             }
             // Separate each value in the String by space and store them in a list.
             String[] values = stringValue.split(" ");
@@ -144,16 +132,27 @@ public class LogEvent<T> {
             // convert from String to data type
             for (String str : stringValueList)
             {
-                output.add(parseStringToDataValue(type,str));
+                T value;
+                if (null == (value = parseStringToDataValue(type,str)))
+                {
+                    return false;
+                }
+                output.add(value);
             }
         }
         else
         {
-            output.add(parseStringToDataValue(type,stringValue));
+            T value;
+            if (null == (value = parseStringToDataValue(type,stringValue.strip())))
+            {
+                return false;
+            }
+            output.add(value);
         }
+        return true;
     }
 
-    private T parseStringToDataValue(DataType type, String str)
+    private <T> T parseStringToDataValue(DataType type, String str)
     {
         T value;
 
@@ -172,26 +171,31 @@ public class LogEvent<T> {
                 {
                     value = (T) ((Character)str.charAt(0));
                 }
+                break;
             case INTEGER:
                 try {
                     value = (T) Integer.valueOf(str);
                 } catch (NumberFormatException ex) {
                     value = null;
                 }
+                break;
             case FLOAT:
                 try {
                     value = (T) Float.valueOf(str);
                 } catch (NumberFormatException ex) {
                     value = null;
                 }
+                break;
             case DOUBLE:
                 try {
                     value = (T) Double.valueOf(str);
                 } catch (NumberFormatException ex) {
                     value = null;
                 }
+                break;
             case BOOLEAN:
                 value = (T) tryParseBoolean(str);
+                break;
             default:
                 value = null;
         }
@@ -221,6 +225,16 @@ public class LogEvent<T> {
         @Override
         public String toString() {
             return this.keyword;
+        }
+
+        public static AttributeType fromString(String str)
+        {
+            for (AttributeType a : values()) {
+                if (a.keyword.equals(str)) {
+                    return a;
+                }
+            }
+            return null;
         }
     }
 }

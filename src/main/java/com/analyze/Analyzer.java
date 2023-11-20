@@ -3,18 +3,23 @@ package com.analyze;
 import java.util.ArrayList;
 
 import com.input.LogData;
+import com.input.LogEvent;
 
-public class Analyzer {
-
-
+public class Analyzer
+{
     private ArrayList<AnalysisTask> queue = new ArrayList<AnalysisTask>();
 
     //Takes in LogData to execute a task. Returns LogData with results.
     public LogData analyze(LogData analyzeLogObject) {
-        for (AnalysisTask task : queue) {
-            task.execute(analyzeLogObject);
+        LogData outputLogData = new LogData();
+        for (LogEvent event : analyzeLogObject.getEventList())
+        {
+            outputLogData.addLogEvent(event);
         }
-        return analyzeLogObject;
+        for (AnalysisTask task : queue) {
+            outputLogData = task.execute(outputLogData);
+        }
+        return outputLogData;
     }
 
     //Adds a task to the queue. The task will be applied to a LogData object.

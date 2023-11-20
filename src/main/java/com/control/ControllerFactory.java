@@ -33,10 +33,8 @@ public class ControllerFactory
         arguments = new ArrayList<>(Arrays.asList(args));
 
         Flag firstArg = null;
-        try {
-            firstArg = Flag.valueOf(arguments.get(0));
-        }
-        catch (IllegalArgumentException e)
+
+        if (null == (firstArg = Flag.fromString(arguments.get(0))))
         {
             ErrorHandler.logError("The argument list contains a syntax error.\n" +
                     "Usage: <-l> <log file path> <-s> <script file path> optional: <-o> <output file path>\n" +
@@ -151,7 +149,6 @@ public class ControllerFactory
      */
     private Controller parseSimpleScriptArguments(Configuration configuration)
     {
-        arguments.remove(0);
         // check that the com.input is the correct size to contain required arguments
         if (arguments.size() < 4)
         {
@@ -207,6 +204,16 @@ public class ControllerFactory
         public String toString()
         {
             return flag;
+        }
+
+        public static Flag fromString(String str)
+        {
+            for (Flag f : values()) {
+                if (f.flag.equals(str)) {
+                    return f;
+                }
+            }
+            return null;
         }
     }
 }

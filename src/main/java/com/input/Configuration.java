@@ -68,11 +68,10 @@ public class Configuration
         } catch (ParserConfigurationException | IOException | SAXException err){
             if (err instanceof ParserConfigurationException){
                 ErrorHandler.logError("Parser failed to instantiate of documentBuilder object");
-                return false;
             } else {
                 ErrorHandler.logError("Configuration file not found");
-                return false;
             }
+            return false;
         }
 
         NodeList eventNameNodeList = configDoc.getElementsByTagName("events");      // Get events and dataID as nodes
@@ -82,9 +81,6 @@ public class Configuration
             ErrorHandler.logError("No events or data elements in configuration file.");
             return false;
         }
-
-        // debug
-        System.out.println("Data Node List length: " + dataIDNodeList.getLength());
 
         dataIDMap = parseDataIDNodes(dataIDNodeList);
         if (dataIDMap == null)
@@ -193,14 +189,14 @@ public class Configuration
      * @return - boolean value that is true if the parsing was successful and false otherwise
      */
     private boolean parseEventNodes(NodeList eventNodeList, HashMap<String, DataID> dataIDMap){
-        ArrayList<DataID> curDataIDs = new ArrayList<>();
+        ArrayList<DataID> curDataIDs;
 
         NodeList eventList = eventNodeList.item(0).getChildNodes();
 
         for (int i = 0; i < eventList.getLength(); i++){
             Node curNode = eventList.item(i);
             NodeList dataIDNodes = curNode.getChildNodes();
-            curDataIDs.clear();
+            curDataIDs = new ArrayList<>();
 
             if (curNode.getNodeType() == Node.ELEMENT_NODE) {
                 Element elemEvent = (Element) curNode;
@@ -215,7 +211,7 @@ public class Configuration
                 for (int j = 0; j < dataIDNodes.getLength(); j++){
                     Node dataNode = dataIDNodes.item(j);
 
-                    if (dataNode.getNodeType() == curNode.ELEMENT_NODE){
+                    if (dataNode.getNodeType() == Node.ELEMENT_NODE){
                         Element elemData = (Element) dataNode;
 
                         if (!elemData.hasAttribute("name")){                                   // Check if data element has no name
@@ -230,9 +226,8 @@ public class Configuration
                         }
                         curDataIDs.add(dataIDMap.get(dataName));
                     }
-
-                    this.eventList.add(new Event(eventName, curDataIDs));
                 }
+                this.eventList.add(new Event(eventName, curDataIDs));
             }
         }
         return true;

@@ -14,13 +14,11 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 
 
-public class LogData<T> {
+public class LogData
+{
     private List<LogEvent> eventList = new ArrayList<>();
 
-
-
     /**
-     *
      * @Pre-condition: The input must represent a valid file location.
      * @Post-condition: This LogObject instance represents the information in the log file.
      * @param fileName the logfile location.
@@ -84,7 +82,7 @@ public class LogData<T> {
 
             // Remove timestamp and event name from input list: now it only contains data values
             dataValuesInput.remove(0);
-            dataValuesInput.remove(1);
+            dataValuesInput.remove(0);
 
             // Create LogEvent
             LogEvent logEvent = new LogEvent();
@@ -94,9 +92,13 @@ public class LogData<T> {
             // Convert String data values to a DataIDMap and set it.
             logEvent.setDataIDMap(logEvent.convertInputToDataMap(dataValuesInput,eventMatch));
 
+            if (logEvent.getDataIDMap().isEmpty())
+            {
+                // ErrorHandler already sent message
+                return false;
+            }
             this.eventList.add(logEvent);
         }
-
         return true;
     }
 
@@ -125,13 +127,24 @@ public class LogData<T> {
      */
     public boolean writeLogData(String outputLoc){
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputLoc))) {
-            for (LogEvent<T> logEvent : eventList) {
+            for (LogEvent logEvent : eventList) {
                 writer.write(logEvent.getTimeStamp() + "," + logEvent.getEventType() + ", ");
-                HashMap<DataID, List<T>> dataIDMap = logEvent.getDataIDMap();
+                HashMap<DataID, List<?>> dataIDMap = logEvent.getDataIDMap();
 
-                for (List<T> dataList : dataIDMap.values()) {
-                    for (T data : dataList) {
-                        writer.write(data + ",");
+                for (List<?> dataList : dataIDMap.values()) {
+                    if (dataList.size() > 1)
+                    {
+                        writer.write("[");
+                        writer.write(dataList.get(0) + " ");
+                        for (int i = 1; i < dataList.size(); i++)
+                        {
+                            writer.write(" " + dataList.get(i));
+                        }
+                        writer.write("]");
+                    }
+                    else
+                    {
+                        writer.write(dataList.get(0) + ",");
                     }
                 }
                 writer.newLine();
@@ -144,8 +157,9 @@ public class LogData<T> {
     }
 
 
-    public List<LogEvent> getEventList() {
-        return this.eventList;
+    public List<LogEvent> getEventList()
+    {
+        return eventList;
     }
 
     public void addLogEvent (LogEvent event, Integer index)

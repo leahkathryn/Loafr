@@ -2,7 +2,7 @@
 2023-11-12 08:15:00,Thruster_Calibration,true,0,[88 25],100.000
 2023-11-12 08:30:00,Communication_Check,success,0,[32.5 54.4 76.8],100
 2023-11-12 09:00:00,Navigation_Test,success,0,99.999
-2023-11-12 09:30:00,Solar_Panel_Deployment,true,[panel_1_ok panel_2_ok],[90.1 6.5 22.0]
+2023-11-12 09:30:00,Solar_Panel_Deployment,true,[panel_1_ok panel_2_ok],120,56.7,[90.1 6.5 22.0]
 2023-11-12 10:00:00,Orbital_Maneuver,true,2500,[105.2 90.1 45.9],[34.5 76.8 3.0 23.1]
 2023-11-12 10:30:00,Telemetry_Check,success,0,[0.3 25.4 2.0]
 2023-11-12 11:00:00,Battery_Test,success,0,99,false,1,[120 240]

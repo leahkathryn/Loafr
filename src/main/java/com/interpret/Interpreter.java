@@ -75,7 +75,12 @@ public class Interpreter
         else
         {
             // if the instructions have >1 arguments, the first argument will be the attribute type to search through
-            LogEvent.AttributeType attributeType = getAttributeType(instructions.get(0));
+            LogEvent.AttributeType attributeType;
+            if (null == (attributeType= getAttributeType(instructions.get(0))))
+            {
+                // ErrorHandler already sent message
+                return null;
+            }
 
             // if the attribute type to be searched through is the data values of a DataID,
             // the DataID name will be provided in the script. The provided name will need to
@@ -116,7 +121,7 @@ public class Interpreter
     private String getRegEx(String regex)
     {
         // remove leading and trailing whitespace
-        regex = regex.trim();
+        regex = regex.strip();
         // remove regex delimiters, if present
         if (regex.charAt(0) == '/' && regex.charAt(regex.length()-1) == '/')
         {
@@ -144,16 +149,15 @@ public class Interpreter
     private LogEvent.AttributeType getAttributeType(String attributeString)
     {
         attributeString = attributeString.trim();
-        LogEvent.AttributeType attributeType = null;
-        try {
-            attributeType = LogEvent.AttributeType.valueOf(attributeString);
-        }
-        catch (IllegalArgumentException e)
+        LogEvent.AttributeType attributeType;
+
+        if (null == (attributeType = LogEvent.AttributeType.fromString(attributeString)))
         {
             ErrorHandler.logError("Failure interpreting script: " +
                     "There is a syntax error or unrecognized argument within a Search command.\nLoafr exiting...");
             return null;
         }
+
         return attributeType;
     }
 
@@ -182,6 +186,7 @@ public class Interpreter
         }
         if (null == match)
         {
+            System.out.println("First exit condition: 4");
             ErrorHandler.logError("Failure interpreting script: " +
                     "There is a syntax error or unrecognized argument within a Search command.\nLoafr exiting...");
             return null;
