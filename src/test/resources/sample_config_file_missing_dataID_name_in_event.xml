@@ -7,7 +7,7 @@
         <event name="Communication_Check">
             <data_element name="Result"/>
             <data_element name="Error_Code"/>
-            <data_element name="Frequencies"/>
+            <data_element/>
             <data_element name="Signal_Strength"/>
         </event>
         <event name="Navigation_Test">
@@ -73,7 +73,7 @@
         <data_element name="Status" type="boolean"/>
         <data_element name="Result" type="string"/>
         <data_element name="Power_Levels" type="integer" list="true"/>
-
+        <data_element name="Frequencies" type="float" list="true"/>
         <data_element name="Signal_Strength" type="integer"/>
         <data_element name="Error_Code" type="integer"/>
         <data_element name="Accuracy" type="float"/>
