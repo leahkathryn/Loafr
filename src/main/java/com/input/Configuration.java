@@ -18,6 +18,16 @@ import java.util.List;
 
 import static com.input.DataType.*;
 
+/**
+ * The Configuration class will be used when provided a Configuration file as an XML file. When provided a file location
+ * of the configuration file, the main method of the class, parseConfigFile(), parses the configuration file containing
+ * the node representations of dataID and event objects as well as the default output file location as a string,
+ * extracts them from the file, and stores them in private attributes that can be access at any time by other parts of
+ * the system via getters.
+ *
+ * @author Jeremiah Hockett
+ */
+
 public class Configuration
 {
     private List<Event> eventList;
@@ -74,10 +84,29 @@ public class Configuration
             return false;
         }
 
-        NodeList eventNameNodeList = configDoc.getElementsByTagName("events");      // Get events and dataID as nodes
-        NodeList dataIDNodeList = configDoc.getElementsByTagName("data_elements");
+        NodeList eventNodeList;
+        NodeList dataIDNodeList;
+        Node eventRootNode = configDoc.getElementsByTagName("events").item(0);
 
-        if (eventNameNodeList.getLength() == 0 || dataIDNodeList.getLength() == 0){
+        Node dataIDRootNode = configDoc.getElementsByTagName("data_elements").item(0);
+
+        if (eventRootNode.getNodeType() == eventRootNode.ELEMENT_NODE){
+            Element elem = (Element) eventRootNode;
+            eventNodeList = elem.getElementsByTagName("event");      // Get events and dataID as nodes
+        } else {
+            ErrorHandler.logError("No node in Config file labeled 'events'");
+            return false;
+        }
+
+        if (dataIDRootNode.getNodeType() == dataIDRootNode.ELEMENT_NODE){
+            Element elem = (Element) dataIDRootNode;
+            dataIDNodeList = elem.getElementsByTagName("data_element");
+        } else {
+            ErrorHandler.logError("No node in Config file labeled 'data_elements'");
+            return false;
+        }
+
+        if (!eventRootNode.hasChildNodes() || !dataIDRootNode.hasChildNodes()){
             ErrorHandler.logError("No events or data elements in configuration file.");
             return false;
         }
@@ -86,7 +115,7 @@ public class Configuration
         if (dataIDMap == null)
             return false;
 
-        isEventsParsed = parseEventNodes(eventNameNodeList, dataIDMap);
+        isEventsParsed = parseEventNodes(eventNodeList, dataIDMap);
         if (!isEventsParsed)
             return false;
 
@@ -103,9 +132,16 @@ public class Configuration
         if (defaultLocNode.getNodeType() == Node.ELEMENT_NODE) {
             elemDefaultLoc = (Element) defaultLocNode;
             defaultOutputLoc = elemDefaultLoc.getAttribute("file").trim();     // Get outputLoc out of node set defaultOutputLoc
+            if (defaultOutputLoc.equals("")){
+                ErrorHandler.logError("No specified default output file location.");
+                return false;
+            }
+
         } else {
             ErrorHandler.logError("XML file is structured improperly");
+            return false;
         }
+
         return true;
     }
 
@@ -148,11 +184,8 @@ public class Configuration
         HashMap<String, DataID> tempDataIDMap = new HashMap<>();
         Element elemDataID;
 
-        // list of the child nodes of the <data_elements> node
-        NodeList dataIDList = dataIDNodeList.item(0).getChildNodes();
-
-        for (int i = 0; i < dataIDList.getLength(); i++){
-            curNode = dataIDList.item(i);
+        for (int i = 0; i < dataIDNodeList.getLength(); i++){
+            curNode = dataIDNodeList.item(i);
             if (curNode.getNodeType() == Node.ELEMENT_NODE) {
                 elemDataID = (Element) curNode;
 
@@ -161,7 +194,7 @@ public class Configuration
                     return null;
                 }
 
-                dataName = elemDataID.getAttribute("name").trim();         // Get dataID object attribute out of node
+                dataName = elemDataID.getAttribute("name").trim();                          // Get dataID object attribute out of node
 
                 tempType = inferType(elemDataID.getAttribute("type").trim());              // Get dataID object attribute out of node
 
@@ -172,8 +205,11 @@ public class Configuration
 
                 DataID newDataID = new DataID(dataName, tempType);
 
-                tempDataIDMap.put(dataName,newDataID);          // Place dataID object in dataIDList
-                this.dataIDList.add(newDataID);  // Should DataID objects have a attribute for whether it is a list or not
+                tempDataIDMap.put(dataName,newDataID);                                          // Place dataID object in dataIDList
+                this.dataIDList.add(newDataID);
+            } else {
+                ErrorHandler.logError("There are missing DataIDs in the configuration file.");
+                return null;
             }
         }
         return tempDataIDMap;
@@ -191,10 +227,13 @@ public class Configuration
     private boolean parseEventNodes(NodeList eventNodeList, HashMap<String, DataID> dataIDMap){
         ArrayList<DataID> curDataIDs;
 
-        NodeList eventList = eventNodeList.item(0).getChildNodes();
-
-        for (int i = 0; i < eventList.getLength(); i++){
-            Node curNode = eventList.item(i);
+//        NodeList eventList = eventNodeList.getChildNodes();
+        if (eventNodeList.getLength() == 0){
+            ErrorHandler.logError("There are no events in the configuration file.");
+            return false;
+        }
+        for (int i = 0; i < eventNodeList.getLength(); i++){
+            Node curNode = eventNodeList.item(i);
             NodeList dataIDNodes = curNode.getChildNodes();
             curDataIDs = new ArrayList<>();
 
@@ -215,7 +254,7 @@ public class Configuration
                         Element elemData = (Element) dataNode;
 
                         if (!elemData.hasAttribute("name")){                                   // Check if data element has no name
-                            ErrorHandler.logError("Name of data element is missing");
+                            ErrorHandler.logError("Name of data element is missing in event " + eventName);
                             return false;
                         }
                         String dataName = elemData.getAttribute("name").trim();    // Get Event object attributes out of node and temp hashmap
@@ -228,6 +267,9 @@ public class Configuration
                     }
                 }
                 this.eventList.add(new Event(eventName, curDataIDs));
+            } else {
+                ErrorHandler.logError("There are no events in the configuration file.");
+                return false;
             }
         }
         return true;
