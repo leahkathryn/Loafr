@@ -4,8 +4,8 @@ import com.input.Configuration;
 import com.control.ControllerFactory;
 import com.control.Controller;
 
-import java.net.URL;
-import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Loafr execution begins in this class.
@@ -18,13 +18,18 @@ import java.io.File;
  */
 public class Loafr
 {
+//    private static Path resourceDirectory = Paths.get("src","test","resources","sample_config_file.xml");
+//    private static String configurationFileLoc = resourceDirectory.toFile().getAbsolutePath();
     private static String configurationFileLoc = "C:\\Users\\leahk\\OneDrive\\Documents\\GitHub\\Loafr\\src\\test\\resources\\sample_config_file.xml";
 
     public static void main(String[] args)
     {
         ControllerFactory controllerFactory = new ControllerFactory();
         Configuration configuration = new Configuration();
-        configuration.parseConfigFile(configurationFileLoc);
+        if (false == configuration.parseConfigFile(configurationFileLoc))
+        {
+            System.exit(0);
+        }
         Controller controller = controllerFactory.getController(args,configuration);
         ErrorHandler.setController(controller);
         controller.execute();

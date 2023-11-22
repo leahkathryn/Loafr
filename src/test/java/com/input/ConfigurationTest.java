@@ -1,7 +1,11 @@
 package com.input;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -11,11 +15,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
 public class ConfigurationTest {
-    private List<Event> testEventList = new ArrayList<>();
-    private List<DataID> testDataIDList = new ArrayList<>();
-    private Configuration config = new Configuration();
+    static List<Event> testEventList = new ArrayList<>();
+    static List<DataID> testDataIDList = new ArrayList<>();
+    private Configuration config;
 
-    public void setupTest0() {
+    @BeforeEach
+    void clearConfig()
+    {
+        config = new Configuration();
+    }
+
+    @BeforeAll
+    static void setupTest0() {
         testEventList.add(new Event("System_Initialization", new ArrayList<DataID>(Arrays.asList(
                 new DataID("Status", BOOLEAN),
                 new DataID("Error_Code", INTEGER)
@@ -26,7 +37,7 @@ public class ConfigurationTest {
                 new DataID("Frequencies", FLOAT),
                 new DataID("Signal_Strength", INTEGER)
         ))));
-        testEventList.add(new Event("Navigation_Check", new ArrayList<DataID>(Arrays.asList(
+        testEventList.add(new Event("Navigation_Test", new ArrayList<DataID>(Arrays.asList(
                 new DataID("Result", STRING),
                 new DataID("Error_Code",INTEGER),
                 new DataID("Accuracy", FLOAT)
@@ -115,110 +126,131 @@ public class ConfigurationTest {
 
     @Test
     void parseConfigFileTestIfSuccessful() {
-//        Boolean isParsed = config.parseConfigFile("C:\\Users\\leahk\\OneDrive\\Documents\\GitHub\\Loafr\\src\\test\\resources\\sample_config_file.xml");
-        Boolean isParsed = config.parseConfigFile("C:\\Users\\Nova\\Documents\\CSCI5801\\Loafr\\src\\test\\resources\\sample_config_file.xml");
-        try{
-            setupTest0();
-            assertEquals(true, isParsed);
-            Event configEvent;
-            Event testEvent;
-            for (int i = 0; i < config.getDataIDList().size(); i++){
-                assertEquals(true, config.getDataIDList().get(i).getName().equals(testDataIDList.get(i).getName()));
-                assertEquals(true, config.getDataIDList().get(i).getType().equals(testDataIDList.get(i).getType()));
-            }
-            for (int j = 0; j < config.getEventList().size(); j++){
-                configEvent = config.getEventList().get(j);
-                testEvent = testEventList.get(j);
-                for (int k = 0; k < config.getDataIDList().size(); k++){
-                    assertEquals(true, configEvent.getDataIDList().get(k).getName().equals(testEvent.getDataIDList().get(k).getName()));
-                }
-                assertEquals(true, config.getEventList().get(j).equals(testEventList.get(j)));
-            }
-            System.out.println("**--- parseConfigFileTestIfSuccessful Executed ---**");
-        } catch(Exception ignored){
+        Path resourceDirectory = Paths.get("src","test","resources","sample_config_file.xml");
+        String configurationFileLoc = resourceDirectory.toFile().getAbsolutePath();
+        Boolean isParsed = config.parseConfigFile(configurationFileLoc);
+        // verify no parsing errors occurred
+        assertEquals(Boolean.TRUE, isParsed);
+
+        // verify DataIDList is correct size
+        assertEquals(testDataIDList.size(),config.getDataIDList().size());
+        // verify EventList is correct size
+        assertEquals(testEventList.size(),config.getEventList().size());
+
+        // verify all DataIDs are stored correctly
+        for (int i = 0; i < testDataIDList.size(); i++){
+            assertEquals(testDataIDList.get(i).getName(), config.getDataIDList().get(i).getName());
+            assertEquals(testDataIDList.get(i).getType(), config.getDataIDList().get(i).getType());
         }
+
+        Event configEvent;
+        Event testEvent;
+        // verify all Events are stored correctly
+        for (int j = 0; j < testEventList.size(); j++){
+            configEvent = config.getEventList().get(j);
+            testEvent = testEventList.get(j);
+            // verify this Event has the correct name
+            assertEquals(testEventList.get(j).name, config.getEventList().get(j).name);
+            // verify DataIDList for this Event is correct size
+            assertEquals(testEvent.getDataIDList().size(),configEvent.getDataIDList().size());
+            for (int k = 0; k < testEvent.getDataIDList().size(); k++){
+                assertEquals(testEvent.getDataIDList().get(k).getName(), configEvent.getDataIDList().get(k).getName());
+            }
+        }
+        //System.out.println("**--- parseConfigFileTestIfSuccessful Executed ---**");
     }
 
     @Test
     void parseConfigFileTestIfNodeInEventsIsWrong(){
-//        Boolean isParsed = config.parseConfigFile("C:\\Users\\leahk\\OneDrive\\Documents\\GitHub\\Loafr\\src\\test\\resources\\sample_config_file_wrong_node_in_events.xml");
-        Boolean isParsed = config.parseConfigFile("C:\\Users\\Nova\\Documents\\CSCI5801\\Loafr\\src\\test\\resources\\sample_config_file_wrong_node_in_events.xml");
-
+        Path resourceDirectory = Paths.get("src","test","resources","sample_config_file_wrong_node_in_events.xml");
+        String configurationFileLoc = resourceDirectory.toFile().getAbsolutePath();
+        Boolean isParsed = config.parseConfigFile(configurationFileLoc);
+        // verify no parsing errors occurred
         assertEquals(true, isParsed);
+        /*
+            Don't you need to check for the wrong event and then fail?
+         */
+
         System.out.println("**--- parseConfigFileTestIfNodeInEventsIsWrong Executed ---**");
     }
 
     @Test
     void parseConfigFileTestDataIDNodeMissingName(){
-//        Boolean isParsed = config.parseConfigFile("C:\\Users\\leahk\\OneDrive\\Documents\\GitHub\\Loafr\\src\\test\\resources\\sample_config_file_wrong_dataID_node0.xml");
-        Boolean isParsed = config.parseConfigFile("C:\\Users\\Nova\\Documents\\CSCI5801\\Loafr\\src\\test\\resources\\sample_config_file_wrong_dataID_node0.xml");
-
+        Path resourceDirectory = Paths.get("src","test","resources","sample_config_file_wrong_dataID_node0.xml");
+        String configurationFileLoc = resourceDirectory.toFile().getAbsolutePath();
+        Boolean isParsed = config.parseConfigFile(configurationFileLoc);
+        // verify expected parsing errors occurred
         assertEquals(false, isParsed);
         System.out.println("**--- parseConfigFileTestDataIDNodeMissingName Executed ---**");
     }
 
     @Test
     void parseConfigFileTestDataIDNodeMissingType(){
-//        Boolean isParsed = config.parseConfigFile("C:\\Users\\leahk\\OneDrive\\Documents\\GitHub\\Loafr\\src\\test\\resources\\sample_config_file_wrong_dataID_node1.xml");
-        Boolean isParsed = config.parseConfigFile("C:\\Users\\Nova\\Documents\\CSCI5801\\Loafr\\src\\test\\resources\\sample_config_file_wrong_dataID_node1.xml");
-
+        Path resourceDirectory = Paths.get("src","test","resources","sample_config_file_wrong_dataID_node1.xml");
+        String configurationFileLoc = resourceDirectory.toFile().getAbsolutePath();
+        Boolean isParsed = config.parseConfigFile(configurationFileLoc);
+        // verify expected parsing errors occurred
         assertEquals(false, isParsed);
         System.out.println("**--- parseConfigFileTestDataIDNodeMissingType Executed ---**");
     }
 
     @Test
     void parseConfigFileTestMissingDefaultFileLoc(){
-//        Boolean isParsed = config.parseConfigFile("C:\\Users\\leahk\\OneDrive\\Documents\\GitHub\\Loafr\\src\\test\\resources\\sample_config_file_missing_fileLoc.xml");
-        Boolean isParsed = config.parseConfigFile("C:\\Users\\Nova\\Documents\\CSCI5801\\Loafr\\src\\test\\resources\\sample_config_file_missing_fileLoc.xml");
-
+        Path resourceDirectory = Paths.get("src","test","resources","sample_config_file_missing_fileLoc.xml");
+        String configurationFileLoc = resourceDirectory.toFile().getAbsolutePath();
+        Boolean isParsed = config.parseConfigFile(configurationFileLoc);
+        // verify expected parsing errors occurred
         assertEquals(false, isParsed);
         System.out.println("**--- parseConfigFileTestMissingDefaultFileLoc Executed ---**");
     }
 
     @Test
     void parseConfigFileTestWrongDefaultFileLoc(){
-//        Boolean isParsed = config.parseConfigFile("C:\\Users\\leahk\\OneDrive\\Documents\\GitHub\\Loafr\\src\\test\\resources\\sample_config_file_defaultFileLocNotElem.xml");
-        Boolean isParsed = config.parseConfigFile("C:\\Users\\Nova\\Documents\\CSCI5801\\Loafr\\src\\test\\resources\\sample_config_file_defaultFileLocNotElem.xml");
-
+        Path resourceDirectory = Paths.get("src","test","resources","sample_config_file_defaultFileLocNotElem.xml");
+        String configurationFileLoc = resourceDirectory.toFile().getAbsolutePath();
+        Boolean isParsed = config.parseConfigFile(configurationFileLoc);
+        // verify expected parsing errors occurred
         assertEquals(false, isParsed);
         System.out.println("**--- parseConfigFileTestMissingDefaultFileLoc Executed ---**");
     }
 
     @Test
     void parseConfigFileTestMissingAllEventNodes(){
-//        Boolean isParsed = config.parseConfigFile("C:\\Users\\leahk\\OneDrive\\Documents\\GitHub\\Loafr\\src\\test\\resources\\sample_config_file_missing_events.xml");
-        Boolean isParsed = config.parseConfigFile("C:\\Users\\Nova\\Documents\\CSCI5801\\Loafr\\src\\test\\resources\\sample_config_file_missing_events.xml");
-
+        Path resourceDirectory = Paths.get("src","test","resources","sample_config_file_missing_events.xml");
+        String configurationFileLoc = resourceDirectory.toFile().getAbsolutePath();
+        Boolean isParsed = config.parseConfigFile(configurationFileLoc);
+        // verify expected parsing errors occurred
         assertEquals(false, isParsed);
         System.out.println("**--- parseConfigFileTestMissingAllEventNodes Executed ---**");
     }
 
     @Test
     void parseConfigFileTestMissingDataIDNode(){
-//        Boolean isParsed = config.parseConfigFile("C:\\Users\\leahk\\OneDrive\\Documents\\GitHub\\Loafr\\src\\test\\resources\\sample_config_file_missing_dataID.xml");
-        Boolean isParsed = config.parseConfigFile("C:\\Users\\Nova\\Documents\\CSCI5801\\Loafr\\src\\test\\resources\\sample_config_file_missing_dataID.xml");
-
+        Path resourceDirectory = Paths.get("src","test","resources","sample_config_file_missing_dataID.xml");
+        String configurationFileLoc = resourceDirectory.toFile().getAbsolutePath();
+        Boolean isParsed = config.parseConfigFile(configurationFileLoc);
+        // verify expected parsing errors occurred
         assertEquals(false, isParsed);
         System.out.println("**--- parseConfigFileTestMissingAllDataIDNodes Executed ---**");
     }
 
     @Test
     void parseConfigFileTestMissingAllDataIDNodes(){
-//        Boolean isParsed = config.parseConfigFile("C:\\Users\\leahk\\OneDrive\\Documents\\GitHub\\Loafr\\src\\test\\resources\\sample_config_file_missing_dataIDs.xml");
-        Boolean isParsed = config.parseConfigFile("C:\\Users\\Nova\\Documents\\CSCI5801\\Loafr\\src\\test\\resources\\sample_config_file_missing_dataIDs.xml");
-
+        Path resourceDirectory = Paths.get("src","test","resources","sample_config_file_missing_dataIDs.xml");
+        String configurationFileLoc = resourceDirectory.toFile().getAbsolutePath();
+        Boolean isParsed = config.parseConfigFile(configurationFileLoc);
+        // verify expected parsing errors occurred
         assertEquals(false, isParsed);
         System.out.println("**--- parseConfigFileTestMissingAllDataIDNodes Executed ---**");
     }
 
     @Test
     void parseConfigFileTestMissingAllDataIDNodesInEvent(){
-//        Boolean isParsed = config.parseConfigFile("C:\\Users\\leahk\\OneDrive\\Documents\\GitHub\\Loafr\\src\\test\\resources\\sample_config_file_missing_dataID_name_in_event.xml");
-        Boolean isParsed = config.parseConfigFile("C:\\Users\\Nova\\Documents\\CSCI5801\\Loafr\\src\\test\\resources\\sample_config_file_missing_dataID_name_in_event.xml");
-
+        Path resourceDirectory = Paths.get("src","test","resources","sample_config_file_missing_dataID_name_in_event.xml");
+        String configurationFileLoc = resourceDirectory.toFile().getAbsolutePath();
+        Boolean isParsed = config.parseConfigFile(configurationFileLoc);
+        // verify expected parsing errors occurred
         assertEquals(false, isParsed);
         System.out.println("**--- parseConfigFileTestMissingAllEventNodes Executed ---**");
     }
-
-
 }

@@ -84,17 +84,30 @@ public class Configuration
             return false;
         }
 
-        NodeList eventNodeList;
-        NodeList dataIDNodeList;
-        Node eventRootNode = configDoc.getElementsByTagName("events").item(0);
+        NodeList eventsParentNode = configDoc.getElementsByTagName("events");
+        NodeList dataIDsParentNode = configDoc.getElementsByTagName("data_elements");
 
+        // verify the <events> node and the <data_elements> node exist
+        if (eventsParentNode.getLength() != 1 || dataIDsParentNode.getLength() != 1)
+        {
+            ErrorHandler.logError("Failure parsing configuration file: configuration file is invalid." +
+                    "\nLoafr exiting...");
+            return false;
+        }
+
+        // collect parent nodes from NodeLists
+        Node eventRootNode = configDoc.getElementsByTagName("events").item(0);
         Node dataIDRootNode = configDoc.getElementsByTagName("data_elements").item(0);
 
-        if (eventRootNode.getNodeType() == eventRootNode.ELEMENT_NODE){
+        NodeList eventNodeList;
+        NodeList dataIDNodeList;
+
+        if (eventRootNode.getNodeType() == Node.ELEMENT_NODE){
             Element elem = (Element) eventRootNode;
             eventNodeList = elem.getElementsByTagName("event");      // Get events and dataID as nodes
         } else {
-            ErrorHandler.logError("No node in Config file labeled 'events'");
+            ErrorHandler.logError("Failure parsing configuration file: configuration file is invalid." +
+                    "\nLoafr exiting...");
             return false;
         }
 
@@ -107,12 +120,14 @@ public class Configuration
         }
 
         if (!eventRootNode.hasChildNodes() || !dataIDRootNode.hasChildNodes()){
-            ErrorHandler.logError("No events or data elements in configuration file.");
+            ErrorHandler.logError("Failure parsing configuration file: configuration file does not " +
+                    "define any events or data types." +
+                    "\nLoafr exiting...");
             return false;
         }
 
         dataIDMap = parseDataIDNodes(dataIDNodeList);
-        if (dataIDMap == null)
+        if (null == dataIDMap)
             return false;
 
         isEventsParsed = parseEventNodes(eventNodeList, dataIDMap);

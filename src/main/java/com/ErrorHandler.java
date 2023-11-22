@@ -41,7 +41,6 @@ public class ErrorHandler
          if (null == controller)
          {
              System.out.println(message);
-             System.exit(0);
          }
          else
          {
