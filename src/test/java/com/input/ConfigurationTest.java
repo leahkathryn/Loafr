@@ -157,16 +157,16 @@ public class ConfigurationTest {
                 assertEquals(testEvent.getDataIDList().get(k).getName(), configEvent.getDataIDList().get(k).getName());
             }
         }
-        //System.out.println("**--- parseConfigFileTestIfSuccessful Executed ---**");
+        System.out.println("**--- parseConfigFileTestIfSuccessful Executed ---**");
     }
 
     @Test
-    void parseConfigFileTestIfNodeInEventsIsWrong(){
+    void parseConfigFileTestIfNodeInEventsIsNotEvent(){
         Path resourceDirectory = Paths.get("src","test","resources","sample_config_file_wrong_node_in_events.xml");
         String configurationFileLoc = resourceDirectory.toFile().getAbsolutePath();
         Boolean isParsed = config.parseConfigFile(configurationFileLoc);
-        // verify no parsing errors occurred
-        assertEquals(true, isParsed);
+        // verify no parsing errors occurred. parseConfigFile must detect child nodes of "events" that are not named "event", not name attribute of event
+        assertEquals(false, isParsed);
         /*
             Don't you need to check for the wrong event and then fail?
          */
