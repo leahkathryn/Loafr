@@ -10,13 +10,11 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import java.net.URL;
 
 import static com.input.DataType.*;
 
@@ -80,6 +78,7 @@ public class Configuration
             return false;
         }
 
+
         NodeList eventsParentNode = configDoc.getElementsByTagName("events");
         NodeList dataIDsParentNode = configDoc.getElementsByTagName("data_elements");
 
@@ -90,6 +89,7 @@ public class Configuration
                     "\nLoafr exiting...");
             return false;
         }
+
 
         // collect parent nodes from NodeLists
         Node eventRootNode = configDoc.getElementsByTagName("events").item(0);
@@ -107,7 +107,7 @@ public class Configuration
             return false;
         }
 
-        if (dataIDRootNode.getNodeType() == dataIDRootNode.ELEMENT_NODE){
+        if (dataIDRootNode.getNodeType() == Node.ELEMENT_NODE){
             Element elem = (Element) dataIDRootNode;
             dataIDNodeList = elem.getElementsByTagName("data_element");
         } else {
@@ -119,6 +119,14 @@ public class Configuration
             ErrorHandler.logError("Failure parsing configuration file: configuration file does not " +
                     "define any events or data types." +
                     "\nLoafr exiting...");
+            return false;
+        }
+        if (!hasSubRootCorrectNodes(eventRootNode, "event")){
+            ErrorHandler.logError("Events node has at least one child node that isn't an event node.");
+            return false;
+        }
+        if(!hasSubRootCorrectNodes(dataIDRootNode, "data_element")){
+            ErrorHandler.logError("Data_elements node has at least one child node that isn't an data element node.");
             return false;
         }
 
@@ -143,7 +151,7 @@ public class Configuration
         if (defaultLocNode.getNodeType() == Node.ELEMENT_NODE) {
             elemDefaultLoc = (Element) defaultLocNode;
             defaultOutputLoc = elemDefaultLoc.getAttribute("file").trim();     // Get outputLoc out of node set defaultOutputLoc
-            if (defaultOutputLoc.equals("")){
+            if (defaultOutputLoc.isEmpty()){
                 ErrorHandler.logError("No specified default output file location.");
                 return false;
             }
@@ -181,6 +189,36 @@ public class Configuration
         }
         return type;
     }
+
+    /**
+     * Checks to see if a subRoot has correct event or data element nodes.
+     * @param subRoot - an events or data_elements node that contains node representations of events or data elements
+     * @param tagName - a string used to find the correct nodes
+     * @return - a boolean value that is true if nodes are correct (valid nodes equal total amount of nodes) and false
+     * if otherwise
+     */
+    private boolean hasSubRootCorrectNodes(Node subRoot, String tagName){
+        int totalNodes = 0;
+        int numValidNodes = 0;
+        int length = subRoot.getChildNodes().getLength();
+        NodeList allChildNodes;
+        NodeList validChildNodes;
+
+        if (subRoot.getNodeType() == Node.ELEMENT_NODE) {
+            Element elem = (Element) subRoot;
+            allChildNodes = elem.getChildNodes();
+            validChildNodes = elem.getElementsByTagName(tagName);
+            for (int i = 0; i < length; i++) {
+                if (allChildNodes.item(i).getNodeType() == Node.ELEMENT_NODE) {
+                    totalNodes++;
+                }
+            }
+            numValidNodes = validChildNodes.getLength();
+            return totalNodes == numValidNodes;
+        } else
+            return false;
+    }
+
 
     /**
      * Parse the list of DataID nodes and place them in a map for later in the parseConfigFile() method. If an error was
@@ -271,7 +309,7 @@ public class Configuration
                         String dataName = elemData.getAttribute("name").trim();    // Get Event object attributes out of node and temp hashmap
 
                         if (!dataIDMap.containsKey(dataName)) {
-                            ErrorHandler.logError("Data element is missing or incomplete");
+                            ErrorHandler.logError("Data element is missing.");
                             return false;
                         }
                         curDataIDs.add(dataIDMap.get(dataName));
