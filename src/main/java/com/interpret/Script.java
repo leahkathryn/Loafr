@@ -11,7 +11,6 @@ import com.ErrorHandler;
 import com.analyze.AnalysisTask;
 import com.analyze.Analyzer;
 import com.input.LogData;
-import com.input.LogEvent;
 
 /**
  * Facilitates the interpretation and execution of the script provided to Loafr.
