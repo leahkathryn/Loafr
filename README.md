@@ -50,6 +50,7 @@ To run a script on a log file and the output will be written to your current wor
 -s \<script location\> -l \<log file location\>  
 To run a script on a log file and the output will be written to the specified location:  
 -s \<script location\> -l \<log file location\> -o \<output file location\>  
+    If this option is used, either a file name for the output file in the current working directory can be provided, or an absolute path to a different file location can be provided.  
 The flags -s (script) and -l (log file), and corresponding values, are required. The flag -o (output file) and corresponding value is optional.  
 Batch processing is not available in the current version (0.1) of Loafr.
 
