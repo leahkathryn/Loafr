@@ -122,20 +122,62 @@ public class LogData
     }
 
     /** The method to output the data that is being analyzed.
-     * @param outputLoc The location to be written.
-     * @return return the status of output.
+     * @param outputLoc      The location to be written.
+     * @param configuration  the Configuration that defines Events and DataIDs
+     * @return               return the status of output.
      */
-    public boolean writeLogData(String outputLoc){
+    public boolean writeLogData(String outputLoc, Configuration configuration)
+    {
+        /**************************************************/
+        // This part is for grading, so that a grader can run Loafr
+        // and the output will be put in an "output" directory in their current
+        // working directory. If they choose, they can edit the config file for a new
+        // default output location, or they can provide an output location.
+        if (outputLoc.equals("."))
+        {
+            File dir = new File("output");
+            dir.mkdirs();
+            File output = new File(dir, "output.txt");
+            try {
+                output.createNewFile();
+            }
+            catch (IOException ex)
+            {
+                ErrorHandler.logError("Error while writing log data to file: " + ex.getMessage());
+                return false; // Failed to write the log data to the output file
+            }
+            outputLoc = output.getAbsolutePath();
+        }
+        /**********************************************/
+
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputLoc))) {
             for (LogEvent logEvent : eventList) {
-                writer.write(logEvent.getTimeStamp() + "," + logEvent.getEventType() + ", ");
+                writer.write(logEvent.getTimeStamp() + "," + logEvent.getEventType() + ",");
                 HashMap<DataID, List<?>> dataIDMap = logEvent.getDataIDMap();
 
-                for (List<?> dataList : dataIDMap.values()) {
+                // there is probably a better way to do this - quick fix
+                Event thisEvent = null;
+                for (Event event : configuration.getEventList())
+                {
+                    if (event.name.equals(logEvent.getEventType()))
+                    {
+                        thisEvent = event;
+                        break;
+                    }
+                }
+                if (null == thisEvent)
+                {
+                    ErrorHandler.logError("Error while writing log data to file: event type unknown.");
+                    return false;
+                }
+                // write the DataIDs in the correct order in the file
+                for (DataID dataID : thisEvent.getDataIDList())
+                {
+                    List<?> dataList = dataIDMap.get(dataID);
                     if (dataList.size() > 1)
                     {
                         writer.write("[");
-                        writer.write(dataList.get(0) + " ");
+                        writer.write(dataList.get(0).toString());
                         for (int i = 1; i < dataList.size(); i++)
                         {
                             writer.write(" " + dataList.get(i));
@@ -144,7 +186,11 @@ public class LogData
                     }
                     else
                     {
-                        writer.write(dataList.get(0) + ",");
+                        writer.write(dataList.get(0).toString());
+                    }
+                    if (thisEvent.getDataIDList().indexOf(dataID) < thisEvent.getDataIDList().size()-1)
+                    {
+                        writer.write(",");
                     }
                 }
                 writer.newLine();

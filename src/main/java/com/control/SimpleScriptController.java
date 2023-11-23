@@ -56,7 +56,7 @@ public class SimpleScriptController implements Controller
         // attempt output write
         LogData output_logData = script.executeAnalyzer(logData);
         // attempt output file writing
-        if(!output_logData.writeLogData(outputFileLoc))
+        if(!output_logData.writeLogData(outputFileLoc,configuration))
         {
             // Should we implement a condition to retry through command line input?
             System.exit(0);

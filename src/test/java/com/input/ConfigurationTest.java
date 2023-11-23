@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.net.URL;
 
 import static com.input.DataType.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -126,8 +127,7 @@ public class ConfigurationTest {
 
     @Test
     void parseConfigFileTestIfSuccessful() {
-        Path resourceDirectory = Paths.get("src","test","resources","sample_config_file.xml");
-        String configurationFileLoc = resourceDirectory.toFile().getAbsolutePath();
+        URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file.xml");
         Boolean isParsed = config.parseConfigFile(configurationFileLoc);
         // verify no parsing errors occurred
         assertEquals(Boolean.TRUE, isParsed);
@@ -162,8 +162,7 @@ public class ConfigurationTest {
 
     @Test
     void parseConfigFileTestIfNodeInEventsIsWrong(){
-        Path resourceDirectory = Paths.get("src","test","resources","sample_config_file_wrong_node_in_events.xml");
-        String configurationFileLoc = resourceDirectory.toFile().getAbsolutePath();
+        URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file_wrong_node_in_events.xml");
         Boolean isParsed = config.parseConfigFile(configurationFileLoc);
         // verify no parsing errors occurred
         assertEquals(true, isParsed);
@@ -176,8 +175,7 @@ public class ConfigurationTest {
 
     @Test
     void parseConfigFileTestDataIDNodeMissingName(){
-        Path resourceDirectory = Paths.get("src","test","resources","sample_config_file_wrong_dataID_node0.xml");
-        String configurationFileLoc = resourceDirectory.toFile().getAbsolutePath();
+        URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file_wrong_dataID_node0.xml");
         Boolean isParsed = config.parseConfigFile(configurationFileLoc);
         // verify expected parsing errors occurred
         assertEquals(false, isParsed);
@@ -186,8 +184,7 @@ public class ConfigurationTest {
 
     @Test
     void parseConfigFileTestDataIDNodeMissingType(){
-        Path resourceDirectory = Paths.get("src","test","resources","sample_config_file_wrong_dataID_node1.xml");
-        String configurationFileLoc = resourceDirectory.toFile().getAbsolutePath();
+        URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file_wrong_dataID_node1.xml");
         Boolean isParsed = config.parseConfigFile(configurationFileLoc);
         // verify expected parsing errors occurred
         assertEquals(false, isParsed);
@@ -196,8 +193,7 @@ public class ConfigurationTest {
 
     @Test
     void parseConfigFileTestMissingDefaultFileLoc(){
-        Path resourceDirectory = Paths.get("src","test","resources","sample_config_file_missing_fileLoc.xml");
-        String configurationFileLoc = resourceDirectory.toFile().getAbsolutePath();
+        URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file_missing_fileLoc.xml");
         Boolean isParsed = config.parseConfigFile(configurationFileLoc);
         // verify expected parsing errors occurred
         assertEquals(false, isParsed);
@@ -206,8 +202,7 @@ public class ConfigurationTest {
 
     @Test
     void parseConfigFileTestWrongDefaultFileLoc(){
-        Path resourceDirectory = Paths.get("src","test","resources","sample_config_file_defaultFileLocNotElem.xml");
-        String configurationFileLoc = resourceDirectory.toFile().getAbsolutePath();
+        URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file_defaultFileLocNotElem.xml");
         Boolean isParsed = config.parseConfigFile(configurationFileLoc);
         // verify expected parsing errors occurred
         assertEquals(false, isParsed);
@@ -216,8 +211,7 @@ public class ConfigurationTest {
 
     @Test
     void parseConfigFileTestMissingAllEventNodes(){
-        Path resourceDirectory = Paths.get("src","test","resources","sample_config_file_missing_events.xml");
-        String configurationFileLoc = resourceDirectory.toFile().getAbsolutePath();
+        URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file_missing_events.xml");
         Boolean isParsed = config.parseConfigFile(configurationFileLoc);
         // verify expected parsing errors occurred
         assertEquals(false, isParsed);
@@ -226,8 +220,7 @@ public class ConfigurationTest {
 
     @Test
     void parseConfigFileTestMissingDataIDNode(){
-        Path resourceDirectory = Paths.get("src","test","resources","sample_config_file_missing_dataID.xml");
-        String configurationFileLoc = resourceDirectory.toFile().getAbsolutePath();
+        URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file_missing_dataID.xml");
         Boolean isParsed = config.parseConfigFile(configurationFileLoc);
         // verify expected parsing errors occurred
         assertEquals(false, isParsed);
@@ -236,8 +229,7 @@ public class ConfigurationTest {
 
     @Test
     void parseConfigFileTestMissingAllDataIDNodes(){
-        Path resourceDirectory = Paths.get("src","test","resources","sample_config_file_missing_dataIDs.xml");
-        String configurationFileLoc = resourceDirectory.toFile().getAbsolutePath();
+        URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file_missing_dataIDs.xml");
         Boolean isParsed = config.parseConfigFile(configurationFileLoc);
         // verify expected parsing errors occurred
         assertEquals(false, isParsed);
@@ -246,8 +238,7 @@ public class ConfigurationTest {
 
     @Test
     void parseConfigFileTestMissingAllDataIDNodesInEvent(){
-        Path resourceDirectory = Paths.get("src","test","resources","sample_config_file_missing_dataID_name_in_event.xml");
-        String configurationFileLoc = resourceDirectory.toFile().getAbsolutePath();
+        URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file_missing_dataID_name_in_event.xml");
         Boolean isParsed = config.parseConfigFile(configurationFileLoc);
         // verify expected parsing errors occurred
         assertEquals(false, isParsed);

@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import java.net.URL;
+
 import static com.input.DataType.*;
 
 /**
@@ -58,15 +60,9 @@ public class Configuration
      * @param fileLoc - the file location of the configuration file, which is a xml file.
      * @return - a boolean value that is true if parsing was successful or false if otherwise
      */
-    public boolean parseConfigFile(String fileLoc) {
-        File configFile = new File(fileLoc.trim());
+    public boolean parseConfigFile(URL fileLoc) {
         boolean isEventsParsed;
         HashMap<String, DataID> dataIDMap;
-
-        if (fileLoc == null){
-            ErrorHandler.logError("Location of file is null.");
-            return false;
-        }
 
         DocumentBuilderFactory configBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder configBuilder;
@@ -74,7 +70,7 @@ public class Configuration
 
         try {
             configBuilder = configBuilderFactory.newDocumentBuilder();
-            configDoc = configBuilder.parse(configFile);
+            configDoc = configBuilder.parse(fileLoc.openStream());
         } catch (ParserConfigurationException | IOException | SAXException err){
             if (err instanceof ParserConfigurationException){
                 ErrorHandler.logError("Parser failed to instantiate of documentBuilder object");

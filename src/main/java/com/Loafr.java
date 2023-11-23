@@ -7,6 +7,10 @@ import com.control.Controller;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import java.io.File;
+import java.net.URL;
+import java.net.URI;
+
 /**
  * Loafr execution begins in this class.
  *      First, the configuration file is parsed into a Configuration.
@@ -18,9 +22,9 @@ import java.nio.file.Paths;
  */
 public class Loafr
 {
-//    private static Path resourceDirectory = Paths.get("src","test","resources","sample_config_file.xml");
-//    private static String configurationFileLoc = resourceDirectory.toFile().getAbsolutePath();
-    private static String configurationFileLoc = "C:\\Users\\leahk\\OneDrive\\Documents\\GitHub\\Loafr\\src\\test\\resources\\sample_config_file.xml";
+    private static String resourceName = "sample_config_file.xml";
+    private static ClassLoader classLoader = Loafr.class.getClassLoader();
+    private static URL configurationFileLoc = classLoader.getResource(resourceName);
 
     public static void main(String[] args)
     {
@@ -28,9 +32,15 @@ public class Loafr
         Configuration configuration = new Configuration();
         if (false == configuration.parseConfigFile(configurationFileLoc))
         {
+            // ErrorHandler already sent message
             System.exit(0);
         }
-        Controller controller = controllerFactory.getController(args,configuration);
+        Controller controller;
+        if (null == (controller = controllerFactory.getController(args,configuration)))
+        {
+            // ErrorHandler already sent message
+            System.exit(0);
+        }
         ErrorHandler.setController(controller);
         controller.execute();
     }

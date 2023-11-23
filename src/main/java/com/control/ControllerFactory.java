@@ -39,6 +39,7 @@ public class ControllerFactory
             ErrorHandler.logError("The argument list contains a syntax error.\n" +
                     "Usage: <-l> <log file path> <-s> <script file path> optional: <-o> <output file path>\n" +
                     "Alt for batch processing: <-b> <-l> <log file list> <-s> <script file list> optional: <-o> <output file path> <-m> <event | log>\n");
+            return null;
         }
 
         parseOutputLoc(configuration);
@@ -122,6 +123,7 @@ public class ControllerFactory
             {
                 ErrorHandler.logError("The argument list contains a syntax error.\n" +
                         "Usage: <-b> <-l> <log file list> <-s> <script file list> optional: <-o> <output file path> <-m> <event | log>\n");
+                return null;
             }
             else
             {
@@ -133,6 +135,7 @@ public class ControllerFactory
         {
             ErrorHandler.logError("The argument list contains a syntax error.\n" +
                     "Usage: <-b> <-l> <log file list> <-s> <script file list> optional: <-o> <output file path> <-m> <event | log>\n");
+            return null;
         }
 
         return new BatchScriptController(configuration,flag,logLocList,scriptLocList,outputLoc);
@@ -154,11 +157,13 @@ public class ControllerFactory
         {
             ErrorHandler.logError("The argument list is too short.\n" +
                     "Usage: <-l> <log file path> <-s> <script file path> optional: <-o> <output file path>\n");
+            return null;
         }
         else if (arguments.size() > 4)
         {
             ErrorHandler.logError("The argument list is too long.\n" +
                     "Usage: <-l> <log file path> <-s> <script file path> optional: <-o> <output file path>\n");
+            return null;
         }
 
         String logLoc = "";
@@ -180,6 +185,7 @@ public class ControllerFactory
         {
             ErrorHandler.logError("The argument list contains a syntax error.\n" +
                     "Usage: <-l> <log file path> <-s> <script file path> optional: <-o> <output file path>");
+            return null;
         }
 
         return new SimpleScriptController(configuration,logLoc,scriptLoc,outputLoc);

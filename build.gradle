@@ -1,6 +1,5 @@
 plugins {
     id 'java'
-    id 'groovy'
     id 'application'
 }
 
@@ -26,6 +25,9 @@ sourceSets {
         java {
             srcDir 'src/main/java'
         }
+        resources {
+            srcDir 'src/main/resources'
+        }
     }
     test {
         java {
@@ -48,4 +50,8 @@ test {
 
 rootProject.tasks.named("processTestResources") {
     duplicatesStrategy = 'exclude'
+}
+
+rootProject.tasks.named("processResources") {
+    duplicatesStrategy = 'include'
 }
