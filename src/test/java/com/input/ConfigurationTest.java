@@ -161,7 +161,7 @@ public class ConfigurationTest {
     }
 
     @Test
-    void parseConfigFileTestIfNodeInEventsIsWrong(){
+    void parseConfigFileTestIfNodeInEventsIsNotEvent(){
         URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file_wrong_node_in_events.xml");
         Boolean isParsed = config.parseConfigFile(configurationFileLoc);
         // verify no parsing errors occurred
