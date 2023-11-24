@@ -1,5 +1,7 @@
 package com.analyze;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.ArrayList;
 
 import com.input.LogData;
@@ -7,7 +9,13 @@ import com.input.LogEvent;
 
 public class Analyzer
 {
-    private ArrayList<AnalysisTask> queue = new ArrayList<AnalysisTask>();
+    private List<AnalysisTask> queue = new ArrayList<AnalysisTask>();
+
+    // getter function used during unit testing
+    public List<AnalysisTask> getTaskQueue()
+    {
+        return Collections.unmodifiableList(queue);
+    }
 
     //Takes in LogData to execute a task. Returns LogData with results.
     public LogData analyze(LogData analyzeLogObject) {

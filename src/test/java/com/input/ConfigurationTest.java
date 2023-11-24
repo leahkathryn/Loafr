@@ -5,14 +5,13 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static com.input.DataType.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 
 public class ConfigurationTest {
@@ -128,6 +127,12 @@ public class ConfigurationTest {
     @Test
     void parseConfigFileTestIfSuccessful() {
         URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file.xml");
+
+        if (null == configurationFileLoc)
+        {
+            fail("Test resource \"sample_config_file.xml\" was not found.");
+        }
+
         Boolean isParsed = config.parseConfigFile(configurationFileLoc);
         // verify no parsing errors occurred
         assertEquals(Boolean.TRUE, isParsed);
@@ -161,7 +166,13 @@ public class ConfigurationTest {
 
     @Test
     void parseConfigFileTestIfNodeInEventsIsNotEvent(){
-        URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file_wrong_node_in_events.xml");
+        URL configurationFileLoc = getClass().getClassLoader().getResource("mock_config_files/sample_config_file_wrong_node_in_events.xml");
+
+        if (null == configurationFileLoc)
+        {
+            fail("Test resource \"sample_config_file_wrong_node_in_events.xml\" was not found.");
+        }
+
         Boolean isParsed = config.parseConfigFile(configurationFileLoc);
         // parseConfigFile must detect child nodes of "events" that are not named "event", not name attribute of event
         assertEquals(false, isParsed);
@@ -169,7 +180,13 @@ public class ConfigurationTest {
 
     @Test
     void parseConfigFileTestDataIDNodeMissingName(){
-        URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file_wrong_dataID_node0.xml");
+        URL configurationFileLoc = getClass().getClassLoader().getResource("mock_config_files/sample_config_file_wrong_dataID_node0.xml");
+
+        if (null == configurationFileLoc)
+        {
+            fail("Test resource \"sample_config_file_wrong_dataID_node0.xml\" was not found.");
+        }
+
         Boolean isParsed = config.parseConfigFile(configurationFileLoc);
         // verify expected parsing errors occurred
         assertEquals(false, isParsed);
@@ -177,7 +194,13 @@ public class ConfigurationTest {
 
     @Test
     void parseConfigFileTestDataIDNodeMissingType(){
-        URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file_wrong_dataID_node1.xml");
+        URL configurationFileLoc = getClass().getClassLoader().getResource("mock_config_files/sample_config_file_wrong_dataID_node1.xml");
+
+        if (null == configurationFileLoc)
+        {
+            fail("Test resource \"sample_config_file_wrong_dataID_node1.xml\" was not found.");
+        }
+
         Boolean isParsed = config.parseConfigFile(configurationFileLoc);
         // verify expected parsing errors occurred
         assertEquals(false, isParsed);
@@ -185,7 +208,13 @@ public class ConfigurationTest {
 
     @Test
     void parseConfigFileTestMissingDefaultFileLoc(){
-        URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file_missing_fileLoc.xml");
+        URL configurationFileLoc = getClass().getClassLoader().getResource("mock_config_files/sample_config_file_missing_fileLoc.xml");
+
+        if (null == configurationFileLoc)
+        {
+            fail("Test resource \"sample_config_file_missing_fileLoc.xml\" was not found.");
+        }
+
         Boolean isParsed = config.parseConfigFile(configurationFileLoc);
         // verify expected parsing errors occurred
         assertEquals(false, isParsed);
@@ -193,7 +222,13 @@ public class ConfigurationTest {
 
     @Test
     void parseConfigFileTestWrongDefaultFileLoc(){
-        URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file_defaultFileLocNotElem.xml");
+        URL configurationFileLoc = getClass().getClassLoader().getResource("mock_config_files/sample_config_file_defaultFileLocNotElem.xml");
+
+        if (null == configurationFileLoc)
+        {
+            fail("Test resource \"sample_config_file_defaultFileLocNotElem.xml\" was not found.");
+        }
+
         Boolean isParsed = config.parseConfigFile(configurationFileLoc);
         // verify expected parsing errors occurred
         assertEquals(false, isParsed);
@@ -201,7 +236,13 @@ public class ConfigurationTest {
 
     @Test
     void parseConfigFileTestMissingAllEventNodes(){
-        URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file_missing_events.xml");
+        URL configurationFileLoc = getClass().getClassLoader().getResource("mock_config_files/sample_config_file_missing_events.xml");
+
+        if (null == configurationFileLoc)
+        {
+            fail("Test resource \"sample_config_file_missing_events.xml\" was not found.");
+        }
+
         Boolean isParsed = config.parseConfigFile(configurationFileLoc);
         // verify expected parsing errors occurred
         assertEquals(false, isParsed);
@@ -209,7 +250,13 @@ public class ConfigurationTest {
 
     @Test
     void parseConfigFileTestMissingDataIDNode(){
-        URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file_missing_dataID.xml");
+        URL configurationFileLoc = getClass().getClassLoader().getResource("mock_config_files/sample_config_file_missing_dataID.xml");
+
+        if (null == configurationFileLoc)
+        {
+            fail("Test resource \"sample_config_file_missing_dataID.xml\" was not found.");
+        }
+
         Boolean isParsed = config.parseConfigFile(configurationFileLoc);
         // verify expected parsing errors occurred
         assertEquals(false, isParsed);
@@ -217,7 +264,13 @@ public class ConfigurationTest {
 
     @Test
     void parseConfigFileTestMissingAllDataIDNodes(){
-        URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file_missing_dataIDs.xml");
+        URL configurationFileLoc = getClass().getClassLoader().getResource("mock_config_files/sample_config_file_missing_dataIDs.xml");
+
+        if (null == configurationFileLoc)
+        {
+            fail("Test resource \"sample_config_file_missing_dataIDs.xml\" was not found.");
+        }
+
         Boolean isParsed = config.parseConfigFile(configurationFileLoc);
         // verify expected parsing errors occurred
         assertEquals(false, isParsed);
@@ -225,7 +278,13 @@ public class ConfigurationTest {
 
     @Test
     void parseConfigFileTestMissingAllDataIDNodesInEvent(){
-        URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file_missing_dataID_name_in_event.xml");
+        URL configurationFileLoc = getClass().getClassLoader().getResource("mock_config_files/sample_config_file_missing_dataID_name_in_event.xml");
+
+        if (null == configurationFileLoc)
+        {
+            fail("Test resource \"sample_config_file_missing_dataID_name_in_event.xml\" was not found.");
+        }
+
         Boolean isParsed = config.parseConfigFile(configurationFileLoc);
         // verify expected parsing errors occurred
         assertEquals(false, isParsed);

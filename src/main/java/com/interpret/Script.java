@@ -26,6 +26,12 @@ public class Script implements AnalysisManager
         analyzer = new Analyzer();
     }
 
+    // getter function used during unit testing
+    public Analyzer getAnalyzer()
+    {
+        return analyzer;
+    }
+
     @Override
     public LogData executeAnalyzer(LogData logData)
     {
