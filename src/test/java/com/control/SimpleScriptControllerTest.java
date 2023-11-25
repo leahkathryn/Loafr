@@ -99,6 +99,11 @@ public class SimpleScriptControllerTest
         {
             fail("Exception from System exit check.");
         }
+
+        if (dir.exists())
+        {
+            dir.delete();
+        }
     }
 
     @Test
