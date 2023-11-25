@@ -28,7 +28,16 @@ public class BatchScriptController implements Controller
     }
 
     @Override
-    public void execute(){}
+    public String getOutputFileLoc()
+    {
+        return outputFileLoc;
+    }
+
+    @Override
+    public void execute()
+    {
+        System.out.println("Loafr-0.1 has not implemented batch processing.");
+    }
 
     @Override
     public void alertOutput(String message)

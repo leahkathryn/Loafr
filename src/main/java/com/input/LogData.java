@@ -136,7 +136,12 @@ public class LogData
         if (outputLoc.equals("."))
         {
             File dir = new File("output");
-            dir.mkdirs();
+            if (!dir.mkdir())
+            {
+                ErrorHandler.logError("Error creating output directory in current working directory." +
+                        "\nChange permissions or provide a valid output location.");
+                return false;
+            }
             File output = new File(dir, "output.txt");
             try {
                 output.createNewFile();

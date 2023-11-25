@@ -33,6 +33,23 @@ public class SimpleScriptController implements Controller
         this.outputFileLoc = outputFileLoc;
     }
 
+    // getter functions for testing purposes
+    @Override
+    public String getOutputFileLoc()
+    {
+        return outputFileLoc;
+    }
+
+    public String getLogFileLoc()
+    {
+        return logFileLoc;
+    }
+
+    public String getScriptFileLoc()
+    {
+        return scriptFileLoc;
+    }
+
     @Override
     public void execute()
     {

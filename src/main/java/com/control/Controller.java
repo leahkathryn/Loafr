@@ -12,4 +12,5 @@ public interface Controller
 {
     void execute();
     void alertOutput(String message);
+    String getOutputFileLoc();
 }

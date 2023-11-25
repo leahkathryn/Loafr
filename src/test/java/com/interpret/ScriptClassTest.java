@@ -3,8 +3,8 @@ package com.interpret;
 import com.analyze.AnalysisTask;
 import com.input.Configuration;
 import com.analyze.Search;
-
 import com.input.LogEvent;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -20,6 +20,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * This test class tests the public method interpretScript of the Script class.
  * Test cases:
+ *      interpretScript method is called with valid file location and a single valid script instruction, returns true
+ *      interpretScript method is called with valid file location and multiple valid script instructions, returns true
+ *      interpretScript method is called with invalid file location, returns false
+ *      interpretScript method is called with NULL for the file location parameter, returns false
+ *      interpretScript method is called with valid file location but the file is empty, returns false
+ *      interpretScript method is called with valid file location but there are invalid keywords in the script,
+ *                                                          so the interpreter returns a NULL task, return false
  *
  * @author Leah Lehmeier
  */
@@ -32,6 +39,10 @@ public class ScriptClassTest
     static void beforeAll()
     {
         URL configurationFileLoc = ScriptClassTest.class.getClassLoader().getResource("sample_config_file.xml");
+        if (null == configurationFileLoc)
+        {
+            fail("Test resource \"sample_config_file.xml\" was not found.");
+        }
         Configuration configuration = new Configuration();
         if (Boolean.FALSE == configuration.parseConfigFile(configurationFileLoc))
         {

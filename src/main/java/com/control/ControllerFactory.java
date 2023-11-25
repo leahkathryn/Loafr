@@ -34,7 +34,7 @@ public class ControllerFactory
 
         Flag firstArg = null;
 
-        if (null == (firstArg = Flag.fromString(arguments.get(0))))
+        if (arguments.isEmpty() || (null == (firstArg = Flag.fromString(arguments.get(0)))))
         {
             ErrorHandler.logError("The argument list contains a syntax error.\n" +
                     "Usage: <-l> <log file path> <-s> <script file path> optional: <-o> <output file path>\n" +
@@ -42,7 +42,15 @@ public class ControllerFactory
             return null;
         }
 
+        // parse the output location from the argument list, if it exists there
         parseOutputLoc(configuration);
+        // check for failure to parse output location
+        if (null == outputLoc)
+        {
+            ErrorHandler.logError("The argument list contains a syntax error.\n" +
+                    "Usage: <-l> <log file path> <-s> <script file path> optional: <-o> <output file path>\n");
+            return null;
+        }
 
         switch(firstArg)
         {
@@ -68,8 +76,19 @@ public class ControllerFactory
         // check the input for an output file location
         if (arguments.contains(Flag.OUTPUTLOC.toString()))
         {
-            outputLoc = arguments.remove(arguments.indexOf(Flag.OUTPUTLOC.toString())+1);
-            arguments.remove(Flag.OUTPUTLOC.toString());
+            int index = arguments.indexOf(Flag.OUTPUTLOC.toString())+1;
+            if (arguments.size() == index || arguments.get(index).startsWith("-"))
+            {
+                ErrorHandler.logError("The argument list contains a syntax error.\n" +
+                        "Usage: <-b> <-l> <log file list> <-s> <script file list> optional: <-o> <output file path> <-m> <event | log>\n");
+                outputLoc = null;
+            }
+            else
+            {
+                outputLoc = arguments.remove(index);
+                arguments.remove(Flag.OUTPUTLOC.toString());
+            }
+
         }
         else
         {
@@ -88,8 +107,10 @@ public class ControllerFactory
      */
     private Controller parseBatchArguments(Configuration configuration)
     {
+        // remove the "-b" flag
         arguments.remove(0);
-        String flag = "";
+        // merging strategy specifier
+        String merge = "";
         List<String> logLocList = new ArrayList<>();
         List<String> scriptLocList = new ArrayList<>();
 
@@ -97,7 +118,7 @@ public class ControllerFactory
         {
             int index = arguments.indexOf(Flag.LOGLOC.toString())+1;
             // add file locations to the list until the next flag is encountered or the argument list ends
-            while (!arguments.get(index).startsWith("-") && index < arguments.size())
+            while (index < arguments.size() && !arguments.get(index).startsWith("-"))
             {
                 logLocList.add(arguments.get(index));
                 index++;
@@ -108,7 +129,7 @@ public class ControllerFactory
         {
             int index = arguments.indexOf(Flag.SCRIPTLOC.toString())+1;
             // add file locations to the list until the next flag is encountered or the argument list ends
-            while (!arguments.get(index).startsWith("-") && index < arguments.size())
+            while (index < arguments.size() && !arguments.get(index).startsWith("-"))
             {
                 scriptLocList.add(arguments.get(index));
                 index++;
@@ -117,9 +138,9 @@ public class ControllerFactory
 
         if (arguments.contains(Flag.MERGE.toString()))
         {
-
             int index = arguments.indexOf(Flag.MERGE.toString())+1;
-            if (arguments.get(index).startsWith("-"))
+            // if the "-m" flag is the last argument in the list, or if the following argument is another flag, fail
+            if (arguments.size() == index || arguments.get(index).startsWith("-"))
             {
                 ErrorHandler.logError("The argument list contains a syntax error.\n" +
                         "Usage: <-b> <-l> <log file list> <-s> <script file list> optional: <-o> <output file path> <-m> <event | log>\n");
@@ -127,7 +148,7 @@ public class ControllerFactory
             }
             else
             {
-                flag = arguments.get(index);
+                merge = arguments.get(index);
             }
         }
 
@@ -138,7 +159,7 @@ public class ControllerFactory
             return null;
         }
 
-        return new BatchScriptController(configuration,flag,logLocList,scriptLocList,outputLoc);
+        return new BatchScriptController(configuration,merge,logLocList,scriptLocList,outputLoc);
     }
 
     /**
@@ -171,17 +192,31 @@ public class ControllerFactory
 
         if (arguments.contains(Flag.LOGLOC.toString()))
         {
-            logLoc = arguments.remove(arguments.indexOf(Flag.LOGLOC.toString())+1);
-            arguments.remove(Flag.LOGLOC.toString());
+            int index = arguments.indexOf(Flag.LOGLOC.toString())+1;
+            // if the "-l" flag is the last argument in the list, or if the following argument is another flag, fail
+            if (arguments.size() == index || arguments.get(index).startsWith("-"))
+            {
+                ErrorHandler.logError("The argument list contains a syntax error.\n" +
+                        "Usage: <-l> <log file list> <-s> <script file list> optional: <-o> <output file path> <-m> <event | log>\n");
+                return null;
+            }
+            logLoc = arguments.get(index);
         }
 
         if (arguments.contains(Flag.SCRIPTLOC.toString()))
         {
-            scriptLoc = arguments.remove(arguments.indexOf(Flag.SCRIPTLOC.toString())+1);
-            arguments.remove(Flag.SCRIPTLOC.toString());
+            int index = arguments.indexOf(Flag.SCRIPTLOC.toString())+1;
+            // if the "-l" flag is the last argument in the list, or if the following argument is another flag, fail
+            if (arguments.size() == index || arguments.get(index).startsWith("-"))
+            {
+                ErrorHandler.logError("The argument list contains a syntax error.\n" +
+                        "Usage: <-l> <log file list> <-s> <script file list> optional: <-o> <output file path> <-m> <event | log>\n");
+                return null;
+            }
+            scriptLoc = arguments.get(index);
         }
 
-        if (logLoc.isBlank() || scriptLoc.isBlank() || !arguments.isEmpty())
+        if (logLoc.isBlank() || scriptLoc.isBlank())
         {
             ErrorHandler.logError("The argument list contains a syntax error.\n" +
                     "Usage: <-l> <log file path> <-s> <script file path> optional: <-o> <output file path>");
