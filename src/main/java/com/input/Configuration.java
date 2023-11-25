@@ -26,6 +26,7 @@ import static com.input.DataType.*;
  * the system via getters.
  *
  * @author Jeremiah Hockett
+ * @editor Leah
  */
 
 public class Configuration

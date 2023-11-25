@@ -1,12 +1,10 @@
 package com.input;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -14,6 +12,15 @@ import java.util.List;
 import static com.input.DataType.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * The ConfigurationTest class provides test for 10 possible scenarios that a Configuration object will encounter.
+ * The first case test for a Configuration objects ability to parse a configuration file that follows section 3.2 of
+ * the design document and requirements 10-12. All others cases test for a Configuration object's ablity to detects errors
+ * in a configuration file tht violate them.
+ *
+ * @author Jeremiah Hockett
+ * @editor Leah
+ **/
 
 public class ConfigurationTest {
     static List<Event> testEventList = new ArrayList<>();
@@ -125,6 +132,11 @@ public class ConfigurationTest {
                 new DataID("Fuel_Type" , STRING)));
     }
 
+    /**
+     * Test method uses a correct configuration file and compares the result of parseConfigFile() to the expected result
+     * created in setupTest0. The method parseConfigFile must parse the configuration file such that it output the boolean
+     * value true as well as the list of Event and DataID objects identical to the expected result.
+     */
     @Test
     void parseConfigFileTestIfSuccessful() {
         URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file.xml");
@@ -159,6 +171,10 @@ public class ConfigurationTest {
         }
     }
 
+    /**
+     * Test method uses a Configuration file that contains a child of events that is not an event node. The method parseConfigFile()
+     * must detect the error, cease parsing the file, print an the appropriate error message into the console, and output false.
+     */
     @Test
     void parseConfigFileTestIfNodeInEventsIsNotEvent(){
         URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file_wrong_node_in_events.xml");
@@ -166,7 +182,11 @@ public class ConfigurationTest {
         // parseConfigFile must detect child nodes of "events" that are not named "event", not name attribute of event
         assertEquals(false, isParsed);
     }
-
+    /**
+     * Test method uses a Configuration file that contains a data element node that is missing a name. The method
+     * parseConfigFile() must detect the error, cease parsing the file, print the appropriate error message into the
+     * console, and output false.
+     */
     @Test
     void parseConfigFileTestDataIDNodeMissingName(){
         URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file_wrong_dataID_node0.xml");
@@ -175,6 +195,11 @@ public class ConfigurationTest {
         assertEquals(false, isParsed);
     }
 
+    /**
+     * Test method uses a Configuration file that contains a data element node that is missing a data type. The method
+     * parseConfigFile() must detect the error, cease parsing the file, print the appropriate error message into the
+     * console, and output false.
+     */
     @Test
     void parseConfigFileTestDataIDNodeMissingType(){
         URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file_wrong_dataID_node1.xml");
@@ -183,6 +208,10 @@ public class ConfigurationTest {
         assertEquals(false, isParsed);
     }
 
+    /**
+     * Test method uses a Configuration file that is missing a default output file location. The method parseConfigFile()
+     * must detect the error, cease parsing the file, print the appropriate error message into the console, and output false.
+     */
     @Test
     void parseConfigFileTestMissingDefaultFileLoc(){
         URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file_missing_fileLoc.xml");
@@ -190,7 +219,11 @@ public class ConfigurationTest {
         // verify expected parsing errors occurred
         assertEquals(false, isParsed);
     }
-
+    /**
+     * Test method uses a Configuration file in which the file location is stored as not an attribute of node "
+     * default_output_location." The method parseConfigFile() must detect the error, cease parsing the file, print an
+     * error into the console, and output false.
+     */
     @Test
     void parseConfigFileTestWrongDefaultFileLoc(){
         URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file_defaultFileLocNotElem.xml");
@@ -199,6 +232,10 @@ public class ConfigurationTest {
         assertEquals(false, isParsed);
     }
 
+    /**
+     * Test method uses a Configuration file that contains no event nodes. The method parseConfigFile() must detect
+     * the error, cease parsing the file, print the appropriate error message into the console, and output false.
+     */
     @Test
     void parseConfigFileTestMissingAllEventNodes(){
         URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file_missing_events.xml");
@@ -207,6 +244,10 @@ public class ConfigurationTest {
         assertEquals(false, isParsed);
     }
 
+    /**
+     * Test method uses a Configuration file that is missing a data element node. The method parseConfigFile() must
+     * detect the error, cease parsing the file, print the appropriate error message into the console, and output false.
+     */
     @Test
     void parseConfigFileTestMissingDataIDNode(){
         URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file_missing_dataID.xml");
@@ -215,6 +256,10 @@ public class ConfigurationTest {
         assertEquals(false, isParsed);
     }
 
+    /**
+     * Test method uses a Configuration file that has no data element node. The method parseConfigFile() must
+     * detect the error, cease parsing the file, print the appropriate error message into the console, and output false.
+     */
     @Test
     void parseConfigFileTestMissingAllDataIDNodes(){
         URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file_missing_dataIDs.xml");
@@ -223,6 +268,10 @@ public class ConfigurationTest {
         assertEquals(false, isParsed);
     }
 
+    /**
+     * Test method uses a Configuration file that has no data element node under an event. The method parseConfigFile() must
+     * detect the error, cease parsing the file, print the appropriate error message into the console, and output false.
+     */
     @Test
     void parseConfigFileTestMissingAllDataIDNodesInEvent(){
         URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file_missing_dataID_name_in_event.xml");
