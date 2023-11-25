@@ -8,6 +8,12 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+/**
+ * This test class tests the public method getController of the ControllerFactory class.
+ * Test cases:
+ *
+ * @author Leah Lehmeier
+ */
 public class ControllerFactoryTest
 {
     @BeforeAll

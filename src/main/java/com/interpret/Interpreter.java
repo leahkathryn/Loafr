@@ -70,13 +70,17 @@ public class Interpreter
         if (instructions.size() == 1)
         {
             String regex = getRegEx(instructions.get(0));
+            if (null == regex)
+            {
+                return null;
+            }
             task = new Search(regex);
         }
         else
         {
             // if the instructions have >1 arguments, the first argument will be the attribute type to search through
             LogEvent.AttributeType attributeType;
-            if (null == (attributeType= getAttributeType(instructions.get(0))))
+            if (null == (attributeType = getAttributeType(instructions.get(0))))
             {
                 // ErrorHandler already sent message
                 return null;
@@ -85,7 +89,7 @@ public class Interpreter
             // if the attribute type to be searched through is the data values of a DataID,
             // the DataID name will be provided in the script. The provided name will need to
             // be checked for validity against the list in Configuration.
-            if (LogEvent.AttributeType.DATAVALUE  == attributeType)
+            if (LogEvent.AttributeType.DATAVALUE == attributeType)
             {
                 if (instructions.size() != 3)
                 {
@@ -93,7 +97,20 @@ public class Interpreter
                             "There is a syntax error within a Search command.\nLoafr exiting...");
                     return null;
                 }
-                task = new Search(attributeType,getDataID(instructions.get(1)),getRegEx(instructions.get(2)));
+                DataID dataID = null;
+                if (null == (dataID = getDataID(instructions.get(1))))
+                {
+                    // ErrorHandler already sent message
+                    return null;
+                }
+
+                String regex = null;
+                if (null == (regex = getRegEx(instructions.get(2))))
+                {
+                    return null;
+                }
+
+                task = new Search(attributeType,dataID,regex);
             }
             else
             {
@@ -103,7 +120,14 @@ public class Interpreter
                             "There is a syntax error within a Search command.\nLoafr exiting...");
                     return null;
                 }
-                task = new Search(attributeType,getRegEx(instructions.get(1)));
+
+                String regex = null;
+                if (null == (regex = getRegEx(instructions.get(1))))
+                {
+                    return null;
+                }
+
+                task = new Search(attributeType,regex);
             }
         }
         return task;
@@ -122,11 +146,6 @@ public class Interpreter
     {
         // remove leading and trailing whitespace
         regex = regex.strip();
-        // remove regex delimiters, if present
-        if (regex.charAt(0) == '/' && regex.charAt(regex.length()-1) == '/')
-        {
-            regex = regex.substring(1,regex.length()-1);
-        }
         // if the regex is empty, log an error and return null
         if (regex.isBlank())
         {
@@ -134,6 +153,20 @@ public class Interpreter
                     "No arguments were provided for a Search command.\nLoafr exiting...");
             return null;
         }
+
+        // remove regex delimiters, if present
+        if (regex.charAt(0) == '/' && regex.charAt(regex.length()-1) == '/')
+        {
+            regex = regex.substring(1,regex.length()-1).strip();
+            // check again for empty regex
+            if (regex.isBlank())
+            {
+                ErrorHandler.logError("Failure interpreting script: " +
+                        "No arguments were provided for a Search command.\nLoafr exiting...");
+                return null;
+            }
+        }
+
         return regex;
     }
 
@@ -186,7 +219,6 @@ public class Interpreter
         }
         if (null == match)
         {
-            System.out.println("First exit condition: 4");
             ErrorHandler.logError("Failure interpreting script: " +
                     "There is a syntax error or unrecognized argument within a Search command.\nLoafr exiting...");
             return null;

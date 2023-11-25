@@ -40,6 +40,23 @@ public class Search implements AnalysisTask {
         regex = reg;
     }
 
+    // getter functions used during unit testing
+    @Override
+    public AttributeType getAttributeType()
+    {
+        return attributeType;
+    }
+    @Override
+    public DataID getDataID()
+    {
+        return dataID;
+    }
+    @Override
+    public String getRegex()
+    {
+        return regex;
+    }
+
     //Executes a search function on the inputted LogData.
     //Takes in a LogData object and returns a LogData object.
     @Override
