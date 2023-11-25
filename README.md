@@ -20,7 +20,8 @@ Attribute types:
     When the dataType attribute type is specified, all log entries with a data point with a matching data type will appear in the output file.
 - dataValue: the value of a data point  
     When the dataValue attribute type is specified, the name of a data point must be supplied that is an exact match to a defined data identifier.  
-    
+### Regular Expressions  
+At this time, Loafr accepts regular expression patterns that follow the syntax defined in the [Java Pattern Class Documentation](https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html). The Pattern engine is similar to the pattern matching in Perl 5, and the link describes the differences. 
 
 ## Instructions to build Loafr
 1. In the terminal, navigate to Loafr directory
