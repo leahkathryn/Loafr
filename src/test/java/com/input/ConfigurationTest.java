@@ -14,13 +14,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
- * The ConfigurationTest class provides test for 10 possible scenarios that a Configuration object will encounter.
+ * The ConfigurationTest class provides tests for 10 possible scenarios that a Configuration object will encounter.
  * The first case test for a Configuration objects ability to parse a configuration file that follows section 3.2 of
  * the design document and requirements 10-12. All others cases test for a Configuration object's ablity to detects errors
- * in a configuration file tht violate them.
+ * in a configuration file that violate them. Every test in this class passes.
  *
  * @author Jeremiah Hockett
- * @editor Leah
+ * @editor Leah Lehmeier
  **/
 
 public class ConfigurationTest {
