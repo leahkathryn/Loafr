@@ -66,27 +66,32 @@ public class Search implements AnalysisTask {
         events = logObject.getEventList();
 
         //Searches all fields in the LogEvent.
+        Pattern pattern = Pattern.compile(regex);
         if (null == attributeType) {
             for (LogEvent event : events) {
-                Pattern pattern = Pattern.compile(regex);
-                Matcher matcher = pattern.matcher(event.getTimeStamp().toString());
-                if (matcher.find()) {
-                    output.addLogEvent(event);
-                    continue;
+                if (event.getTimeStamp() != null) {
+                    Matcher matcher = pattern.matcher(event.getTimeStamp().toString());
+                    if (matcher.find()) {
+                        output.addLogEvent(event);
+                        continue;
+                    }
+                    Matcher matcher1 = pattern.matcher(event.getEventType().toString());
+                    if (matcher1.find()) {
+                        output.addLogEvent(event);
+                        continue;
+                    }
                 }
-                Matcher matcher1 = pattern.matcher(event.getEventType().toString());
-                if (matcher1.find()) {
-                    output.addLogEvent(event);
-                    continue;
-                }
+
                 data = event.getDataIDMap();
-                outerloop:
-                for (List<?> dataList : data.values()) { //parses through all DataiID keys
-                    for (Object dataValue : dataList) { //parses list for each dataId
-                        Matcher matcher2 = pattern.matcher(dataValue.toString());
-                        if (matcher2.find()) {
-                            output.addLogEvent(event);
-                            break outerloop; //breaks loop since event has been added
+                if(data != null) {
+                    outerloop:
+                    for (List<?> dataList : data.values()) { //parses through all DataiID keys
+                        for (Object dataValue : dataList) { //parses list for each dataId
+                            Matcher matcher2 = pattern.matcher(dataValue.toString());
+                            if (matcher2.find()) {
+                                output.addLogEvent(event);
+                                break outerloop; //breaks loop since event has been added
+                            }
                         }
                     }
                 }
@@ -96,7 +101,6 @@ public class Search implements AnalysisTask {
                 HashMap<DataID, List<?>> dataMap = event.getDataIDMap();
                 List<?> dataValues = dataMap.get(dataID);
                 for (Object dataPoint : dataValues) { //parses list for each data value
-                    Pattern pattern = Pattern.compile(regex);
                     Matcher matcher = pattern.matcher(dataPoint.toString());
                     if (matcher.find()) {
                         output.addLogEvent(event);
@@ -107,7 +111,7 @@ public class Search implements AnalysisTask {
         } else {
             // Searches the attributeType field specified in the script
             for (LogEvent event : events) {
-                Pattern pattern = Pattern.compile(regex);
+                //Pattern pattern = Pattern.compile(regex);
                 switch (attributeType) {
                     case TIMESTAMP: //Checks if timestamp matches regex
                         Matcher matcher = pattern.matcher(event.getTimeStamp().toString());
