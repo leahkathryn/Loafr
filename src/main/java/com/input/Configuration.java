@@ -23,7 +23,8 @@ import static com.input.DataType.*;
  * of the configuration file, the main method of the class, parseConfigFile(), parses the configuration file containing
  * the node representations of dataID and event objects as well as the default output file location as a string,
  * extracts them from the file, and stores them in private attributes that can be access at any time by other parts of
- * the system via getters.
+ * the system via getters. The method parseConfigFile() and its helper functions follow section 3.2 of
+ * the design document and requirements 10-15, 25, 26, and 32.
  *
  * @author Jeremiah Hockett
  * @editor Leah
