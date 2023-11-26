@@ -18,9 +18,6 @@ public class Search implements AnalysisTask {
     private DataID dataID;
     private String regex;
     private List<LogEvent> events;
-    private List<LogEvent> outputEvents;
-    private LogEvent temp;
-
 
     public Search(AttributeType type, DataID data, String reg) {
         attributeType = type;
@@ -75,7 +72,7 @@ public class Search implements AnalysisTask {
                         output.addLogEvent(event);
                         continue;
                     }
-                    Matcher matcher1 = pattern.matcher(event.getEventType().toString());
+                    Matcher matcher1 = pattern.matcher(event.getEventType());
                     if (matcher1.find()) {
                         output.addLogEvent(event);
                         continue;
@@ -113,21 +110,19 @@ public class Search implements AnalysisTask {
             for (LogEvent event : events) {
                 //Pattern pattern = Pattern.compile(regex);
                 switch (attributeType) {
-                    case TIMESTAMP: //Checks if timestamp matches regex
+                    case TIMESTAMP -> { //Checks if timestamp matches regex
                         Matcher matcher = pattern.matcher(event.getTimeStamp().toString());
                         if (matcher.find()) {
                             output.addLogEvent(event);
                         }
-                        break;
-
-                    case EVENT: //Checks if event matches regex
+                    }
+                    case EVENT -> { //Checks if event matches regex
                         Matcher matcher1 = pattern.matcher(event.getEventType());
                         if (matcher1.find()) {
                             output.addLogEvent(event);
                         }
-                        break;
-
-                    case DATAID: //Checks if DataID keys match regex
+                    }
+                    case DATAID -> { //Checks if DataID keys match regex
                         data = event.getDataIDMap();
                         for (DataID dataKey : data.keySet()) {
                             Matcher matcher2 = pattern.matcher(dataKey.toString());
@@ -136,9 +131,8 @@ public class Search implements AnalysisTask {
                                 break;
                             }
                         }
-                        break;
-
-                    case DATATYPE: //Checks if Data type matches regex
+                    }
+                    case DATATYPE -> { //Checks if Data type matches regex
                         data = event.getDataIDMap();
                         for (DataID dataKey : data.keySet()) {
                             Matcher matcher3 = pattern.matcher(dataKey.getType().toString());
@@ -147,10 +141,8 @@ public class Search implements AnalysisTask {
                                 break;
                             }
                         }
-                        break;
-
-                    default:
-                        ErrorHandler.logError("The requested attribute type is not implemented by Loafr.");
+                    }
+                    default -> ErrorHandler.logError("The requested attribute type is not implemented by Loafr.");
                 }
             }
         }

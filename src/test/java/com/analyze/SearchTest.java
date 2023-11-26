@@ -12,9 +12,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.ErrorHandler;
-import org.w3c.dom.Attr;
 
-import javax.management.Attribute;
 
 public class SearchTest
 {
