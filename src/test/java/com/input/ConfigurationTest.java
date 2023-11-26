@@ -201,7 +201,7 @@ public class ConfigurationTest {
      * console, and output false.
      */
     @Test
-    void parseConfigFile_DataIDNodeMissingName_returnFalse(){
+    void parseConfigFile_DataElementNodeMissingName_returnFalse(){
         URL configurationFileLoc = getClass().getClassLoader().getResource("mock_config_files/sample_config_file_wrong_dataID_node0.xml");
 
         if (null == configurationFileLoc)
@@ -220,7 +220,7 @@ public class ConfigurationTest {
      * console, and output false.
      */
     @Test
-    void parseConfigFile_DataIDNodeMissingType_returnFalse(){
+    void parseConfigFile_DataElementNodeMissingType_returnFalse(){
         URL configurationFileLoc = getClass().getClassLoader().getResource("mock_config_files/sample_config_file_wrong_dataID_node1.xml");
 
         if (null == configurationFileLoc)
@@ -292,7 +292,7 @@ public class ConfigurationTest {
      * detect the error, cease parsing the file, print the appropriate error message into the console, and output false.
      */
     @Test
-    void parseConfigFile_MissingDataIDNode_returnFalse(){
+    void parseConfigFile_MissingDataElementNode_returnFalse(){
         URL configurationFileLoc = getClass().getClassLoader().getResource("mock_config_files/sample_config_file_missing_dataID.xml");
 
         if (null == configurationFileLoc)
@@ -310,7 +310,7 @@ public class ConfigurationTest {
      * detect the error, cease parsing the file, print the appropriate error message into the console, and output false.
      */
     @Test
-    void parseConfigFile_MissingAllDataIDNodes_returnFalse(){
+    void parseConfigFile_MissingAllDataElementNodes_returnFalse(){
         URL configurationFileLoc = getClass().getClassLoader().getResource("mock_config_files/sample_config_file_missing_dataIDs.xml");
 
         if (null == configurationFileLoc)
@@ -328,7 +328,7 @@ public class ConfigurationTest {
      * detect the error, cease parsing the file, print the appropriate error message into the console, and output false.
      */
     @Test
-    void parseConfigFile_MissingAllDataIDNodesInEvent_returnFalse(){
+    void parseConfigFile_MissingAllDataElementNodesInEvent_returnFalse(){
         URL configurationFileLoc = getClass().getClassLoader().getResource("mock_config_files/sample_config_file_missing_dataID_name_in_event.xml");
 
         if (null == configurationFileLoc)
