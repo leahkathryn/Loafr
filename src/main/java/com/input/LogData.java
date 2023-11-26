@@ -59,6 +59,9 @@ public class LogData
         for (String line : lines)
         {
             // Separate each value in the line by comma and store them in a list.
+            if (!line.contains(",")){
+                continue;
+            }
             String[] values = line.split(",");
             List<String> dataValuesInput = new ArrayList<>();
             // Remove leading/trailing whitespace and add to ArrayList
@@ -68,6 +71,10 @@ public class LogData
             }
 
             // Create Timestamp
+            if (dataValuesInput.size() == 0){
+                System.out.println("This is not valid, please check the logfile.");
+                break;
+            }
             Timestamp timestamp = parseTimeStamp(dataValuesInput.get(0));
 
             // Create LogEvent
@@ -200,10 +207,10 @@ public class LogData
                 }
                 writer.newLine();
             }
-            return true; // Successfully wrote the log data to the output file
+            return true;
         } catch (IOException e) {
             ErrorHandler.logError("Error while writing log data to file: " + e.getMessage());
-            return false; // Failed to write the log data to the output file
+            return false;
         }
     }
 

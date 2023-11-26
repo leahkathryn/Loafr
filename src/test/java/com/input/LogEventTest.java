@@ -358,7 +358,7 @@ public class LogEventTest {
 
 
     /**
-     * Test if we have too much elements. For example... 100 strings.
+     * Test if we have too many elements. For example... 100 strings.
      */
     @Test
     void testConvertInputToDataMap_8_RandomStrings() {
