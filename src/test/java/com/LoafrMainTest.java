@@ -64,7 +64,7 @@ public class LoafrMainTest {
 
 
     /**
-     * Test method checks whether the system can detect a commmand input with an incorrect script flag and output an
+     * Test method checks whether the system can detect a command input with an incorrect script flag and output an
      * error message saying that the input contain syntax errors. The test passes.
      */
     @Test
