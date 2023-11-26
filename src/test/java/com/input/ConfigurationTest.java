@@ -274,7 +274,7 @@ public class ConfigurationTest {
      * the error, cease parsing the file, print the appropriate error message into the console, and output false.
      */
     @Test
-    void parseConfigFile_tMissingAllEventNodes_returnFalse(){
+    void parseConfigFile_MissingAllEventNodes_returnFalse(){
         URL configurationFileLoc = getClass().getClassLoader().getResource("mock_config_files/sample_config_file_missing_events.xml");
 
         if (null == configurationFileLoc)
