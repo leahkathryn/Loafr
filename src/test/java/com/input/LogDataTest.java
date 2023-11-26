@@ -317,4 +317,33 @@ public class LogDataTest
         assertTrue(logData.getEventList().isEmpty());
         System.out.println("**--- Test12_test_empty_write_logData executed ---**");
     }
+
+
+    /**
+     * Test if the output location is not valid.
+     * It should suppose to touch a new directory or file and store the output in it.
+     * It shall not crash.
+     */
+    @Test
+    void Test13_test_invalid_output_loc(){
+        String destinationFilePath = "ThisIsInvalid";
+        URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file.xml");
+        Configuration configuration = new Configuration();
+        configuration.parseConfigFile(configurationFileLoc);
+        LogData logData = new LogData();
+        String path1 = "./src/test/resources/log_file_1";
+        boolean parsingStatus = logData.parseLogFile(path1, configuration);
+        assertNotNull(logData);
+        assertEquals(10,logData.getEventList().size());
+        assertTrue(parsingStatus);
+        assertFalse(logData.getEventList().isEmpty());
+        // By this point, this has been successfully read into logData.
+        // We need to export it right now.
+        boolean writeResult = logData.writeLogData(destinationFilePath, configuration);
+        assertNotNull(logData);
+        assertTrue(writeResult);
+        assertEquals(10,logData.getEventList().size());
+        assertFalse(logData.getEventList().isEmpty());
+        System.out.println("**--- Test13_test_invalid_output_loc executed ---**");
+    }
 }
