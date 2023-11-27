@@ -4,24 +4,29 @@ import com.input.Configuration;
 
 import java.io.File;
 import java.net.URL;
+import java.nio.file.Path;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
 import static org.junit.jupiter.api.Assertions.fail;
-import static com.github.stefanbirkner.systemlambda.SystemLambda.catchSystemExit;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * This test class tests the public method execute of the SimpleScriptController class.
  * Test cases:
- *      Class is initialized with an invalid script, System exit is called
- *      Class is initialized with an invalid log file, System exit is called
- *      Class is initialized with an invalid output file location, System exit is called
+ *      Class is initialized with an invalid script, returns false
+ *      Class is initialized with an invalid log file, returns false
+ *      Class is initialized with an invalid output file location, returns false
  *
  * @author Leah Lehmeier
  */
 public class SimpleScriptControllerTest
 {
     static Configuration configuration;
+    static File dir;
 
     @BeforeAll
     static void beforeAll()
@@ -36,10 +41,21 @@ public class SimpleScriptControllerTest
         {
             fail("Configuration file parsing failure.");
         }
+
+        dir = new File("output");
+    }
+
+    @AfterEach
+    void afterEach()
+    {
+        if (dir.exists())
+        {
+            dir.delete();
+        }
     }
 
     @Test
-    void Execute_InvalidScript_SystemExit()
+    void Execute_InvalidScript_ReturnFalse()
     {
         URL scriptFileLoc = getClass().getClassLoader().getResource("mock_scripts/mock_script_invalid_keywords.txt");
 
@@ -56,18 +72,11 @@ public class SimpleScriptControllerTest
         }
 
         SimpleScriptController controller = new SimpleScriptController(configuration,logFileLoc.getPath(),scriptFileLoc.getPath(),"outputLocation.txt");
-        try {
-            catchSystemExit(() -> {
-                controller.execute();
-            });
-        } catch (Exception ex)
-        {
-            fail("Exception from System exit check.");
-        }
+        assertFalse(controller.execute());
     }
 
     @Test
-    void Execute_InvalidOutputFileLocation_SystemExit()
+    void Execute_InvalidOutputFileLocation_ReturnFalse()
     {
         URL scriptFileLoc = getClass().getClassLoader().getResource("mock_scripts/mock_script_single_search_instruction.txt");
 
@@ -83,31 +92,19 @@ public class SimpleScriptControllerTest
             fail("Test resource \"log_file_3\" was not found.");
         }
 
-        File dir = new File("output");
+        // make a directory with the output file name so that output writing will fail
         if (!dir.mkdir())
         {
             fail("Error creating test directory.");
         }
 
         SimpleScriptController controller = new SimpleScriptController(configuration,logFileLoc.getPath(),scriptFileLoc.getPath(),"output");
-        try {
-            catchSystemExit(() -> {
-                controller.execute();
-            });
-        }
-        catch (Exception ex)
-        {
-            fail("Exception from System exit check.");
-        }
 
-        if (dir.exists())
-        {
-            dir.delete();
-        }
+        assertFalse(controller.execute());
     }
 
     @Test
-    void Execute_InvalidLogFile_SystemExit()
+    void Execute_InvalidLogFile_ReturnFalse()
     {
         URL scriptFileLoc = getClass().getClassLoader().getResource("mock_scripts/mock_script_single_search_instruction.txt");
 
@@ -117,13 +114,6 @@ public class SimpleScriptControllerTest
         }
 
         SimpleScriptController controller = new SimpleScriptController(configuration,"fail_on_purpose",scriptFileLoc.getPath(),"outputLocation.txt");
-        try {
-            catchSystemExit(() -> {
-                controller.execute();
-            });
-        } catch (Exception ex)
-        {
-            fail("Exception from System exit check.");
-        }
+        assertFalse(controller.execute());
     }
 }

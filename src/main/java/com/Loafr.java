@@ -25,7 +25,7 @@ public class Loafr
     {
         ControllerFactory controllerFactory = new ControllerFactory();
         Configuration configuration = new Configuration();
-        if (false == configuration.parseConfigFile(configurationFileLoc))
+        if (!configuration.parseConfigFile(configurationFileLoc))
         {
             // ErrorHandler already sent message
             System.exit(0);

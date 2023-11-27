@@ -61,8 +61,6 @@ public class LoafrMainTest {
         }
     }
 
-
-
     /**
      * Test method checks whether the system can detect a command input with an incorrect script flag and output an
      * error message saying that the input contain syntax errors. The test passes.
@@ -73,6 +71,7 @@ public class LoafrMainTest {
             catchSystemExit(() -> Loafr.main(new String[]{"-p", scriptPath, "-l", logPath, "-o", testOutputFilePath}));
             assertTrue(true);
         } catch (AssertionError | Exception e){
+            System.out.println("Exception: " + e);
             fail("Loafr has not exited upon catching error. Test failed.");
         }
     }

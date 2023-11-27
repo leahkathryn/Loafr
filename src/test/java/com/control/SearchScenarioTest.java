@@ -8,14 +8,13 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.fail;
-import static com.github.stefanbirkner.systemlambda.SystemLambda.*;
 
 /**
  * End-to-End test scenario.
@@ -28,11 +27,9 @@ import static com.github.stefanbirkner.systemlambda.SystemLambda.*;
  */
 public class SearchScenarioTest
 {
-    // @TempDir annotation will delete the file at this location after test completes
-    @TempDir File testOutputFileLoc;
-
     static String logFileName;
     static String scriptFileName;
+    static File outputFile;
     static String outputFileLocName;
     static String outputFirstLine;
     static String outputSecondLine;
@@ -49,6 +46,15 @@ public class SearchScenarioTest
         outputThirdLine = "2023-11-12 09:35:00.0,Communication_Check,success,0,[32.5 54.4 76.8],100";
     }
 
+    @AfterAll
+    static void tearDown()
+    {
+        if (outputFile.exists())
+        {
+            outputFile.delete();
+        }
+    }
+
     @Test
     void Loafr_SearchForEventType_Success()
     {
@@ -61,64 +67,43 @@ public class SearchScenarioTest
         File scriptFile = new File(classLoader.getResource(scriptFileName).getFile());
         String scriptPath = scriptFile.getAbsolutePath();
         // output location - will be deleted after test completes
-        testOutputFileLoc = new File(outputFileLocName);
+        File testOutputFileLoc = new File(outputFileLocName);
         String testOutputFilePath = testOutputFileLoc.getAbsolutePath();
 
         Loafr loafr = new Loafr();
+        loafr.main(new String[]{"-s",scriptPath,"-l",logPath,"-o",testOutputFilePath});
 
-        // catchSystemExit() throws an AssertionError if System.exit is not called
-        try {
-            catchSystemExit(() -> {
-                loafr.main(new String[]{"-s",scriptPath,"-l",logPath,"-o",testOutputFilePath});
-            });
-        }
-        // in this case, the program has not exited -> success and check output
-        catch (AssertionError | Exception ex)
+        outputFile = new File("output.txt");
+        // if this file exists, Loafr must have executed correctly a did not exit before completion
+        assertTrue(outputFile.exists());
+        assertTrue(outputFile.isFile());
+
+        List<String> outputLines = new ArrayList<>();
+        try
         {
-//            File outputDir = new File("output");
-//            assertTrue(outputDir.exists());
-//            assertTrue(outputDir.isDirectory());
-
-            File outputFile = new File("output.txt");
-            assertTrue(outputFile.exists());
-            assertTrue(outputFile.isFile());
-
-            List<String> outputLines = new ArrayList<>();
-            try
-            {
-                Scanner myReader = new Scanner(outputFile);
-                // read every line of the file into the list
-                while (myReader.hasNextLine()) {
-                    String output = myReader.nextLine();
-                    // do not add blank line to the list
-                    if (!output.isBlank())
-                    {
-                        outputLines.add(output.strip());
-                    }
+            Scanner myReader = new Scanner(outputFile);
+            // read every line of the file into the list
+            while (myReader.hasNextLine()) {
+                String output = myReader.nextLine();
+                // do not add blank line to the list
+                if (!output.isBlank())
+                {
+                    outputLines.add(output.strip());
                 }
-                myReader.close();
-            } catch (FileNotFoundException | NullPointerException e) {
-                fail();
             }
-
-            // verify output file is not empty
-            assertFalse(outputLines.isEmpty());
-
-            assertEquals(3,outputLines.size());
-
-            // verify output is expected
-            assertEquals(outputFirstLine,outputLines.get(0));
-            assertEquals(outputSecondLine,outputLines.get(1));
-            assertEquals(outputThirdLine,outputLines.get(2));
-
-            if (outputFile.exists())
-            {
-                outputFile.delete();
-            }
-            // "passes" the test, ends test case
-            return;
+            myReader.close();
+        } catch (FileNotFoundException | NullPointerException e) {
+            fail();
         }
-        // in this case, the program did exit -> fail
-        fail();
+
+        // verify output file is not empty
+        assertFalse(outputLines.isEmpty());
+
+        assertEquals(3,outputLines.size());
+
+        // verify output is expected
+        assertEquals(outputFirstLine,outputLines.get(0));
+        assertEquals(outputSecondLine,outputLines.get(1));
+        assertEquals(outputThirdLine,outputLines.get(2));
     }
 }
