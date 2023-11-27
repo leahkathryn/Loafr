@@ -20,6 +20,7 @@ public class SearchTest
     static LogData result1 = new LogData();
     static LogData result2 = new LogData();
     static LogData result3 = new LogData();
+    static LogData resultempty = new LogData();
     Search search;
 
     @BeforeAll
@@ -121,6 +122,17 @@ public class SearchTest
         System.out.println("**--- Test Execute_MatchingData_Success executed ---**");
     }
 
+    //Test searches for case where regex does not match any data
+    @Test
+    void Execute_MatchingData_Failure() {
+        search = new Search("nonData"); //Search constructor
+        LogData result = search.execute(inputLogFile);
+        assertEquals(resultempty.getEventList(), result.getEventList());
+
+        // Print statement indicating the test completion
+        System.out.println("**--- Test Execute_MatchingData_Failure executed ---**");
+    }
+
     //Tests searches for matching Event in the Event field
     @Test
     void Execute_MatchingAttributeEvent_Success() {
@@ -142,5 +154,4 @@ public class SearchTest
         // Print statement indicating the test completion
         System.out.println("**--- Test Execute_MatchingAttributeEvent_Fail executed ---**");
     }
-
 }
