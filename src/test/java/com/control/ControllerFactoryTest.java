@@ -15,27 +15,27 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 /**
  * This test class tests the public method getController of the ControllerFactory class.
  * Test cases:
- *      Argument list is empty, return null
- *      First argument is not a recognized flag, return null
- *      Provide output location, the provided location is set as Controller's output location
- *      Do not provide output location, Configuration default is set as Controller's output location
- *      The first argument is "-b", a BatchScriptController is returned
- *      The first argument is any accepted flag other than -b, a SimpleScriptController is returned
+ *      Test 1: Argument list is empty, return null
+ *      Test 2: First argument is not a defined flag, return null
+ *      Test 3: Provide output location, the provided location is set as the returned Controller's output location
+ *      Test 4: Do not provide output location, Configuration default is set as the returned Controller's output location
+ *      Test 5: The first argument is "-b", a BatchScriptController is returned
+ *      Test 6: The first argument is any accepted flag other than -b, a SimpleScriptController is returned
  *
  *      The following test cases describe conditions when batch processing is not requested:
- *      The argument list has more than 4 arguments, return null
- *      The argument list has less than 4 arguments, return null
- *      The argument list does not contain the "-l" flag, return null
- *      The argument list does not contain the "-s" flag, return null
- *      The argument list contains the "-l" flag but no log file location, return null
- *      The argument list contains the "-s" flag but no script file location, return null
+ *      Test 7: The argument list has less than 4 arguments, return null
+ *      Test 8: The argument list has more than 4 arguments, return null
+ *      Test 9: The argument list does not contain the "-l" flag, return null
+ *      Test 10: The argument list does not contain the "-s" flag, return null
+ *      Test 11: The argument list contains the "-s" flag but no script file location, return null
+ *      Test 12: The argument list contains the "-l" flag but no log file location, return null
  *
  *      The following test cases describe conditions when batch processing is requested:
- *      The argument list does not contain the "-l" flag, return null
- *      The argument list does not contain the "-s" flag, return null
- *      The argument list contains the "-l" flag but no log file location, return null
- *      The argument list contains the "-s" flag but no script file location, return null
- *      The argument list contains the "-m" flag but no merge instruction, return null
+ *      Test 13: The argument list does not contain the "-l" flag, return null
+ *      Test 14: The argument list does not contain the "-s" flag, return null
+ *      Test 15: The argument list contains the "-s" flag but no script file location, return null
+ *      Test 16: The argument list contains the "-l" flag but no log file location, return null
+ *      Test 17: The argument list contains the "-m" flag but no merge instruction, return null
  *
  * @author Leah Lehmeier
  */
@@ -60,7 +60,9 @@ public class ControllerFactoryTest
         factory = new ControllerFactory();
     }
 
-    // test case naming convention: MethodName_StateUnderTest_ExpectedBehavior
+    /* * *
+     * Test 1
+     * * */
     @Test
     void GetController_ArgumentListIsEmpty_ReturnNull()
     {
@@ -68,6 +70,9 @@ public class ControllerFactoryTest
         assertNull(controller);
     }
 
+    /* * *
+     * Test 2
+     * * */
     @Test
     void GetController_FirstArgumentIsUndefinedFlag_ReturnNull()
     {
@@ -92,6 +97,9 @@ public class ControllerFactoryTest
         assertNull(controller);
     }
 
+    /* * *
+     * Test 3
+     * * */
     @Test
     void GetController_ArgumentListContainsOutputLocation_ControllerHasOutputLocation()
     {
@@ -101,6 +109,9 @@ public class ControllerFactoryTest
         assertEquals("outputLoc",controller.getOutputFileLoc());
     }
 
+    /* * *
+     * Test 4
+     * * */
     @Test
     void GetController_ArgumentListDoesNotContainOutputLocation_ControllerHasDefaultOutputLocation()
     {
@@ -110,6 +121,9 @@ public class ControllerFactoryTest
         assertEquals(configuration.getDefaultOutputLocation(),controller.getOutputFileLoc());
     }
 
+    /* * *
+     * Test 5
+     * * */
     @Test
     void GetController_FirstArgumentIsBatchFlagValidArguments_ReturnBatchScriptController()
     {
@@ -118,6 +132,9 @@ public class ControllerFactoryTest
         assertInstanceOf(BatchScriptController.class,controller);
     }
 
+    /* * *
+     * Test 6
+     * * */
     @Test
     void GetController_FirstArgumentIsDefinedFlagValidArguments_ReturnSimpleScriptController()
     {
@@ -130,6 +147,9 @@ public class ControllerFactoryTest
         assertEquals("logLoc",((SimpleScriptController)controller).getLogFileLoc());
     }
 
+    /* * *
+     * Test 7
+     * * */
     @Test
     void GetController_ParseSimpleScriptArguments_LessThanFourInArgumentList_ReturnNull()
     {
@@ -137,6 +157,9 @@ public class ControllerFactoryTest
         assertNull(controller);
     }
 
+    /* * *
+     * Test 8
+     * * */
     @Test
     void GetController_ParseSimpleScriptArguments_MoreThanFourInArgumentList_ReturnNull()
     {
@@ -144,6 +167,9 @@ public class ControllerFactoryTest
         assertNull(controller);
     }
 
+    /* * *
+     * Test 9
+     * * */
     @Test
     void GetController_ParseSimpleScriptArguments_ArgumentListDoesNotContainLogFlag_ReturnNull()
     {
@@ -151,6 +177,9 @@ public class ControllerFactoryTest
         assertNull(controller);
     }
 
+    /* * *
+     * Test 10
+     * * */
     @Test
     void GetController_ParseSimpleScriptArguments_ArgumentListDoesNotContainScriptFlag_ReturnNull()
     {
@@ -158,6 +187,9 @@ public class ControllerFactoryTest
         assertNull(controller);
     }
 
+    /* * *
+     * Test 11
+     * * */
     @Test
     void GetController_ParseSimpleScriptArguments_ArgumentListDoesNotContainScriptLoc_ReturnNull()
     {
@@ -169,6 +201,9 @@ public class ControllerFactoryTest
         assertNull(controller);
     }
 
+    /* * *
+     * Test 12
+     * * */
     @Test
     void GetController_ParseSimpleScriptArguments_ArgumentListDoesNotContainLogLoc_ReturnNull()
     {
@@ -180,6 +215,9 @@ public class ControllerFactoryTest
         assertNull(controller);
     }
 
+    /* * *
+     * Test 13
+     * * */
     @Test
     void GetController_ParseBatchArguments_ArgumentListDoesNotContainLogFlag_ReturnNull()
     {
@@ -187,6 +225,9 @@ public class ControllerFactoryTest
         assertNull(controller);
     }
 
+    /* * *
+     * Test 14
+     * * */
     @Test
     void GetController_ParseBatchArguments_ArgumentListDoesNotContainScriptFlag_ReturnNull()
     {
@@ -194,6 +235,9 @@ public class ControllerFactoryTest
         assertNull(controller);
     }
 
+    /* * *
+     * Test 15
+     * * */
     @Test
     void GetController_ParseBatchArguments_ArgumentListDoesNotContainScriptLoc_ReturnNull()
     {
@@ -205,6 +249,9 @@ public class ControllerFactoryTest
         assertNull(controller);
     }
 
+    /* * *
+     * Test 16
+     * * */
     @Test
     void GetController_ParseBatchArguments_ArgumentListDoesNotContainLogLoc_ReturnNull()
     {
@@ -216,6 +263,9 @@ public class ControllerFactoryTest
         assertNull(controller);
     }
 
+    /* * *
+     * Test 17
+     * * */
     @Test
     void GetController_ParseBatchArguments_ArgumentListDoesNotContainMergeInstruction_ReturnNull()
     {

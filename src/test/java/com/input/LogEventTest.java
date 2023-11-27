@@ -17,8 +17,6 @@ public class LogEventTest {
     private List<String> inputData = new ArrayList<>();
     private Event event;
 
-    String sampleLogEvent = "2023-11-12 08:30:00,Communication_Check,success,0,[32.5 54.4 76.8],100\n";
-
     @BeforeAll
     static void setupTest0() {
 
@@ -360,7 +358,7 @@ public class LogEventTest {
 
 
     /**
-     * Test if we have too much elements. For example... 100 strings.
+     * Test if we have too many elements. For example... 100 strings.
      */
     @Test
     void testConvertInputToDataMap_8_RandomStrings() {

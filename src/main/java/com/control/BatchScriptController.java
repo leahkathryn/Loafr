@@ -34,9 +34,9 @@ public class BatchScriptController implements Controller
     }
 
     @Override
-    public void execute()
+    public boolean execute()
     {
-        System.out.println("Loafr-0.1 has not implemented batch processing.");
+        return true;
     }
 
     @Override

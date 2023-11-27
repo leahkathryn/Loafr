@@ -20,12 +20,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * This test class tests the public method interpretScript of the Script class.
  * Test cases:
- *      interpretScript method is called with valid file location and a single valid script instruction, returns true
- *      interpretScript method is called with valid file location and multiple valid script instructions, returns true
- *      interpretScript method is called with invalid file location, returns false
- *      interpretScript method is called with NULL for the file location parameter, returns false
- *      interpretScript method is called with valid file location but the file is empty, returns false
- *      interpretScript method is called with valid file location but there are invalid keywords in the script,
+ *      Test 1: interpretScript method is called with valid file location and a single valid script instruction, returns true
+ *      Test 2: interpretScript method is called with valid file location and multiple valid script instructions, returns true
+ *      Test 3: interpretScript method is called with invalid file location, returns false
+ *      Test 4: interpretScript method is called with NULL for the file location parameter, returns false
+ *      Test 5: interpretScript method is called with valid file location but the file is empty, returns false
+ *      Test 6: interpretScript method is called with valid file location but there are invalid keywords in the script,
  *                                                          so the interpreter returns a NULL task, return false
  *
  * @author Leah Lehmeier
@@ -51,6 +51,9 @@ public class ScriptClassTest
         interpreter = new Interpreter(configuration);
     }
 
+    /* * *
+     * Test 1
+     * * */
     @Test
     void InterpretScript_ValidFileContainingValidScriptSingleInstruction_ReturnTrue()
     {
@@ -71,6 +74,9 @@ public class ScriptClassTest
         assertInstanceOf(Search.class,queue.get(0));
     }
 
+    /* * *
+     * Test 2
+     * * */
     @Test
     void InterpretScript_ValidFileContainingValidScriptMultipleInstructions_ReturnTrue()
     {
@@ -95,6 +101,9 @@ public class ScriptClassTest
         assertEquals(LogEvent.AttributeType.EVENT,queue.get(1).getAttributeType());
     }
 
+    /* * *
+     * Test 3
+     * * */
     @Test
     void InterpretScript_FileDoesNotExist_ReturnFalse()
     {
@@ -103,6 +112,9 @@ public class ScriptClassTest
         assertFalse(interpretScript);
     }
 
+    /* * *
+     * Test 4
+     * * */
     @Test
     void InterpretScript_FileLocationParameterIsNull_ReturnFalse()
     {
@@ -111,6 +123,9 @@ public class ScriptClassTest
         assertFalse(interpretScript);
     }
 
+    /* * *
+     * Test 5
+     * * */
     @Test
     void InterpretScript_FileIsEmpty_ReturnFalse()
     {
@@ -126,6 +141,9 @@ public class ScriptClassTest
         assertFalse(interpretScript);
     }
 
+    /* * *
+     * Test 6
+     * * */
     @Test
     void InterpretScript_InterpreterReturnsNullTask_ReturnFalse()
     {

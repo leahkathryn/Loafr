@@ -10,7 +10,7 @@ import com.input.Configuration;
  */
 public interface Controller
 {
-    void execute();
+    boolean execute();
     void alertOutput(String message);
     String getOutputFileLoc();
 }

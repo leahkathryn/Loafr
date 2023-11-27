@@ -51,7 +51,7 @@ public class SimpleScriptController implements Controller
     }
 
     @Override
-    public void execute()
+    public boolean execute()
     {
         // create interpreter for this Loafr execution
         interpreter = new Interpreter(configuration);
@@ -63,12 +63,12 @@ public class SimpleScriptController implements Controller
         // attempt script interpretation
         if(!script.interpretScript(scriptFileLoc,interpreter))
         {
-            System.exit(0);
+            return false;
         }
         // attempt log file parsing
         if(!logData.parseLogFile(logFileLoc,configuration))
         {
-            System.exit(0);
+            return false;
         }
         // attempt output write
         LogData output_logData = script.executeAnalyzer(logData);
@@ -76,8 +76,9 @@ public class SimpleScriptController implements Controller
         if(!output_logData.writeLogData(outputFileLoc,configuration))
         {
             // Should we implement a condition to retry through command line input?
-            System.exit(0);
+            return false;
         }
+        return true;
     }
 
     @Override
