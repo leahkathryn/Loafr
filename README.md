@@ -35,7 +35,9 @@ To view the test results:
 
 ## Instructions to run End-to-End Search Scenario  
 1. In the terminal, navigate to Loafr directory
-2. In the terminal, run: ./gradlew test --tests com.control.SearchScenarioTest
+2. In the terminal, run:  
+       Mac / Linux: ./gradlew test --tests com.control.SearchScenarioTest  
+       Windows: gradlew.bat test --tests "com.control.SearchScenarioTest"  
 3. Navigate to Loafr/build/reports/tests/test
 4. Launch index.html in any browser
 5. View results
