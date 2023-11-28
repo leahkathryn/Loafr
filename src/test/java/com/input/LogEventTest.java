@@ -12,7 +12,11 @@ import static com.input.DataType.BOOLEAN;
 import static com.input.DataType.INTEGER;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class LogEventTest {
+/**
+ * @author Yichen Li
+ */
+public class LogEventTest
+{
     private Configuration config = new Configuration();
     private List<String> inputData = new ArrayList<>();
     private Event event;
@@ -78,7 +82,6 @@ public class LogEventTest {
         for (DataID key : dataMap.keySet()) {
             assertNotNull(dataMap.get(key)); // Ensure values are not null
         }
-        System.out.println("**--- Test testConvertInputToDataMap_1 executed ---**");
     }
 
 
@@ -118,9 +121,6 @@ public class LogEventTest {
         assertTrue(testKey.contains("Status"));
         assertTrue(testKey.contains("Numbers"));
         assertTrue(testKey.contains("Text"));
-
-        // Print statement indicating the test completion
-        System.out.println("**--- Test testConvertInputToDataMap_2 executed ---**");
     }
 
 
@@ -210,7 +210,6 @@ public class LogEventTest {
         for (DataID key : dataMap.keySet()) {
             assertNotNull(dataMap.get(key)); // Ensure values are not null
         }
-        System.out.println("**--- Test testConvertInputToDataMap_3 executed ---**");
     }
 
 
@@ -240,11 +239,7 @@ public class LogEventTest {
         assertFalse(testKey.contains("Status"));
         assertFalse(testKey.contains("Numbers"));
         assertFalse(testKey.contains("Text"));
-
-        // Print statement indicating the test completion
-        System.out.println("**--- Test testConvertInputToDataMap_4_empty executed ---**");
     }
-
 
     /**
      * If the size is 1.
@@ -275,9 +270,6 @@ public class LogEventTest {
 
         // Check if specific keys are present in the dataMap
         assertTrue(testKey.contains("Numbers"));
-
-        // Print statement indicating the test completion
-        System.out.println("**--- Test testConvertInputToDataMap_5_one executed ---**");
     }
 
 
@@ -291,7 +283,7 @@ public class LogEventTest {
         // Changed input data
         List<String> inputData = Arrays.asList("null", "[null]", "[null null]");
 
-        // Event remains the same as in the previous test case
+        // Event remains the same   as in the previous test case
         Event event = new Event("Sample_Event", Arrays.asList(
                 new DataID("null1", DataType.STRING),
                 new DataID("null2", DataType.STRING),
@@ -314,8 +306,6 @@ public class LogEventTest {
         assertTrue(testKey.contains("null1"));
         assertTrue(testKey.contains("null2"));
         assertTrue(testKey.contains("null3"));
-
-        System.out.println("**--- Test testConvertInputToDataMap_6_null executed ---**");
     }
 
 
@@ -352,8 +342,6 @@ public class LogEventTest {
         assertTrue(testKey.contains("\n"));
         assertTrue(testKey.contains("N/A"));
         assertTrue(testKey.contains("\0"));
-
-        System.out.println("**--- Test testConvertInputToDataMap_7_otherStrangeThings executed ---**");
     }
 
 
@@ -387,8 +375,6 @@ public class LogEventTest {
         for (String str : randomStrings) {
             assertTrue(testKey.contains(str));
         }
-
-        System.out.println("**--- Test testConvertInputToDataMap_8_RandomStrings executed ---**");
     }
 
     // Helper method to generate random strings

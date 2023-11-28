@@ -13,7 +13,9 @@ import java.io.IOException;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 
-
+/**
+ * @author Yichen Li
+ */
 public class LogData
 {
     private List<LogEvent> eventList = new ArrayList<>();
@@ -140,6 +142,7 @@ public class LogData
         // and the output will be put in an "output" directory in their current
         // working directory. If they choose, they can edit the config file for a new
         // default output location, or they can provide an output location.
+        // Leah Lehmeier
         if (outputLoc.equals("."))
         {
             File dir = new File("output");

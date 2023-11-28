@@ -12,6 +12,9 @@ import com.input.DataType;
 
 import javax.xml.crypto.Data;
 
+/**
+ * @author Yichen Li
+ */
 public class LogEvent
 {
     private Timestamp timeStamp;
