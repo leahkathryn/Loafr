@@ -158,7 +158,6 @@ public class LogEvent
     private <T> T parseStringToDataValue(DataType type, String str)
     {
         T value;
-
         switch(type)
         {
             case STRING:

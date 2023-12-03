@@ -395,6 +395,161 @@ public class LogEventTest
         return stringBuilder.toString();
     }
 
+
+    /**
+     * Test for this:
+     *         if (inputData.size() != validDataIDList.size())
+     *         {
+     *             ErrorHandler.logError("Failure parsing event from log file: incorrect number of data values" +
+     *                     " for event "+ event.name +".\nLoafr exiting...");
+     *             return dataIDToValues; // empty
+     *         }
+     */
+    @Test
+    void testConvertInputToDataMap_9_size_mismatch() {
+        LogEvent logEvent = new LogEvent();
+
+        // Changed input data
+        List<String> inputData = Arrays.asList("[true]", "987654", "anotherTest");
+
+        // Event remains the same as in the previous test case
+        Event event = new Event("Sample_Event", Arrays.asList(
+                new DataID("Status", DataType.BOOLEAN),
+                new DataID("Numbers", DataType.INTEGER),
+                new DataID("Text", DataType.STRING),
+                new DataID("Status", DataType.BOOLEAN),
+                new DataID("Numbers", DataType.INTEGER),
+                new DataID("Text", DataType.STRING)
+        ));
+
+        HashMap<DataID, List<?>> dataMap = logEvent.convertInputToDataMap(inputData, event);
+
+        // Assuming the conversion is successful
+        assertNotNull(dataMap);
+        assertEquals(0, dataMap.size());
+
+        ArrayList<String> testKey = new ArrayList<>();
+        for (DataID key : dataMap.keySet()) {
+            testKey.add(key.getName());
+            assertNotNull(dataMap.get(key)); // Ensure values are not null
+        }
+    }
+
+
+    @Test
+    void testConvertInputToDataMap_10_size_mismatch_2() {
+        LogEvent logEvent = new LogEvent();
+
+        // Mocking input data and event
+        List<String> inputData = Arrays.asList("[true false]", "test");
+        Event event = new Event("Sample_Event", Arrays.asList(
+                new DataID("Status", DataType.BOOLEAN),
+                new DataID("Numbers", DataType.INTEGER),
+                new DataID("Text", DataType.STRING)
+        ));
+
+        HashMap<DataID, List<?>> dataMap = logEvent.convertInputToDataMap(inputData, event);
+
+        // Assuming the conversion is successful
+        assertNotNull(dataMap);
+
+        ArrayList<String> testKey = new ArrayList<>();
+        for (DataID key : dataMap.keySet()) {
+            testKey.add(key.getName());
+            System.out.println("Key: " + key.getName() + ", Value: " + dataMap.get(key));
+        }
+
+        assertFalse(testKey.contains("Status"));
+        assertFalse(testKey.contains("Numbers"));
+        assertFalse(testKey.contains("Text"));
+        for (DataID key : dataMap.keySet()) {
+            assertNotNull(dataMap.get(key)); // Ensure values are not null
+        }
+    }
+
+
+    /**
+     * Test for this:
+     *  if (!stringValue.endsWith("]"))
+     *             {
+     *                 ErrorHandler.logError("Failure parsing event from log file: syntax error, missing ']'.\nLoafr exiting...");
+     *                 return false;
+     *             }
+     */
+    @Test
+    void testConvertInputToDataMap_11_no_right_bracket() {
+        LogEvent logEvent = new LogEvent();
+
+        // Mocking input data and event
+        List<String> inputData = Arrays.asList("[true false", "123456", "test");
+        Event event = new Event("Sample_Event", Arrays.asList(
+                new DataID("Status", DataType.BOOLEAN),
+                new DataID("Numbers", DataType.INTEGER),
+                new DataID("Text", DataType.STRING)
+        ));
+
+        HashMap<DataID, List<?>> dataMap = logEvent.convertInputToDataMap(inputData, event);
+
+        // Assuming the conversion is successful
+        assertNotNull(dataMap);
+        assertEquals(0, dataMap.size());
+
+        ArrayList<String> testKey = new ArrayList<>();
+        for (DataID key : dataMap.keySet()) {
+            testKey.add(key.getName());
+            System.out.println("Key: " + key.getName() + ", Value: " + dataMap.get(key));
+        }
+
+        assertEquals(0, dataMap.size());
+        assertFalse(testKey.contains("Status"));
+        assertFalse(testKey.contains("Numbers"));
+        assertFalse(testKey.contains("Text"));
+        for (DataID key : dataMap.keySet()) {
+            assertNotNull(dataMap.get(key)); // Ensure values are not null
+        }
+    }
+
+
+    /**
+     * Test for this:
+     * if (stringValue.isBlank())
+     *             {
+     *                 ErrorHandler.logError("Failure parsing event from log file: syntax error, blank data list within brackets [].\nLoafr exiting...");
+     *                 return false;
+     *             }
+     */
+    @Test
+    void testConvertInputToDataMap_12_empty_bracket() {
+        LogEvent logEvent = new LogEvent();
+
+        // Mocking input data and event
+        List<String> inputData = Arrays.asList("[]", "123456", "test");
+        Event event = new Event("Sample_Event", Arrays.asList(
+                new DataID("Status", DataType.BOOLEAN),
+                new DataID("Numbers", DataType.INTEGER),
+                new DataID("Text", DataType.STRING)
+        ));
+
+        HashMap<DataID, List<?>> dataMap = logEvent.convertInputToDataMap(inputData, event);
+
+        // Assuming the conversion is successful
+        assertNotNull(dataMap);
+        assertEquals(0, dataMap.size());
+
+        ArrayList<String> testKey = new ArrayList<>();
+        for (DataID key : dataMap.keySet()) {
+            testKey.add(key.getName());
+            System.out.println("Key: " + key.getName() + ", Value: " + dataMap.get(key));
+        }
+
+        assertEquals(0, dataMap.size());
+        assertFalse(testKey.contains("Status"));
+        assertFalse(testKey.contains("Numbers"));
+        assertFalse(testKey.contains("Text"));
+        for (DataID key : dataMap.keySet()) {
+            assertNotNull(dataMap.get(key)); // Ensure values are not null
+        }
+    }
 }
 
 /**
