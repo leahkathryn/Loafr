@@ -17,6 +17,9 @@ import java.util.List;
  * Because that kind of error were taking care by another class, which is configuration test.
  * Please check there for more details.
  */
+/**
+ * @author Yichen Li
+ */
 public class LogDataTest
 {
 
@@ -51,7 +54,6 @@ public class LogDataTest
         }
         boolean isParsed = config.parseConfigFile(configurationFileLoc);
         assertEquals(true, isParsed);
-        System.out.println("**--- Test test0 executed ---**");
     }
 
 
@@ -164,7 +166,6 @@ public class LogDataTest
         assertEquals(10,logData.getEventList().size());
         assertTrue(parsingStatus);
         assertFalse(logData.getEventList().isEmpty());
-        System.out.println("**--- Test4_year_strange executed ---**");
     }
 
 
@@ -203,7 +204,6 @@ public class LogDataTest
         assertEquals(0,logData.getEventList().size());
         assertTrue(parsingStatus);
         assertTrue(logData.getEventList().isEmpty());
-        System.out.println("**--- Test1_parse_log_file_regular executed ---**");
     }
 
 
@@ -242,7 +242,6 @@ public class LogDataTest
         assertEquals(0,logData.getEventList().size());
         assertTrue(parsingStatus);
         assertTrue(logData.getEventList().isEmpty());
-        System.out.println("**--- Test6_parse_log_file_too_much_comma executed ---**");
     }
 
 
@@ -269,7 +268,6 @@ public class LogDataTest
         assertTrue(writeResult);
         assertEquals(10,logData.getEventList().size());
         assertFalse(logData.getEventList().isEmpty());
-        System.out.println("**--- Test10_test_valid_write_logData executed ---**");
     }
 
 
@@ -296,7 +294,6 @@ public class LogDataTest
         assertTrue(writeResult);
         assertEquals(1000,logData.getEventList().size());
         assertFalse(logData.getEventList().isEmpty());
-        System.out.println("**--- Test11_test_valid_write_logData_too_long executed ---**");
     }
 
 
@@ -315,7 +312,6 @@ public class LogDataTest
         assertTrue(writeResult);
         assertEquals(0,logData.getEventList().size());
         assertTrue(logData.getEventList().isEmpty());
-        System.out.println("**--- Test12_test_empty_write_logData executed ---**");
     }
 
 
@@ -344,6 +340,5 @@ public class LogDataTest
         assertTrue(writeResult);
         assertEquals(10,logData.getEventList().size());
         assertFalse(logData.getEventList().isEmpty());
-        System.out.println("**--- Test13_test_invalid_output_loc executed ---**");
     }
 }

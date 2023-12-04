@@ -12,6 +12,9 @@ import com.input.DataType;
 
 import javax.xml.crypto.Data;
 
+/**
+ * @author Yichen Li
+ */
 public class LogEvent
 {
     private Timestamp timeStamp;
@@ -155,7 +158,6 @@ public class LogEvent
     private <T> T parseStringToDataValue(DataType type, String str)
     {
         T value;
-
         switch(type)
         {
             case STRING:

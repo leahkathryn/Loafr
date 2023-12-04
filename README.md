@@ -35,9 +35,7 @@ To view the test results:
 
 ## Instructions to run End-to-End Search Scenario  
 1. In the terminal, navigate to Loafr directory
-2. In the terminal, run:  
-       Mac / Linux: ./gradlew test --tests com.control.SearchScenarioTest  
-       Windows: gradlew.bat test --tests "com.control.SearchScenarioTest"  
+2. In the terminal, run: gradle test --tests com.control.SearchScenarioTest  
 3. Navigate to Loafr/build/reports/tests/test
 4. Launch index.html in any browser
 5. View results
@@ -55,6 +53,13 @@ To run a script on a log file and the output will be written to the specified lo
 -s \<script location\> -l \<log file location\> -o \<output file location\>  
     If this option is used, either a file name for the output file in the current working directory can be provided, or an absolute path to a different file location can be provided.  
 The flags -s (script) and -l (log file), and corresponding values, are required. The flag -o (output file) and corresponding value is optional.  
-Batch processing is not available in the current version (0.1) of Loafr.
+Batch processing is not available in the current version (0.1) of Loafr.  
+
+**Loafr Resources**  
+A sample script and log file are available in Loafr/src/main/resources  
+Script: Loafr/src/main/resources/test_script.txt  
+Log file: Loafr/src/main/resources/test_log_file.txt
+
+These are the same log file and script that are used in the End-to-End Search Scenario.
 
 

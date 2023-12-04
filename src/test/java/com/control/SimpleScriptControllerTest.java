@@ -17,9 +17,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 /**
  * This test class tests the public method execute of the SimpleScriptController class.
  * Test cases:
- *      Class is initialized with an invalid script, returns false
- *      Class is initialized with an invalid log file, returns false
- *      Class is initialized with an invalid output file location, returns false
+ *      Test 1: Class is initialized with an invalid script, returns false
+ *      Test 2: Class is initialized with an invalid log file, returns false
+ *      Test 3: Class is initialized with an invalid output file location, returns false
  *
  * @author Leah Lehmeier
  */
@@ -54,6 +54,9 @@ public class SimpleScriptControllerTest
         }
     }
 
+    /* * *
+     * Test 1
+     * * */
     @Test
     void Execute_InvalidScript_ReturnFalse()
     {
@@ -75,6 +78,9 @@ public class SimpleScriptControllerTest
         assertFalse(controller.execute());
     }
 
+    /* * *
+     * Test 2
+     * * */
     @Test
     void Execute_InvalidOutputFileLocation_ReturnFalse()
     {
@@ -103,6 +109,9 @@ public class SimpleScriptControllerTest
         assertFalse(controller.execute());
     }
 
+    /* * *
+     * Test 3
+     * * */
     @Test
     void Execute_InvalidLogFile_ReturnFalse()
     {
