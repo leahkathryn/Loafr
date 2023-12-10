@@ -167,7 +167,7 @@ public class LogData
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputLoc))) {
             for (LogEvent logEvent : eventList) {
-                writer.write(logEvent.getTimeStamp() + "," + logEvent.getEventType() + ",");
+                writer.write(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(logEvent.getTimeStamp()) + "," + logEvent.getEventType() + ",");
                 HashMap<DataID, List<?>> dataIDMap = logEvent.getDataIDMap();
 
                 // there is probably a better way to do this - quick fix

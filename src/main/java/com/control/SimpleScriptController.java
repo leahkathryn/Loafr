@@ -1,5 +1,6 @@
 package com.control;
 
+import com.ErrorHandler;
 import com.input.Configuration;
 import com.input.LogData;
 import com.interpret.Interpreter;
@@ -63,11 +64,13 @@ public class SimpleScriptController implements Controller
         // attempt script interpretation
         if(!script.interpretScript(scriptFileLoc,interpreter))
         {
+            ErrorHandler.logError("Loafr exiting...");
             return false;
         }
         // attempt log file parsing
         if(!logData.parseLogFile(logFileLoc,configuration))
         {
+            ErrorHandler.logError("Loafr exiting...");
             return false;
         }
         // attempt output write
@@ -76,6 +79,7 @@ public class SimpleScriptController implements Controller
         if(!output_logData.writeLogData(outputFileLoc,configuration))
         {
             // Should we implement a condition to retry through command line input?
+            ErrorHandler.logError("Loafr exiting...");
             return false;
         }
         return true;
