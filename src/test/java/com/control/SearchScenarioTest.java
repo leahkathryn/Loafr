@@ -41,9 +41,9 @@ public class SearchScenarioTest
         logFileName = "log_file_3";
         scriptFileName = "test_script";
         outputFileLocName = "output.txt";
-        outputFirstLine = "2023-11-12 08:10:00.0,Communication_Check,failure,120,[16.5 102.1 76.8],0";
-        outputSecondLine = "2023-11-12 08:15:00.0,Communication_Check,success,0,[32.5 54.4 76.8],100";
-        outputThirdLine = "2023-11-12 09:35:00.0,Communication_Check,success,0,[32.5 54.4 76.8],100";
+        outputFirstLine = "2023-11-12 08:10:00,Communication_Check,failure,120,[16.5 102.1 76.8],0";
+        outputSecondLine = "2023-11-12 08:15:00,Communication_Check,success,0,[32.5 54.4 76.8],100";
+        outputThirdLine = "2023-11-12 09:35:00,Communication_Check,success,0,[32.5 54.4 76.8],100";
     }
 
     @AfterAll
