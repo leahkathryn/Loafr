@@ -101,7 +101,7 @@ public class Interpreter
     private AnalysisTask parseSortInstruction(List<String> instructions)
     {
         AnalysisTask task;
-        LogEvent.AttributeType attributeType = null;
+        LogEvent.AttributeType attributeType;
         DataID dataID = null;
         String directionString = "";
         // in a refactored version, the conversion from string to bool might happen in Sort
@@ -148,12 +148,6 @@ public class Interpreter
         {
             directionString = instructions.get(index);
         }
-        else
-        {
-            ErrorHandler.logError("Failure interpreting script: " +
-                    "There is a syntax error within a Sort command: too many arguments.");
-            return null;
-        }
 
         // in a refactoring of Loafr, this functionality might happen in the Sort class
         if (!directionString.isBlank())
@@ -165,6 +159,13 @@ public class Interpreter
                         "\nUsage: sort <attribute type> <optional: data element> <direction: ascending | descending");
                 return null;
             }
+        }
+
+        if (instructions.size()-1 > index)
+        {
+            ErrorHandler.logError("Failure interpreting script: " +
+                    "There is a syntax error within a Sort command: too many arguments.");
+            return null;
         }
 
         return new Sort(attributeType,dataID,directionBool);

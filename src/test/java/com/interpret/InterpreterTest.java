@@ -1,7 +1,9 @@
 package com.interpret;
 
 import com.analyze.AnalysisTask;
+import com.analyze.Filter;
 import com.analyze.Search;
+import com.analyze.Sort;
 import com.input.Configuration;
 import com.input.DataID;
 import com.input.LogEvent;
@@ -84,8 +86,11 @@ public class InterpreterTest
     @Test
     void GetAnalysisTask_SortKeyword_ReturnSortAnalysisTask()
     {
-        // needs to be implemented
-        assertTrue(true);
+        String keyword = "sort";
+        List<String> instructions = new ArrayList<>(Arrays.asList("event"));
+        AnalysisTask task = interpreter.getAnalysisTask(keyword,instructions);
+        assertNotNull(task);
+        assertInstanceOf(Sort.class,task);
     }
 
     /* * *
@@ -94,8 +99,11 @@ public class InterpreterTest
     @Test
     void GetAnalysisTask_FilterKeyword_ReturnFilterAnalysisTask()
     {
-        // needs to be implemented
-        assertTrue(true);
+        String keyword = "filter";
+        List<String> instructions = new ArrayList<>(Arrays.asList("filter_expr"));
+        AnalysisTask task = interpreter.getAnalysisTask(keyword,instructions);
+        assertNotNull(task);
+        assertInstanceOf(Filter.class,task);
     }
 
     /* * *
