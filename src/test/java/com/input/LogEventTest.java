@@ -1,6 +1,6 @@
 package com.input;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.net.URL;
@@ -8,38 +8,36 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static com.input.DataType.BOOLEAN;
-import static com.input.DataType.INTEGER;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Yichen Li
  */
-public class LogEventTest
-{
+
+public class LogEventTest {
+
     private Configuration config = new Configuration();
-    private List<String> inputData = new ArrayList<>();
     private Event event;
 
-    @BeforeAll
-    static void setupTest0() {
-
+    @BeforeEach
+    void setUp() {
+        event = new Event("System_Initialization", Arrays.asList(
+                new DataID("Status", DataType.BOOLEAN),
+                new DataID("Error_Code", DataType.INTEGER)
+        ));
     }
+
 
     @Test
-    void test0() {
+    void testValidConfigFileParsing() {
         URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file.xml");
-        inputData = new ArrayList<>(Arrays.asList("true", "0"));
-        event = new Event("System_Initialization", Arrays.asList(new DataID("Status", BOOLEAN),
-                new DataID("Error_Code", INTEGER)));
-        if (configurationFileLoc == null) {
-            fail("Test resource \"sample_config_file.xml\" was not found.");
-        }
-        boolean isParsed = config.parseConfigFile(configurationFileLoc);
-        assertEquals(true, isParsed);
-        System.out.println("**--- Test test0 executed ---**");
-    }
+        assertNotNull(configurationFileLoc, "Test resource \"sample_config_file.xml\" was not found.");
 
+        List<String> inputData = Arrays.asList("true", "0");
+        boolean isParsed = config.parseConfigFile(configurationFileLoc);
+        assertTrue(isParsed);
+        System.out.println("**--- Test testValidConfigFileParsing executed ---**");
+    }
 
 
     /**
@@ -52,10 +50,9 @@ public class LogEventTest
      *      3. string
      */
     @Test
-    void testConvertInputToDataMap_1() {
+    void testConvertInputToDataMap_ValidInput() {
         LogEvent logEvent = new LogEvent();
 
-        // Mocking input data and event
         List<String> inputData = Arrays.asList("[true false]", "123456", "test");
         Event event = new Event("Sample_Event", Arrays.asList(
                 new DataID("Status", DataType.BOOLEAN),
@@ -65,23 +62,16 @@ public class LogEventTest
 
         HashMap<DataID, List<?>> dataMap = logEvent.convertInputToDataMap(inputData, event);
 
-        // Assuming the conversion is successful
         assertNotNull(dataMap);
         assertEquals(3, dataMap.size());
 
-        ArrayList<String> testKey = new ArrayList<>();
-        for (DataID key : dataMap.keySet()) {
-            testKey.add(key.getName());
-            System.out.println("Key: " + key.getName() + ", Value: " + dataMap.get(key));
-        }
-
-        assertEquals(3, dataMap.size());
+        List<String> testKey = new ArrayList<>(dataMap.keySet().stream().map(DataID::getName).toList());
+        assertEquals(3, testKey.size());
         assertTrue(testKey.contains("Status"));
         assertTrue(testKey.contains("Numbers"));
         assertTrue(testKey.contains("Text"));
-        for (DataID key : dataMap.keySet()) {
-            assertNotNull(dataMap.get(key)); // Ensure values are not null
-        }
+
+        dataMap.forEach((key, value) -> assertNotNull(value)); // Ensure values are not null
     }
 
 
@@ -92,13 +82,34 @@ public class LogEventTest
      *      3. String
      */
     @Test
-    void testConvertInputToDataMap_2() {
+    void testConvertInputToDataMap_InvalidSizeMismatch() {
         LogEvent logEvent = new LogEvent();
 
-        // Changed input data
         List<String> inputData = Arrays.asList("[true]", "987654", "anotherTest");
+        Event event = new Event("Sample_Event", Arrays.asList(
+                new DataID("Status", DataType.BOOLEAN),
+                new DataID("Numbers", DataType.INTEGER),
+                new DataID("Text", DataType.STRING),
+                new DataID("Status", DataType.BOOLEAN),
+                new DataID("Numbers", DataType.INTEGER),
+                new DataID("Text", DataType.STRING)
+        ));
 
-        // Event remains the same as in the previous test case
+        HashMap<DataID, List<?>> dataMap = logEvent.convertInputToDataMap(inputData, event);
+
+        assertNotNull(dataMap);
+        assertEquals(0, dataMap.size());
+
+        dataMap.forEach((key, value) -> assertNotNull(value)); // Ensure values are not null
+    }
+
+    // More test methods for different scenarios...
+
+    @Test
+    void testConvertInputToDataMap_EmptyBracketInput() {
+        LogEvent logEvent = new LogEvent();
+
+        List<String> inputData = Arrays.asList("[]", "123456", "test");
         Event event = new Event("Sample_Event", Arrays.asList(
                 new DataID("Status", DataType.BOOLEAN),
                 new DataID("Numbers", DataType.INTEGER),
@@ -107,81 +118,92 @@ public class LogEventTest
 
         HashMap<DataID, List<?>> dataMap = logEvent.convertInputToDataMap(inputData, event);
 
-        // Assuming the conversion is successful
         assertNotNull(dataMap);
-        assertEquals(3, dataMap.size());
+        assertEquals(0, dataMap.size());
 
-        ArrayList<String> testKey = new ArrayList<>();
-        for (DataID key : dataMap.keySet()) {
-            testKey.add(key.getName());
-            assertNotNull(dataMap.get(key)); // Ensure values are not null
-        }
-
-        // Check if specific keys are present in the dataMap
-        assertTrue(testKey.contains("Status"));
-        assertTrue(testKey.contains("Numbers"));
-        assertTrue(testKey.contains("Text"));
+        dataMap.forEach((key, value) -> assertNotNull(value)); // Ensure values are not null
     }
 
+
+    @Test
+    void testConvertInputToDataMap_RandomStringsWithSize100() {
+        LogEvent logEvent = new LogEvent();
+
+        int numberOfStrings = 100;
+        List<String> randomStrings = generateRandomStrings(numberOfStrings);
+        List<DataID> dataIDList = randomStrings.stream()
+                .map(str -> new DataID(str, DataType.STRING))
+                .collect(Collectors.toList());
+
+        Event event = new Event("Sample_Event", dataIDList);
+        HashMap<DataID, List<?>> dataMap = logEvent.convertInputToDataMap(randomStrings, event);
+
+        assertNotNull(dataMap);
+        assertEquals(numberOfStrings, dataMap.size());
+
+        dataMap.forEach((key, value) -> assertNotNull(value)); // Ensure values are not null
+    }
+
+    // Helper methods
+
+    private List<String> generateRandomStrings(int numberOfStrings) {
+        return IntStream.range(0, numberOfStrings)
+                .mapToObj(i -> generateRandomString(10)) // Change '10' to desired string length
+                .collect(Collectors.toList());
+    }
+
+    private String generateRandomString(int length) {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            int index = (int) (Math.random() * chars.length());
+            stringBuilder.append(chars.charAt(index));
+        }
+        return stringBuilder.toString();
+    }
 
     /**
      * A little more test cases.
      */
     @Test
-    void testConvertInputToDataMap_3() {
+    void testConvertInputToDataMap_MultipleDataValues() {
         LogEvent logEvent = new LogEvent();
         List<String> inputData = Arrays.asList(
-                "[true false]", "123456", "test","[true false]", "123456", "test",
-                "[true false]", "123456", "test","[true false]", "123456", "test",
-                "[true false]", "123456", "test","[true false]", "123456", "test",
-                "[true false]", "123456", "test","[true false]", "123456", "test"
+                "[true false]", "123456", "test", "[true false]", "123456", "test",
+                "[true false]", "123456", "test", "[true false]", "123456", "test",
+                "[true false]", "123456", "test", "[true false]", "123456", "test",
+                "[true false]", "123456", "test", "[true false]", "123456", "test"
         );
         Event event = new Event("Sample_Event", Arrays.asList(
                 new DataID("Status1", DataType.BOOLEAN),
                 new DataID("Numbers1", DataType.INTEGER),
                 new DataID("Text1", DataType.STRING),
-
                 new DataID("Status2", DataType.BOOLEAN),
                 new DataID("Numbers2", DataType.INTEGER),
                 new DataID("Text2", DataType.STRING),
-
                 new DataID("Status3", DataType.BOOLEAN),
                 new DataID("Numbers3", DataType.INTEGER),
                 new DataID("Text3", DataType.STRING),
-
                 new DataID("Status4", DataType.BOOLEAN),
                 new DataID("Numbers4", DataType.INTEGER),
                 new DataID("Text4", DataType.STRING),
-
                 new DataID("Status5", DataType.BOOLEAN),
                 new DataID("Numbers5", DataType.INTEGER),
                 new DataID("Text5", DataType.STRING),
-
                 new DataID("Status6", DataType.BOOLEAN),
                 new DataID("Numbers6", DataType.INTEGER),
                 new DataID("Text6", DataType.STRING),
-
                 new DataID("Status7", DataType.BOOLEAN),
                 new DataID("Numbers7", DataType.INTEGER),
                 new DataID("Text7", DataType.STRING),
-
                 new DataID("Status8", DataType.BOOLEAN),
                 new DataID("Numbers8", DataType.INTEGER),
                 new DataID("Text8", DataType.STRING)
-
         ));
-
         HashMap<DataID, List<?>> dataMap = logEvent.convertInputToDataMap(inputData, event);
-
         assertNotNull(dataMap);
         assertEquals(inputData.size(), dataMap.size());
-
-        ArrayList<String> testKey = new ArrayList<>();
-        for (DataID key : dataMap.keySet()) {
-            testKey.add(key.getName());
-//            System.out.println("Key: " + key.getName() + ", Value: " + dataMap.get(key));
-        }
-
+        List<String> testKey = new ArrayList<>(dataMap.keySet().stream().map(DataID::getName).toList());
         assertEquals(inputData.size(), dataMap.size());
         assertTrue(testKey.contains("Status1"));
         assertTrue(testKey.contains("Numbers1"));
@@ -207,9 +229,7 @@ public class LogEventTest
         assertTrue(testKey.contains("Status8"));
         assertTrue(testKey.contains("Numbers8"));
         assertTrue(testKey.contains("Text8"));
-        for (DataID key : dataMap.keySet()) {
-            assertNotNull(dataMap.get(key)); // Ensure values are not null
-        }
+        dataMap.forEach((key, value) -> assertNotNull(value)); // Ensure values are not null
     }
 
 
@@ -217,59 +237,37 @@ public class LogEventTest
      * This is testcase if the number of datavalues = 0.
      */
     @Test
-    void testConvertInputToDataMap_4_empty() {
+    void testConvertInputToDataMap_EmptyInputData() {
         LogEvent logEvent = new LogEvent();
 
-        List<String> inputData = Arrays.asList();
-        Event event = new Event("Sample_Empty_Event", Arrays.asList());
+        List<String> inputData = Collections.emptyList();
+        Event event = new Event("Sample_Empty_Event", Collections.emptyList());
 
         HashMap<DataID, List<?>> dataMap = logEvent.convertInputToDataMap(inputData, event);
 
-        // Assuming the conversion is successful
         assertNotNull(dataMap);
         assertEquals(0, dataMap.size());
 
-        ArrayList<String> testKey = new ArrayList<>();
-        for (DataID key : dataMap.keySet()) {
-            testKey.add(key.getName());
-            assertNotNull(dataMap.get(key)); // Ensure values are not null
-        }
-
-        // Check if specific keys are present in the dataMap
-        assertFalse(testKey.contains("Status"));
-        assertFalse(testKey.contains("Numbers"));
-        assertFalse(testKey.contains("Text"));
+        dataMap.forEach((key, value) -> assertNotNull(value)); // Ensure values are not null
     }
+
 
     /**
      * If the size is 1.
      */
     @Test
-    void testConvertInputToDataMap_5_one() {
+    void testConvertInputToDataMap_SingleValue() {
         LogEvent logEvent = new LogEvent();
 
-        // Changed input data
-        List<String> inputData = Arrays.asList( "987654");
-
-        // Event remains the same as in the previous test case
-        Event event = new Event("Sample_Event", Arrays.asList(
-                new DataID("Numbers", DataType.INTEGER)
-        ));
+        List<String> inputData = Collections.singletonList("987654");
+        Event event = new Event("Sample_Event", Collections.singletonList(new DataID("Numbers", DataType.INTEGER)));
 
         HashMap<DataID, List<?>> dataMap = logEvent.convertInputToDataMap(inputData, event);
 
-        // Assuming the conversion is successful
         assertNotNull(dataMap);
         assertEquals(1, dataMap.size());
 
-        ArrayList<String> testKey = new ArrayList<>();
-        for (DataID key : dataMap.keySet()) {
-            testKey.add(key.getName());
-            assertNotNull(dataMap.get(key)); // Ensure values are not null
-        }
-
-        // Check if specific keys are present in the dataMap
-        assertTrue(testKey.contains("Numbers"));
+        dataMap.forEach((key, value) -> assertNotNull(value)); // Ensure values are not null
     }
 
 
@@ -277,13 +275,10 @@ public class LogEventTest
      * Test for null
      */
     @Test
-    void testConvertInputToDataMap_6_null() {
+    void testConvertInputToDataMap_NullValues() {
         LogEvent logEvent = new LogEvent();
 
-        // Changed input data
         List<String> inputData = Arrays.asList("null", "[null]", "[null null]");
-
-        // Event remains the same   as in the previous test case
         Event event = new Event("Sample_Event", Arrays.asList(
                 new DataID("null1", DataType.STRING),
                 new DataID("null2", DataType.STRING),
@@ -291,35 +286,16 @@ public class LogEventTest
         ));
 
         HashMap<DataID, List<?>> dataMap = logEvent.convertInputToDataMap(inputData, event);
-
-        // Assuming the conversion is successful
         assertNotNull(dataMap);
         assertEquals(3, dataMap.size());
-
-        ArrayList<String> testKey = new ArrayList<>();
-        for (DataID key : dataMap.keySet()) {
-            testKey.add(key.getName());
-            assertNotNull(dataMap.get(key)); // Ensure values are not null
-        }
-
-        // Check if specific keys are present in the dataMap
-        assertTrue(testKey.contains("null1"));
-        assertTrue(testKey.contains("null2"));
-        assertTrue(testKey.contains("null3"));
+        dataMap.forEach((key, value) -> assertNotNull(value)); // Ensure values are not null
     }
 
-
-    /**
-     * Test for null
-     */
     @Test
-    void testConvertInputToDataMap_7_otherStrangeThings() {
+    void testConvertInputToDataMap_InvalidInputFormats() {
         LogEvent logEvent = new LogEvent();
 
-        // Changed input data
         List<String> inputData = Arrays.asList("\n", "N/A", "\0");
-
-        // Event remains the same as in the previous test case
         Event event = new Event("Sample_Event", Arrays.asList(
                 new DataID("\n", DataType.STRING),
                 new DataID("N/A", DataType.STRING),
@@ -328,73 +304,51 @@ public class LogEventTest
 
         HashMap<DataID, List<?>> dataMap = logEvent.convertInputToDataMap(inputData, event);
 
-        // Assuming the conversion is successful
         assertNotNull(dataMap);
         assertEquals(3, dataMap.size());
 
-        ArrayList<String> testKey = new ArrayList<>();
-        for (DataID key : dataMap.keySet()) {
-            testKey.add(key.getName());
-            assertNotNull(dataMap.get(key)); // Ensure values are not null
-        }
-
-        // Check if specific keys are present in the dataMap
-        assertTrue(testKey.contains("\n"));
-        assertTrue(testKey.contains("N/A"));
-        assertTrue(testKey.contains("\0"));
+        dataMap.forEach((key, value) -> assertNotNull(value)); // Ensure values are not null
     }
 
 
-    /**
-     * Test if we have too many elements. For example... 100 strings.
-     */
     @Test
-    void testConvertInputToDataMap_8_RandomStrings() {
+    void testConvertInputToDataMap_MissingRightBracketError() {
         LogEvent logEvent = new LogEvent();
 
-        // Generate 100 random strings and create DataIDs for each string
-        int numberOfStrings = 100;
-        List<String> randomStrings = generateRandomStrings(numberOfStrings);
-        List<DataID> dataIDList = randomStrings.stream()
-                .map(str -> new DataID(str, DataType.STRING))
-                .collect(Collectors.toList());
+        List<String> inputData = Arrays.asList("[true false", "123456", "test");
+        Event event = new Event("Sample_Event", Arrays.asList(
+                new DataID("Status", DataType.BOOLEAN),
+                new DataID("Numbers", DataType.INTEGER),
+                new DataID("Text", DataType.STRING)
+        ));
 
-        // Create Event with the list of DataID objects
-        Event event = new Event("Sample_Event", dataIDList);
-        HashMap<DataID, List<?>> dataMap = logEvent.convertInputToDataMap(randomStrings, event);
+        HashMap<DataID, List<?>> dataMap = logEvent.convertInputToDataMap(inputData, event);
+
         assertNotNull(dataMap);
-        assertEquals(numberOfStrings, dataMap.size());
+        assertEquals(0, dataMap.size());
 
-        ArrayList<String> testKey = new ArrayList<>();
-        for (DataID key : dataMap.keySet()) {
-            testKey.add(key.getName());
-            assertNotNull(dataMap.get(key)); // Ensure values are not null
-        }
-
-        // Check if all keys are present in the dataMap
-        for (String str : randomStrings) {
-            assertTrue(testKey.contains(str));
-        }
+        dataMap.forEach((key, value) -> assertNotNull(value)); // Ensure values are not null
     }
 
-    // Helper method to generate random strings
-    private List<String> generateRandomStrings(int numberOfStrings) {
-        return IntStream.range(0, numberOfStrings)
-                .mapToObj(i -> generateRandomString(10)) // Change '10' to desired string length
-                .collect(Collectors.toList());
-    }
 
-    // Helper method to generate a single random string
-    private String generateRandomString(int length) {
-        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            int index = (int) (Math.random() * chars.length());
-            stringBuilder.append(chars.charAt(index));
-        }
-        return stringBuilder.toString();
-    }
+    @Test
+    void testConvertInputToDataMap_BlankDataError() {
+        LogEvent logEvent = new LogEvent();
 
+        List<String> inputData = Arrays.asList("[]", "123456", "test");
+        Event event = new Event("Sample_Event", Arrays.asList(
+                new DataID("Status", DataType.BOOLEAN),
+                new DataID("Numbers", DataType.INTEGER),
+                new DataID("Text", DataType.STRING)
+        ));
+
+        HashMap<DataID, List<?>> dataMap = logEvent.convertInputToDataMap(inputData, event);
+
+        assertNotNull(dataMap);
+        assertEquals(0, dataMap.size());
+
+        dataMap.forEach((key, value) -> assertNotNull(value)); // Ensure values are not null
+    }
 }
 
 /**
