@@ -82,8 +82,8 @@ public class Sort implements AnalysisTask{
         int endR;
 
         for (int j = 1; j < sortableLogEvents.size(); j*=2){
-            for (int k = 0; k < sortableLogEvents.size() - 1; k+=2*j){
-                startL = k;
+            for (int k = 0; k < sortableLogEvents.size() - 1; k+=2*j){          // Partition two sorted sublists such that
+                startL = k;                                                     // merging them will result in a sorted list
                 endL = min(startL + j - 1, sortableLogEvents.size() - 1);
                 endR = min(startL + 2*j - 1, sortableLogEvents.size()-1);
 
@@ -92,12 +92,12 @@ public class Sort implements AnalysisTask{
         }
 
         LogData logData = new LogData();
-        if (!direction){
+        if (!direction){                                        // Reverse order of LogEvents if descending (direction == false)
             for (int elem = sortableLogEvents.size() - 1; elem >= 0; elem--){
                 logData.addLogEvent(sortableLogEvents.get(elem));
             }
             return logData;
-        } else {
+        } else {                                                // Otherwise, place LogEvents into LogData object as is
             for (LogEvent sortableLogEvent : sortableLogEvents) {
                 logData.addLogEvent(sortableLogEvent);
             }
@@ -125,11 +125,11 @@ public class Sort implements AnalysisTask{
             return null;
         }
         switch (attributeType) {
-            case TIMESTAMP:           // Revisit switch case statement later?
+            case TIMESTAMP:                                 // For TIMESTAMP or EVENT, do nothing.
             case EVENT:
                 return logEventList;
-            case DATAID:
-                if (!logEventList.isEmpty()){
+            case DATAID:                                    // If attributeType == DATAID,
+                if (!logEventList.isEmpty()){               // "Filter" out all elements that does not contain the given DataID
                     for (LogEvent logEventElem : logEventList) {
                         for (DataID curDataID : logEventElem.getDataIDMap().keySet()) {
                             if (curDataID.getName().equals(dataID.getName())) {
@@ -159,7 +159,7 @@ public class Sort implements AnalysisTask{
         List<LogEvent> L = new ArrayList<>();
         List<LogEvent> R = new ArrayList<>();
 
-        for (int m = startL; m <= endL; m++){
+        for (int m = startL; m <= endL; m++){               // Split elementss of a sublist into smaller lists
             L.add(list.get(m));
         }
         for (int n = endL + 1; n <= endR; n++){
@@ -170,16 +170,16 @@ public class Sort implements AnalysisTask{
         int j = 0;
         int k = 0;
         for (i = 0; j < L.size() && k < R.size(); i++) {
-            if (compareObjects(L.get(j), R.get(k)) <= 0){
+            if (compareLogEventByAttribute(L.get(j), R.get(k)) <= 0){   // Merge each element into ret if L.get(j) <= R.get(k)
                 ret[i] = L.get(j);
                 j++;
-            } else {
+            } else {                                        // Merge each element into ret if L.get(j) > R.get(k)
                 ret[i] = R.get(k);
                 k++;
             }
         }
 
-        while (j < L.size()){
+        while (j < L.size()){                               // Merge remaining elements from either L or R
             ret[i] = L.get(j);
             j++;
             i++;
@@ -190,31 +190,44 @@ public class Sort implements AnalysisTask{
         }
 
         for (int p = 0; p < ret.length; p++){
-            list.set(p+startL, ret[p]);
+            list.set(p+startL, ret[p]);                     // Replace all sorted elements in ret into input list
         }
     }
 
-    private int compareObjects(LogEvent L, LogEvent R){
+    /**
+     * Compare objects such as string containing the name of the LogEvent, the Timestamp, and the DataID objects.
+     * @param L - one LogEvent object to compare to
+     * @param R - another LogEvent object to compare to
+     * @return a integer value that is -1 of L < R, 1 if L > R, and 0 if L == R
+     */
+    private int compareLogEventByAttribute(LogEvent L, LogEvent R){
         if (attributeType == AttributeType.TIMESTAMP){
-            return L.getTimeStamp().compareTo(R.getTimeStamp());
+            return L.getTimeStamp().compareTo(R.getTimeStamp());        // Compare by Timestamp
         } else if (attributeType == AttributeType.EVENT){
-            return L.getEventType().compareTo(R.getEventType());
+            return L.getEventType().compareTo(R.getEventType());        // Compare by attribute eventType of LogEvent
         } else if (attributeType == AttributeType.DATAID){
             DataID dataIDL = new DataID();
             DataID dataIDR = new DataID();
-            for (DataID dataID0 :  L.getDataIDMap().keySet()){
+            for (DataID dataID0 :  L.getDataIDMap().keySet()){          // Get same instance of DataID object stored in LogEvent object
                 if (dataID0.getName().equals(dataID.getName()))
                     dataIDL = dataID0;
             }
             for (DataID dataID0 :  R.getDataIDMap().keySet()) {
                 if (dataID0.getName().equals(dataID.getName()))
                     dataIDR = dataID0;
-            }
+            }                                                           // Get same instance of DataID object stored in LogEvent object
             return compareToDataIDByType(L.getDataIDMap().get(dataIDL), R.getDataIDMap().get(dataIDR));
         } else
             return 0;
     }
 
+    /**
+     * Compare data values stored in a list from two DotaIDs. The first element from each list was chosen and compared
+     * @param lst0 - a list containing the data values from a DataID
+     * @param lst1 - a list containing the data values from a DataID
+     * @return a integer value that is -1 of lst0.get(0) < lst1.get(0), 1 if lst0.get(0) > lst1.get(0),
+     * and 0 if lst0.get(0) == lst1.get(0)
+     */
     private int compareToDataIDByType(List<?> lst0, List<?> lst1) {
         switch (dataID.getType()) {
             case INTEGER:
