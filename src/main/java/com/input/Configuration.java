@@ -73,7 +73,8 @@ public class Configuration
             configDoc = configBuilder.parse(fileLoc.openStream());
         } catch (ParserConfigurationException | IOException | SAXException err){
             if (err instanceof ParserConfigurationException){
-                ErrorHandler.logError("Parser failed to instantiate of documentBuilder object");
+                ErrorHandler.logError("Failure parsing configuration file: parser failed to instantiate of DocumentBuilder object"
+                        + "\nLoafr exiting...");
             } else {
                 ErrorHandler.logError("Configuration file not found");
             }
@@ -113,7 +114,8 @@ public class Configuration
             Element elem = (Element) dataIDRootNode;
             dataIDNodeList = elem.getElementsByTagName("data_element");
         } else {
-            ErrorHandler.logError("No node in Config file labeled 'data_elements'");
+            ErrorHandler.logError("Failure parsing configuration file: no node in Config file labeled 'data_elements'" +
+                    "\nLoafr exiting...");
             return false;
         }
 
@@ -124,11 +126,13 @@ public class Configuration
             return false;
         }
         if (!hasSubRootCorrectNodes(eventRootNode, "event")){
-            ErrorHandler.logError("Events node has at least one child node that isn't an event node.");
+            ErrorHandler.logError("Failure parsing configuration file: Events node has at least one child node that isn't an event node."
+                + "\nLoafr exiting...");
             return false;
         }
         if(!hasSubRootCorrectNodes(dataIDRootNode, "data_element")){
-            ErrorHandler.logError("Data_elements node has at least one child node that isn't an data element node.");
+            ErrorHandler.logError("Data_elements node has at least one child node that isn't an data element node." +
+                    "\nLoafr exiting...");
             return false;
         }
 
@@ -154,12 +158,13 @@ public class Configuration
             elemDefaultLoc = (Element) defaultLocNode;
             defaultOutputLoc = elemDefaultLoc.getAttribute("file").trim();     // Get outputLoc out of node set defaultOutputLoc
             if (defaultOutputLoc.isEmpty()){
-                ErrorHandler.logError("No specified default output file location.");
+                ErrorHandler.logError("Failure parsing configuration file: one default output file location " +
+                        "is required.\nLoafr exiting...");
                 return false;
             }
 
         } else {
-            ErrorHandler.logError("XML file is structured improperly");
+            ErrorHandler.logError("Failure parsing configuration file: XML file is structured improperly. \nLoafr exiting...");
             return false;
         }
 
@@ -241,7 +246,7 @@ public class Configuration
                 elemDataID = (Element) curNode;
 
                 if (!elemDataID.hasAttribute("name")){                                   // Check if data element has no name
-                    ErrorHandler.logError("Name of data element is missing");
+                    ErrorHandler.logError("Failure parsing configuration file: name of data element is missing in configuration file.");
                     return null;
                 }
 
@@ -250,7 +255,7 @@ public class Configuration
                 tempType = inferType(elemDataID.getAttribute("type").trim());              // Get dataID object attribute out of node
 
                 if (tempType == null){
-                    ErrorHandler.logError("Data type is missing");
+                    ErrorHandler.logError("Failure parsing configuration file: data type is missing in configuration file. \nLoafr exiting...");
                     return null;
                 }
 
@@ -259,7 +264,7 @@ public class Configuration
                 tempDataIDMap.put(dataName,newDataID);                                          // Place dataID object in dataIDList
                 this.dataIDList.add(newDataID);
             } else {
-                ErrorHandler.logError("There are missing DataIDs in the configuration file.");
+                ErrorHandler.logError("Failure parsing configuration file: there are missing DataIDs in the configuration file. \nLoafr exiting...");
                 return null;
             }
         }
@@ -280,7 +285,7 @@ public class Configuration
 
 //        NodeList eventList = eventNodeList.getChildNodes();
         if (eventNodeList.getLength() == 0){
-            ErrorHandler.logError("There are no events in the configuration file.");
+            ErrorHandler.logError("Failure parsing configuration file: there are no events in the configuration file. \nLoafr exiting...");
             return false;
         }
         for (int i = 0; i < eventNodeList.getLength(); i++){
@@ -293,7 +298,7 @@ public class Configuration
                 String eventName;
 
                 if (!elemEvent.hasAttribute("name")){
-                    ErrorHandler.logError("Event has no appropriate name.");
+                    ErrorHandler.logError("Failure parsing configuration file: event is missing a name. \nLoafr exiting...");
                     return false;
                 }
                 eventName = elemEvent.getAttribute("name").trim();
@@ -305,13 +310,14 @@ public class Configuration
                         Element elemData = (Element) dataNode;
 
                         if (!elemData.hasAttribute("name")){                                   // Check if data element has no name
-                            ErrorHandler.logError("Name of data element is missing in event " + eventName);
+                            ErrorHandler.logError("Failure parsing configuration file: dame of data element is missing in event " + eventName
+                                    + "\nLoafr exiting...");
                             return false;
                         }
                         String dataName = elemData.getAttribute("name").trim();    // Get Event object attributes out of node and temp hashmap
 
                         if (!dataIDMap.containsKey(dataName)) {
-                            ErrorHandler.logError("Data element is missing.");
+                            ErrorHandler.logError("Failure parsing configuration file: data element is missing. \nLoafr exiting...");
                             return false;
                         }
                         curDataIDs.add(dataIDMap.get(dataName));
@@ -319,7 +325,7 @@ public class Configuration
                 }
                 this.eventList.add(new Event(eventName, curDataIDs));
             } else {
-                ErrorHandler.logError("There are no events in the configuration file.");
+                ErrorHandler.logError("Failure parsing configuration file: there are no events in the configuration file. \nLoafr exiting...");
                 return false;
             }
         }
