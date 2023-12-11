@@ -17,11 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
- * End-to-End test scenario.
- *      I am not sure what is correct here.
- *      Should this test run all of Loafr and only verify that the output is as expected?
- *              ^ this is what this test class does
- *      Or should Loafr be tested as it executes?
+ * End-to-End search test scenario.
  *
  * @author Leah Lehmeier
  */

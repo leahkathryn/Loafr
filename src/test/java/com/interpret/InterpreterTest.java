@@ -1,7 +1,9 @@
 package com.interpret;
 
 import com.analyze.AnalysisTask;
+import com.analyze.Filter;
 import com.analyze.Search;
+import com.analyze.Sort;
 import com.input.Configuration;
 import com.input.DataID;
 import com.input.LogEvent;
@@ -12,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -81,24 +84,26 @@ public class InterpreterTest
      * Test 2
      * * */
     @Test
-    void GetAnalysisTask_SortKeyword_ReturnNull()
+    void GetAnalysisTask_SortKeyword_ReturnSortAnalysisTask()
     {
         String keyword = "sort";
-        List<String> instructions = new ArrayList<>(Arrays.asList("expr"));
+        List<String> instructions = new ArrayList<>(Arrays.asList("event"));
         AnalysisTask task = interpreter.getAnalysisTask(keyword,instructions);
-        assertNull(task);
+        assertNotNull(task);
+        assertInstanceOf(Sort.class,task);
     }
 
     /* * *
      * Test 3
      * * */
     @Test
-    void GetAnalysisTask_FilterKeyword_ReturnNull()
+    void GetAnalysisTask_FilterKeyword_ReturnFilterAnalysisTask()
     {
         String keyword = "filter";
-        List<String> instructions = new ArrayList<>(Arrays.asList("expr"));
+        List<String> instructions = new ArrayList<>(Arrays.asList("filter_expr"));
         AnalysisTask task = interpreter.getAnalysisTask(keyword,instructions);
-        assertNull(task);
+        assertNotNull(task);
+        assertInstanceOf(Filter.class,task);
     }
 
     /* * *
