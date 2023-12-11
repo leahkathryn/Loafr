@@ -1,0 +1,102 @@
+<loafr>
+  <events>
+    <event name="System_Initialization">
+      <data_element name="Status"/>
+      <data_element name="Error_Code"/>
+    </event>
+    <event name="Communication_Check">
+      <data_element name="Result"/>
+      <data_element name="Error_Code"/>
+      <data_element name="Frequencies"/>
+      <data_element name="Signal_Strength"/>
+    </event>
+    <event name="Navigation_Test">
+      <data_element name="Result"/>
+      <data_element name="Error_Code"/>
+      <data_element name="Accuracy"/>
+    </event>
+    <event name="Telemetry_Check">
+      <data_element name="Result"/>
+      <data_element name="Error_Code"/>
+      <data_element name="Metrics"/>
+    </event>
+    <event name="Battery_Test">
+      <data_element name="Result"/>
+      <data_element name="Error_Code"/>
+      <data_element name="Battery_Level"/>
+      <data_element name="Charging"/>
+      <data_element name="Remaining_Capacity"/>
+      <data_element name="Voltage"/>
+    </event>
+    <event name="Redundancy_Check">
+      <data_element name="Result"/>
+      <data_element name="Error_Code"/>
+      <data_element name="Redundancy_Levels"/>
+      <data_element name="Redundancy_Percentage"/>
+    </event>
+    <event name="Thruster_Calibration">
+      <data_element name="Status"/>
+      <data_element name="Error_Code"/>
+      <data_element name="Power_Levels"/>
+      <data_element name="Fuel_Remaining"/>
+    </event>
+    <event name="Pre-Launch_Check">
+      <data_element name="Status"/>
+      <data_element name="Error_Code"/>
+      <data_element name="Authorization"/>
+      <data_element name="Result"/>
+      <data_element name="Probability_of_Success"/>
+    </event>
+    <event name="Engine_Ignition">
+      <data_element name="Status"/>
+      <data_element name="Error_Code"/>
+      <data_element name="Fuel_Type"/>
+      <data_element name="Fuel_Remaining"/>
+      <data_element name="Thrust_Power"/>
+    </event>
+    <event name="Orbital_Maneuver">
+      <data_element name="Status"/>
+      <data_element name="Thrust_Power"/>
+      <data_element name="Angles"/>
+      <data_element name="Metrics"/>
+    </event>
+    <event name="Solar_Panel_Deployment">
+      <data_element name="Status"/>
+      <data_element name="Panel_Status"/>
+      <data_element name="Error_Code"/>
+      <data_element name="Temperature"/>
+      <data_element name="Angles"/>
+    </event>
+  </events>
+  <data_elements>
+    <data_element name="Temperature" type="double"/>
+    <data_element name="Status" type="boolean"/>
+    <data_element name="Result" type="string"/>
+    <data_element name="Power_Levels" type="integer" list="true"/>
+    <data_element name="Frequencies" type="float" list="true"/>
+    <data_element name="Signal_Strength" type="integer"/>
+    <data_element name="Error_Code" type="integer"/>
+    <data_element name="Accuracy" type="float"/>
+    <data_element name="Panel_Status" type="string" list="true"/>
+    <data_element name="Thrust_Power" type="integer"/>
+    <data_element name="Angles" type="double" list="true"/>
+    <data_element name="Battery_Level" type="integer"/>
+    <data_element name="Charging" type="boolean"/>
+    <data_element name="Voltage" type="integer" list="true"/>
+    <data_element name="Remaining_Capacity" type="integer"/>
+    <data_element name="Redundancy_Levels" type="integer" list="true"/>
+    <data_element name="Redundancy_Percentage" type="float"/>
+    <data_element name="Launch_ID" type="integer"/>
+    <data_element name="Authorization" type="boolean"/>
+    <data_element name="Probability_of_Success" type="float"/>
+    <data_element name="Message" type="string"/>
+    <data_element name="Fuel_Remaining" type="double"/>
+    <data_element name="Metrics" type="float" list="true"/>
+    <data_element name="Power_Output" type="integer" list="true"/>
+    <data_element name="Connection_Status" type="boolean"/>
+    <data_element name="Fuel_Type" type="string"/>
+  </data_elements>
+  <default_output_location>
+    <file file="C:\Users\leahk\OneDrive\Documents\GitHub\Loafr\src\test\resources\sample_config_file.xml"/>
+  </default_output_location>
+</loafr>

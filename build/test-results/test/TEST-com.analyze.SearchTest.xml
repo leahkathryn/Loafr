@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.analyze.SearchTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2023-12-11T04:03:42" hostname="infra04-wg012.eduroam.wireless.umn.edu" time="0.014">
+  <properties/>
+  <testcase name="Execute_MatchingData_Failure()" classname="com.analyze.SearchTest" time="0.006"/>
+  <testcase name="MethodName_StateUnderTest_ExpectedBehavior()" classname="com.analyze.SearchTest" time="0.002"/>
+  <testcase name="Execute_MatchingAttributeEvent_Success()" classname="com.analyze.SearchTest" time="0.001"/>
+  <testcase name="Execute_MatchingAttributeEvent_Fail()" classname="com.analyze.SearchTest" time="0.001"/>
+  <testcase name="Execute_MatchingEventType_Success()" classname="com.analyze.SearchTest" time="0.0"/>
+  <testcase name="Execute_MatchingData_Success()" classname="com.analyze.SearchTest" time="0.001"/>
+  <system-out><![CDATA[**--- Test Execute_MatchingData_Failure executed ---**
+**--- Test method1 executed ---**
+**--- Test Execute_MatchingAttributeEvent_Success executed ---**
+**--- Test Execute_MatchingAttributeEvent_Fail executed ---**
+**--- Test Execute_MatchingEventType_Success executed ---**
+**--- Test Execute_MatchingData_Success executed ---**
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,10 @@
+2023-11-12 08:00:00System_Initializationtrue0
+2023-11-12 08:15:00Thruster_Calibrationtrue0[88 25]100.000
+2023-11-12 08:30:00Communication_Checksuccess0[32.5 54.4 76.8]100
+2023-11-12 09:00:00Navigation_Testsuccess099.999
+2023-11-12 09:30:00Solar_Panel_Deploymenttrue[panel_1_ok panel_2_ok]12056.7[90.1 6.5 22.0]
+2023-11-12 10:00:00Orbital_Maneuvertrue2500[105.2 90.1 45.9][34.5 76.8 3.0 23.1]
+2023-11-12 10:30:00Telemetry_Checksuccess0[0.3 25.4 2.0]
+2023-11-12 11:00:00Battery_Testsuccess099false1[120 240]
+2023-11-12 11:30:00Redundancy_Checksuccess0[97 100 92]95.5
+2023-11-12 12:00:00Pre-Launch_Checkfalse120truefailure0.001

@@ -154,4 +154,15 @@ public class SearchTest
         // Print statement indicating the test completion
         System.out.println("**--- Test Execute_MatchingAttributeEvent_Fail executed ---**");
     }
+
+//    @Test
+//    void Execute_MatchingAttributeEvent_Fail1() {
+//        DataID temp = new DataID("Text", DataType.STRING);
+//        search = new Search(LogEvent.AttributeType.DATAVALUE, temp,""); //Search constructor
+//        LogData result = search.execute(inputLogFile);
+//        assertEquals(inputLogFile.getEventList(), result.getEventList());
+//
+//        // Print statement indicating the test completion
+//        System.out.println("**--- Test Execute_MatchingAttributeEvent_Fail executed ---**");
+//    }
 }

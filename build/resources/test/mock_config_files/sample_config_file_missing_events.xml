@@ -1,0 +1,34 @@
+<loafr>
+    <events>
+
+    </events>
+    <data_elements>
+        <data_element name="Temperature" type="double"/>
+        <data_element name="Status" type="boolean"/>
+        <data_element name="Result" type="string"/>
+        <data_element name="Power_Levels" type="integer" list="true"/>
+        <data_element name="Frequencies" type="float" list="true"/>
+        <data_element name="Signal_Strength" type="integer"/>
+        <data_element name="Error_Code" type="integer"/>
+        <data_element name="Accuracy" type="float"/>
+        <data_element name="Panel_Status" type="string" list="true"/>
+        <data_element name="Thrust_Power" type="integer"/>
+        <data_element name="Angles" type="double" list="true"/>
+        <data_element name="Battery_Level" type="integer"/>
+        <data_element name="Charging" type="boolean"/>
+        <data_element name="Voltage" type="integer" list="true"/>
+        <data_element name="Remaining_Capacity" type="integer"/>
+        <data_element name="Redundancy_Levels" type="integer" list="true"/>
+        <data_element name="Redundancy_Percentage" type="float"/>
+        <data_element name="Launch_ID" type="integer"/>
+        <data_element name="Authorization" type="boolean"/>
+        <data_element name="Probability_of_Success" type="float"/>
+        <data_element name="Message" type="string"/>
+        <data_element name="Fuel_Remaining" type="double"/>
+        <data_element name="Metrics" type="float" list="true"/>
+        <data_element name="Power_Output" type="integer" list="true"/>
+        <data_element name="Connection_Status" type="boolean"/>
+        <data_element name="Fuel_Type" type="string"/>
+    </data_elements>
+    <default_output_location file = "C:\Users\leahk\OneDrive\Documents\GitHub\Loafr\src\test\resources\sample_config_file.xml"/>
+</loafr>

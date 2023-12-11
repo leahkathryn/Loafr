@@ -12,6 +12,13 @@ public class Range
     private DataID endDataID;
     private String endRegex;
 
+    public LogEvent.AttributeType getStartAttributeType() {return startAttributeType;}
+    public DataID getStartDataID() {return startDataID;}
+    public String getStartRegex() {return startRegex;}
+    public LogEvent.AttributeType getEndAttributeType() {return endAttributeType;}
+    public DataID getEndDataID() {return endDataID;}
+    public String getEndRegex() {return endRegex;}
+
     // constructor
     public Range(LogEvent.AttributeType startAttributeType, DataID startDataID, String startRegex,
                  LogEvent.AttributeType endAttributeType, DataID endDataID, String endRegex)
