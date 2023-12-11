@@ -74,8 +74,6 @@ public class SortTest {
 
         for (int i = 0; i < ret.getEventList().size() - 1; i++){
             if (ret.getEventList().get(i).getTimeStamp().compareTo(ret.getEventList().get(i + 1).getTimeStamp()) < 0){
-                System.out.println(ret.getEventList().get(i).getTimeStamp());
-                System.out.println(ret.getEventList().get(i + 1).getTimeStamp());
                 fail();
             }
         }
@@ -204,6 +202,54 @@ public class SortTest {
 
         if (ret != null){
             fail();
+        }
+    }
+
+    @Test
+    void execute_sortByTenEventAscending_Successful(){
+        Sort sort = new Sort(LogEvent.AttributeType.EVENT, true);
+
+        URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file.xml");
+        String logFileLoc = getClass().getClassLoader().getResource("log_file_1").toString().substring(5);
+        Configuration config = new Configuration();
+        LogData testLogData = new LogData();
+        config.parseConfigFile(configurationFileLoc);
+        testLogData.parseLogFile(logFileLoc, config);
+
+        LogData ret = sort.execute(testLogData);
+
+        for (int i = 0; i < ret.getEventList().size() - 1; i++){
+            if (ret.getEventList().get(i).getEventType().compareTo(ret.getEventList().get(i + 1).getEventType()) > 0){
+                fail();
+            }
+            if (ret.getEventList().get(i).getTimeStamp().compareTo(ret.getEventList().get(i + 1).getTimeStamp()) > 0){
+                if (ret.getEventList().get(i).getEventType().equals(ret.getEventList().get(i + 1).getEventType()))
+                    fail();
+            }
+        }
+    }
+
+    @Test
+    void execute_sortByEventsInLogFile2Ascending_Successful(){
+        Sort sort = new Sort(LogEvent.AttributeType.EVENT, true);
+
+        URL configurationFileLoc = getClass().getClassLoader().getResource("sample_config_file.xml");
+        String logFileLoc = getClass().getClassLoader().getResource("log_file_2").toString().substring(5);
+        Configuration config = new Configuration();
+        LogData testLogData = new LogData();
+        config.parseConfigFile(configurationFileLoc);
+        testLogData.parseLogFile(logFileLoc, config);
+
+        LogData ret = sort.execute(testLogData);
+
+        for (int i = 0; i < ret.getEventList().size() - 1; i++){
+            if (ret.getEventList().get(i).getEventType().compareTo(ret.getEventList().get(i + 1).getEventType()) > 0){
+                fail();
+            }
+            if (ret.getEventList().get(i).getTimeStamp().compareTo(ret.getEventList().get(i + 1).getTimeStamp()) > 0){
+                if (ret.getEventList().get(i).getEventType().equals(ret.getEventList().get(i + 1).getEventType()))
+                    fail();
+            }
         }
     }
 

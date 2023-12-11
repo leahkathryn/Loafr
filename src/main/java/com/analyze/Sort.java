@@ -84,7 +84,7 @@ public class Sort implements AnalysisTask{
         for (int j = 1; j < sortableLogEvents.size(); j*=2){
             for (int k = 0; k < sortableLogEvents.size() - 1; k+=2*j){
                 startL = k;
-                endL = startL + j - 1;
+                endL = min(startL + j - 1, sortableLogEvents.size() - 1);
                 endR = min(startL + 2*j - 1, sortableLogEvents.size()-1);
 
                 merge(sortableLogEvents, startL, endL, endR);
