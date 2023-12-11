@@ -63,7 +63,7 @@ public class Sort implements AnalysisTask{
      * Assumes config file, log file, and output file location are valid and parsed correctly.
      *
      * @param l - the input LogData that its attribute eventList will be sorted.
-     * @param <T> - Java generic ?
+     * @param <T> - Java generic
      * @return a LogData object with all the LogEvent of the input, except they are sorted
      */
     @Override
@@ -93,13 +93,13 @@ public class Sort implements AnalysisTask{
 
         LogData logData = new LogData();
         if (!direction){
-            for (int fudsjk = sortableLogEvents.size() - 1; fudsjk >= 0; fudsjk--){
-                logData.addLogEvent(sortableLogEvents.get(fudsjk));
+            for (int elem = sortableLogEvents.size() - 1; elem >= 0; elem--){
+                logData.addLogEvent(sortableLogEvents.get(elem));
             }
             return logData;
         } else {
-            for (int fudsjk = 0; fudsjk < sortableLogEvents.size(); fudsjk++){
-                logData.addLogEvent(sortableLogEvents.get(fudsjk));
+            for (LogEvent sortableLogEvent : sortableLogEvents) {
+                logData.addLogEvent(sortableLogEvent);
             }
         }
 
@@ -115,11 +115,13 @@ public class Sort implements AnalysisTask{
     private List<LogEvent> getSortableLogEvents(List<LogEvent> logEventList) {
         List<LogEvent> sortableList = new ArrayList<>();
         if (attributeType == null){
-            ErrorHandler.logError("The requested attribute type is not implemented by Loafr.");
+            ErrorHandler.logError("Failure sorting log events: the requested attribute type is not implemented by Loafr." +
+                    "\nLoafr exiting...");
             return null;
         }
         if (dataID == null && attributeType == AttributeType.DATAID) {
-            ErrorHandler.logError("Attempt to sort by data element failed as data Element has not been specified.");
+            ErrorHandler.logError("Failure sorting log events: attempt to sort by data element failed as data " +
+                    "Element has not been specified. \nLoafr exiting...");
             return null;
         }
         switch (attributeType) {
