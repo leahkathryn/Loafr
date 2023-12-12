@@ -3,12 +3,12 @@
 ## Description
 This implementation of Loafr is capable of searching a log file for a specific attribute and sorting log file entries by a specific attribute. This version of Loafr also supports batch processing.
 
-### Searching
-A search query in a Loafr script will have this format: search \<optional attribute type\> \</regular expression/\>  
-
 ### Sorting
 A sort query in a Loafr script will have this format: sort \<attribute type\> \</optional direction/\>
 If sorting by DataIDs, the format is the following: sort \<attribute type\> \</dataID name/\> \</optional direction/\>
+
+### Searching
+A search query in a Loafr script will have this format: search \<optional attribute type\> \</regular expression/\>  
 
 If an attribute type is supplied, the regular expression will be matched against only that attribute within each log entry.  
 If an attribute type is not supplied, the regular expression will be matched against every attribute type within each log entry.  
