@@ -22,6 +22,10 @@ public class SearchTest
     static LogData result3 = new LogData();
     static LogData resultempty = new LogData();
     Search search;
+    static DataID dataID1 = new DataID("Status", DataType.BOOLEAN);
+    static DataID dataID2 = new DataID("Numbers", DataType.INTEGER);
+    static DataID dataID3 = new DataID("Text", DataType.STRING);
+
 
     @BeforeAll
     static void setupTest()
@@ -30,9 +34,9 @@ public class SearchTest
         LogEvent logEvent = new LogEvent();
         List<String> inputData = Arrays.asList("true", "987651", "anotherTest");
         Event event = new Event("Sample_Event", Arrays.asList(
-                new DataID("Status", DataType.BOOLEAN),
-                new DataID("Numbers", DataType.INTEGER),
-                new DataID("Text", DataType.STRING)
+                dataID1,
+                dataID2,
+                dataID3
         ));
         HashMap<DataID, List<?>> dataMap = logEvent.convertInputToDataMap(inputData, event);
         logEvent.setDataIDMap(dataMap);
@@ -46,9 +50,9 @@ public class SearchTest
         LogEvent logEvent2 = new LogEvent();
         List<String> inputData2 = Arrays.asList("true", "987652", "anotherTest");
         Event event2 = new Event("Sample_Event", Arrays.asList(
-                new DataID("Status", DataType.BOOLEAN),
-                new DataID("Numbers", DataType.INTEGER),
-                new DataID("Text", DataType.STRING)
+                dataID1,
+                dataID2,
+                dataID3
         ));
         HashMap<DataID, List<?>> dataMap2 = logEvent.convertInputToDataMap(inputData2, event2);
         logEvent2.setDataIDMap(dataMap2);
@@ -61,9 +65,9 @@ public class SearchTest
         LogEvent logEvent3 = new LogEvent();
         List<String> inputData3 = Arrays.asList("false", "987653", "anotherTest");
         Event event3 = new Event("Sample_Event", Arrays.asList(
-                new DataID("Status", DataType.BOOLEAN),
-                new DataID("Numbers", DataType.INTEGER),
-                new DataID("Text", DataType.STRING)
+                dataID1,
+                dataID2,
+                dataID3
         ));
         HashMap<DataID, List<?>> dataMap3 = logEvent.convertInputToDataMap(inputData3, event3);
         logEvent3.setDataIDMap(dataMap3);
@@ -153,5 +157,16 @@ public class SearchTest
 
         // Print statement indicating the test completion
         System.out.println("**--- Test Execute_MatchingAttributeEvent_Fail executed ---**");
+    }
+
+    //Test cases with regex in DataID
+    @Test
+    void Execute_MatchingWithDataID_Success() {
+        search = new Search(LogEvent.AttributeType.DATAVALUE, dataID3,"anotherTest"); //Search constructor
+        LogData result = search.execute(inputLogFile);
+        assertEquals(inputLogFile.getEventList(), result.getEventList());
+
+        // Print statement indicating the test completion
+        System.out.println("**--- Test Execute_MatchingWithDataID_Success executed ---**");
     }
 }
